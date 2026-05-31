@@ -770,7 +770,7 @@ document.addEventListener('DOMContentLoaded',function(){
     else if(flags.escalate)resolved='ESCALATE';
     else if(raw==='MALICE'&&effConf>=0.8)resolved='MALICE_HIGH';
     else if(raw==='MALICE'&&effConf>=0.6)resolved='MALICE_MEDIUM';
-    else if(conf<0.6)resolved='ABSTAIN_INSUFFICIENT';
+    else if(effConf<0.6)resolved='ABSTAIN_INSUFFICIENT'; // fix: use effConf (not conf) — cascade must be consistent with attenuation model
     else if(raw==='BENIGN'&&effConf>=0.8)resolved='BENIGN_HIGH';
     else if(raw==='BENIGN'&&effConf>=0.6)resolved='BENIGN_MEDIUM';
     else resolved='ABSTAIN_ZONE';
