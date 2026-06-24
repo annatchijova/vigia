@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASH.REF — Referencia de Comandos Linux</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg:     #0a0c0e;
+    --bg2:    #0f1214;
+    --bg3:    #141820;
+    --border: #1e2530;
+    --green:  #00ff88;
+    --cyan:   #00e5ff;
+    --amber:  #ffb300;
+    --red:    #ff3d5a;
+    --purple: #b388ff;
+    --teal:   #00bcd4;
+    --text:   #c8d8e8;
+    --muted:  #4a5568;
+    --dim:    #2a3040;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    position: sticky; top: 0;
+    background: rgba(10,12,14,0.97);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 21px;
+    color: var(--green);
+    text-shadow: 0 0 20px rgba(0,255,136,0.4);
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--muted); }
+  .tagline { color: var(--muted); font-size: 11px; flex-shrink: 0; }
+
+  .search-wrap { margin-left: auto; position: relative; flex-shrink: 0; }
+  .search-wrap::before {
+    content: '⌕'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 15px; pointer-events: none;
+  }
+  #search {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 7px 12px 7px 30px; border-radius: 4px; width: 270px;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  #search:focus { border-color: var(--green); box-shadow: 0 0 0 2px rgba(0,255,136,0.1); }
+  #search::placeholder { color: var(--muted); }
+
+  .stats { font-size: 10px; color: var(--muted); margin-left: 6px; white-space: nowrap; }
+  .stats b { color: var(--cyan); }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: calc(100vh - 58px); }
+
+  nav {
+    width: 210px; flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky; top: 58px;
+    height: calc(100vh - 58px);
+    overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+  }
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+  .nav-label {
+    font-size: 9px; letter-spacing: 2px; color: var(--muted);
+    padding: 0 16px 6px; text-transform: uppercase;
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 7px 16px;
+    background: none; border: none; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-align: left; cursor: pointer;
+    transition: color .15s, background .15s;
+    border-left: 2px solid transparent;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-btn.active { color: var(--green); background: rgba(0,255,136,0.06); border-left-color: var(--green); }
+  .nav-btn .icon { font-size: 13px; width: 16px; text-align: center; }
+  .nav-count {
+    margin-left: auto; background: var(--dim); color: var(--muted);
+    font-size: 9px; padding: 1px 5px; border-radius: 8px;
+  }
+  .nav-btn.active .nav-count { background: rgba(0,255,136,0.15); color: var(--green); }
+
+  main { flex: 1; padding: 24px 28px; overflow-y: auto; max-width: calc(100vw - 210px); }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--text); }
+  .section-subtitle { font-size: 11px; color: var(--muted); }
+
+  /* ── COMMAND GRID ── */
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 8px; margin-bottom: 36px;
+  }
+
+  .cmd-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px;
+    transition: border-color .15s, transform .1s, box-shadow .15s;
+    cursor: default; position: relative; overflow: hidden;
+  }
+  .cmd-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--green); opacity: 0; transition: opacity .15s;
+  }
+  .cmd-card:hover { border-color: rgba(0,255,136,0.25); box-shadow: 0 2px 16px rgba(0,255,136,0.05); transform: translateY(-1px); }
+  .cmd-card:hover::before { opacity: 1; }
+
+  .cmd-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .cmd-name { font-weight: 700; font-size: 13px; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+
+  .cmd-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500;
+  }
+  .badge-danger { background: rgba(255,61,90,0.15);  color: var(--red);    border: 1px solid rgba(255,61,90,0.2); }
+  .badge-net    { background: rgba(0,229,255,0.1);   color: var(--cyan);   border: 1px solid rgba(0,229,255,0.15); }
+  .badge-sec    { background: rgba(255,179,0,0.1);   color: var(--amber);  border: 1px solid rgba(255,179,0,0.15); }
+  .badge-priv   { background: rgba(179,136,255,0.1); color: var(--purple); border: 1px solid rgba(179,136,255,0.2); }
+
+  .cmd-syntax { font-size: 11px; color: var(--cyan); opacity: 0.75; margin-bottom: 5px; word-break: break-all; }
+  .cmd-syntax b { color: var(--amber); opacity: 1; }
+  .cmd-desc { font-size: 11.5px; color: #8a9ab0; line-height: 1.5; }
+  .cmd-card:hover .cmd-desc { color: var(--text); }
+
+  /* ── INTERPRETACIÓN (tarjetas especiales de actividad) ── */
+  .cmd-card.has-interp .cmd-interp {
+    display: none;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: #7ba0b8;
+    line-height: 1.55;
+  }
+  .cmd-card.has-interp:hover .cmd-interp { display: block; }
+  .cmd-interp .interp-title { color: var(--teal); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .cmd-interp code {
+    display: block; background: rgba(0,0,0,0.3); border-left: 2px solid var(--teal);
+    padding: 4px 8px; margin: 4px 0; font-size: 10px; color: #aad0e8;
+    border-radius: 0 3px 3px 0; word-break: break-all;
+  }
+  .cmd-interp .field { color: var(--amber); font-weight: 500; }
+
+  /* ── COPY BTN ── */
+  .copy-btn {
+    position: absolute; right: 8px; top: 8px;
+    background: none; border: none; color: var(--muted); font-size: 11px;
+    cursor: pointer; opacity: 0; padding: 3px 6px; border-radius: 3px;
+    transition: opacity .15s, color .15s, background .15s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cmd-card:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { color: var(--green); background: rgba(0,255,136,0.08); }
+  .copy-btn.copied { color: var(--green); }
+
+  .cat-section { display: none; }
+  .cat-section.visible { display: block; }
+
+  .no-results { display: none; text-align: center; padding: 80px 20px; color: var(--muted); }
+  .no-results.visible { display: block; }
+  .no-results .nr-icon { font-size: 40px; margin-bottom: 12px; }
+  .no-results .nr-text { font-size: 13px; }
+  .no-results .nr-sub  { font-size: 11px; margin-top: 6px; color: var(--dim); }
+
+  #search-results { display: none; }
+  #search-results.visible { display: block; }
+
+  .interp-hint {
+    font-size: 9px; color: var(--teal); margin-top: 4px; opacity: 0.7;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BASH<span>.</span>REF</div>
+  <div class="tagline">// Referencia rápida de comandos Linux</div>
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="Buscar comando o descripción..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="stats">Mostrando <b id="visible-count">0</b> de <b id="total-count">0</b> comandos</div>
+</header>
+
+<div class="layout">
+  <nav id="sidebar"></nav>
+  <main id="main-content">
+    <div id="search-results"></div>
+  </main>
+</div>
+
+<script>
+// Comandos con campo opcional `interp` para mostrar lógica de lectura del output
+const CATEGORIES = [
+
+  // ── 1. ACTIVIDAD E HISTORIAL ─────────────────────────────────────────
+  {
+    id: 'activity',
+    icon: '🕵️',
+    name: 'Actividad e historial',
+    color: '#00bcd4',
+    commands: [
+      {
+        name: 'who',
+        syntax: 'who <b>-a</b>',
+        desc: 'Muestra quién está conectado al sistema ahora mismo: usuario, terminal, hora de login y display.',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>vegandel  tty7  2026-05-16 09:06  (:0)</code>
+<span class="field">vegandel</span> → usuario conectado<br>
+<span class="field">tty7</span> → terminal virtual 7 = sesión gráfica de escritorio<br>
+<span class="field">09:06</span> → hora de inicio de sesión<br>
+<span class="field">(:0)</span> → display X11 nº0 = sesión local, no remota via SSH<br><br>
+Si ves <span class="field">pts/0, pts/1…</span> son terminales remotas (SSH). Si ves una IP en lugar de (:0), alguien entró de fuera.`
+      },
+      {
+        name: 'whoami',
+        syntax: 'whoami',
+        desc: 'Muestra con qué identidad efectiva estás operando ahora mismo. Fundamental al usar su o sudo.',
+        interp: `<div class="interp-title">Cuándo importa</div>
+Tras <code>sudo su -</code> o <code>su - otrouser</code> whoami confirma si realmente cambiaste de identidad. Si devuelve <span class="field">root</span> cuando no lo esperabas, cuidado.`
+      },
+      {
+        name: 'w',
+        syntax: 'w',
+        desc: 'Versión extendida de who: muestra usuarios activos, qué proceso tienen en primer plano, idle time, y carga del sistema.',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code> 09:29 up 1 day, 1 user, load average: 1.11, 1.44, 1.48</code>
+<code>USER   TTY  FROM   LOGIN@  IDLE  JCPU  PCPU  WHAT</code>
+<code>vegandel  -   -    Sat09  20:18  0.00s  0.09s  lightdm</code>
+<span class="field">up 1 day</span> → tiempo encendido desde último boot<br>
+<span class="field">load: 1.11, 1.44, 1.48</span> → carga media en 1/5/15 minutos. Normal si es menor que el nº de núcleos (<code>nproc</code>)<br>
+<span class="field">IDLE 20:18</span> → minutos sin teclear. No significa que no haya procesos corriendo<br>
+<span class="field">WHAT</span> → último proceso en primer plano (lightdm = escritorio gráfico)`
+      },
+      {
+        name: 'last',
+        syntax: 'last <b>-n 20</b>',
+        desc: 'Historial de logins del sistema leído desde /var/log/wtmp. Muestra usuario, terminal, IP origen, fechas y duración.',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>vegandel  tty7  :0  Sat May 16 09:06   still running</code>
+<code>reboot    system boot   Sat May 16 09:02   still running</code>
+<code>vegandel  tty7  :0  Mon May 11 08:07 - crash  (5+00:55)</code>
+<span class="field">still running</span> → sesión activa ahora mismo<br>
+<span class="field">crash (5+00:55)</span> → sesión terminó por corte/cuelgue, duró 5 días 55 minutos. No fue shutdown limpio<br>
+<span class="field">reboot</span> → entradas del kernel, no del usuario<br>
+<span class="field">wtmp begins…</span> → hasta dónde llega el registro (se rota)<br><br>
+<b>Señales de alerta:</b> usuario desconocido, IP extraña en el campo FROM, horarios inusuales.`
+      },
+      {
+        name: 'lastb',
+        syntax: 'sudo lastb <b>-n 20</b>',
+        desc: 'Intentos de login FALLIDOS desde /var/log/btmp. Requiere sudo. Cero output = nadie falló al entrar.',
+        badge: 'sec',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>admin  ssh:notty  45.33.32.156  Sun May 17 03:12 - 03:12</code>
+<span class="field">admin</span> → usuario intentado (no existe en tu sistema)<br>
+<span class="field">ssh:notty</span> → intento remoto via SSH, no terminal física<br>
+<span class="field">45.33.32.156</span> → IP atacante (esta es de Shodan/nmap.org, por ejemplo)<br><br>
+Muchos intentos de "root", "admin", "ubuntu" = escaneo automático de bots. Normal en IPs públicas. Para contrarrestar: fail2ban, cambiar puerto SSH, desactivar login root.`
+      },
+      {
+        name: 'last (reboot)',
+        syntax: 'last <b>reboot</b>',
+        desc: 'Muestra solo el historial de arranques del sistema. Útil para ver cuándo hubo reinicios inesperados.',
+        interp: `<div class="interp-title">Patrón típico</div>
+<code>reboot  system boot  6.8.0-90-generic  Sat May 16 09:02</code>
+El campo de kernel (<span class="field">6.8.0-90-generic</span>) te dice qué versión corrió en cada arranque. Si ves un kernel distinto al esperado en un boot reciente, investiga.`
+      },
+      {
+        name: 'lastlog',
+        syntax: 'lastlog',
+        desc: 'Muestra el último login de CADA usuario del sistema. Detecta cuentas inactivas o sospechosamente activas.',
+        badge: 'sec',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>root     pts/0  192.168.1.5  Sun May 17 02:00</code>
+<code>daemon   **Never logged in**</code>
+Si root aparece con login reciente y no fuiste tú: alarma. Las cuentas de sistema (daemon, www-data, nobody) deben mostrar "Never logged in".`
+      },
+      {
+        name: 'history',
+        syntax: 'history <b>| grep -i "sudo\|ssh\|wget\|curl"</b>',
+        desc: 'Historial de comandos del shell actual (~/.bash_history). Filtrar por palabras clave revela actividad relevante.',
+        interp: `<div class="interp-title">Trucos de uso</div>
+<code>history | grep sudo</code> → todos los comandos con privilegios<br>
+<code>!n</code> → re-ejecuta el comando número n<br>
+<code>!!</code> → repite el último comando<br>
+<code>Ctrl+R</code> → búsqueda reversa interactiva mientras escribís<br><br>
+<b>Forense:</b> <code>cat ~/.bash_history</code> muestra el archivo sin numeración. Si el historial está vacío o tiene lagunas de tiempo inusuales, puede indicar que fue borrado intencionalmente.`
+      },
+      {
+        name: 'history (timestamps)',
+        syntax: 'HISTTIMEFORMAT="%F %T " history',
+        desc: 'Activa timestamps en el historial. Muestra exactamente cuándo se ejecutó cada comando. Añadir al .bashrc para que sea permanente.',
+        interp: `<div class="interp-title">Para que sea permanente</div>
+<code>echo 'HISTTIMEFORMAT="%F %T "' >> ~/.bashrc</code>
+<code>echo 'HISTSIZE=10000' >> ~/.bashrc</code>
+<code>echo 'HISTFILESIZE=20000' >> ~/.bashrc</code>
+Así cada entrada del historial llevará fecha y hora, incluso tras cerrar la sesión.`
+      },
+      {
+        name: 'ps aux (snapshot)',
+        syntax: 'ps <b>aux --sort=-%cpu</b> | head -20',
+        desc: 'Snapshot de procesos activos ordenados por uso de CPU. Ver quién está consumiendo recursos en este momento.',
+        interp: `<div class="interp-title">Cómo leer cada columna</div>
+<code>USER   PID  %CPU  %MEM  VSZ    RSS   TTY  STAT  START  TIME  COMMAND</code>
+<span class="field">PID</span> → identificador de proceso (para kill, lsof -p, etc.)<br>
+<span class="field">%CPU</span> → uso en este momento. 200% = usando 2 núcleos completos<br>
+<span class="field">%MEM</span> → porcentaje de RAM física usada<br>
+<span class="field">VSZ</span> → memoria virtual total (incluye swap y libs compartidas, número inflado)<br>
+<span class="field">RSS</span> → RAM física real ocupada. Este es el número que importa<br>
+<span class="field">STAT</span> → S=durmiendo, R=corriendo, Z=zombie, D=I/O bloqueado, T=suspendido<br>
+<span class="field">TIME</span> → CPU total acumulado desde que inició (no confundir con uptime)`
+      },
+      {
+        name: 'lsof (usuario)',
+        syntax: 'lsof <b>-u usuario</b>',
+        desc: 'Lista todos los archivos abiertos por un usuario: conexiones de red, archivos en disco, pipes. Fotografía completa de actividad.',
+        badge: 'sec',
+        interp: `<div class="interp-title">Combinaciones útiles</div>
+<code>lsof -i</code> → solo conexiones de red abiertas<br>
+<code>lsof -i :4444</code> → qué proceso escucha en el puerto 4444<br>
+<code>lsof -p PID</code> → todos los recursos abiertos por un proceso específico<br>
+<code>lsof +D /tmp</code> → qué procesos tienen archivos abiertos en /tmp (sospechoso si hay ejecutables)`
+      },
+      {
+        name: 'journalctl (sesión)',
+        syntax: 'journalctl <b>-b</b> --since <b>"1 hour ago"</b>',
+        desc: 'Logs del sistema del boot actual o de un intervalo de tiempo. Muestra todo lo que pasó en el sistema.',
+        interp: `<div class="interp-title">Filtros útiles</div>
+<code>journalctl -b</code> → desde el último arranque<br>
+<code>journalctl -b -1</code> → boot anterior<br>
+<code>journalctl --list-boots</code> → lista todos los boots con ID<br>
+<code>journalctl --since "2026-05-16 09:00"</code> → desde fecha exacta<br>
+<code>journalctl -p err..emerg</code> → solo errores y críticos<br>
+<code>journalctl _UID=1000</code> → solo entradas de tu usuario`
+      },
+      {
+        name: 'ss -tulnp',
+        syntax: 'ss <b>-tulnp</b>',
+        desc: 'Puertos y servicios escuchando ahora mismo. Muestra qué proceso está detrás de cada puerto abierto.',
+        badge: 'sec',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>tcp  LISTEN  0  128  0.0.0.0:22  *:*  users:(("sshd",pid=1234))</code>
+<span class="field">0.0.0.0:22</span> → escucha en TODAS las interfaces en puerto 22 (SSH expuesto a la red)<br>
+<span class="field">127.0.0.1:11434</span> → solo loopback = accesible únicamente desde la misma máquina (seguro)<br>
+<span class="field">*:*</span> → acepta conexiones de cualquier IP<br><br>
+<b>Regla general:</b> solo deben escuchar en 0.0.0.0 o :: los servicios que realmente deben ser accesibles desde fuera. El resto, en 127.0.0.1.`
+      },
+      {
+        name: 'nproc',
+        syntax: 'nproc',
+        desc: 'Número de núcleos de CPU disponibles. Indispensable para interpretar el load average del sistema.',
+        interp: `<div class="interp-title">Cómo usarlo para interpretar load</div>
+<code>nproc</code> devuelve, por ejemplo, <span class="field">4</span><br><br>
+Load average <span class="field">1.5</span> con 4 núcleos = 37% de capacidad → tranquilo<br>
+Load average <span class="field">4.0</span> con 4 núcleos = saturación total → investigar<br>
+Load average <span class="field">8.0</span> con 4 núcleos = cola de espera → problema serio<br><br>
+Ver load: <code>uptime</code> o <code>w</code> o la primera línea de <code>top</code>`
+      },
+      {
+        name: 'uptime',
+        syntax: 'uptime',
+        desc: 'Tiempo encendido, usuarios activos y load average (1, 5 y 15 minutos). Resumen instantáneo del estado del sistema.',
+        interp: `<div class="interp-title">Cómo leer el output</div>
+<code>09:29:36 up 1 day, 27 min, 1 user, load average: 1.11, 1.44, 1.48</code>
+<span class="field">up 1 day, 27 min</span> → tiempo desde último boot<br>
+<span class="field">1 user</span> → sesiones activas<br>
+<span class="field">1.11, 1.44, 1.48</span> → load en últimos 1, 5 y 15 minutos<br><br>
+Si el número de 1 min es mucho mayor que el de 15 min → pico reciente<br>
+Si el de 15 min es siempre alto → carga sostenida`
+      },
+      {
+        name: 'ausearch',
+        syntax: 'sudo ausearch <b>-ts today -m USER_LOGIN</b>',
+        desc: 'Busca en logs de auditd. -ts desde tiempo, -m tipo de evento (USER_LOGIN, USER_CMD, ADD_USER, etc.).',
+        badge: 'sec',
+        interp: `<div class="interp-title">Eventos útiles para rastrear</div>
+<code>ausearch -m USER_LOGIN -ts today</code> → logins de hoy<br>
+<code>ausearch -m USER_CMD -ts yesterday</code> → comandos con sudo de ayer<br>
+<code>ausearch -f /etc/passwd -ts week</code> → quién tocó /etc/passwd esta semana<br>
+<code>ausearch -m EXECVE -ui 0 -ts today</code> → ejecuciones como root hoy`
+      },
+      {
+        name: 'find (recientes)',
+        syntax: 'find <b>/home /tmp /var/tmp</b> -mmin <b>-60</b> -type f',
+        desc: 'Archivos modificados en los últimos N minutos. Muy útil para ver qué cambió recientemente en el sistema.',
+        badge: 'sec',
+        interp: `<div class="interp-title">Variaciones útiles</div>
+<code>find / -mtime -1 -type f 2>/dev/null</code> → modificados en últimas 24h en todo el sistema<br>
+<code>find /tmp /var/tmp -type f -perm /111</code> → ejecutables en /tmp (muy sospechoso)<br>
+<code>find / -nouser -o -nogroup 2>/dev/null</code> → archivos huérfanos (dueño eliminado)`
+      },
+    ]
+  },
+
+  // ── 2. NAVEGACIÓN Y ARCHIVOS ─────────────────────────────────────────
+  {
+    id: 'nav',
+    icon: '🗂️',
+    name: 'Navegación y archivos',
+    color: '#00ff88',
+    commands: [
+      { name: 'ls', syntax: 'ls <b>-lah</b> [ruta]', desc: 'Lista contenido de directorio. -l formato largo, -a incluye ocultos, -h tamaños legibles, -S ordena por tamaño, -t por fecha.' },
+      { name: 'cd', syntax: 'cd <b>[ruta]</b>', desc: 'Cambia de directorio. cd ~ va al home, cd - vuelve al anterior, cd .. sube un nivel.' },
+      { name: 'pwd', syntax: 'pwd', desc: 'Muestra la ruta absoluta del directorio actual (Print Working Directory).' },
+      { name: 'mkdir', syntax: 'mkdir <b>-p</b> ruta/sub', desc: 'Crea directorios. -p crea toda la jerarquía intermedia sin error si ya existe.' },
+      { name: 'rm', syntax: 'rm <b>-rf</b> ruta', desc: 'Elimina archivos/directorios. -r recursivo, -f fuerza sin preguntar. ¡Irreversible, no hay papelera!', badge: 'danger' },
+      { name: 'cp', syntax: 'cp <b>-rv</b> origen destino', desc: 'Copia archivos o directorios. -r recursivo, -v verbose, -p preserva permisos y fechas.' },
+      { name: 'mv', syntax: 'mv origen destino', desc: 'Mueve o renombra archivos y directorios. También sirve para renombrar en el mismo directorio.' },
+      { name: 'find', syntax: 'find <b>/ruta</b> -name "*.py" -type f', desc: 'Búsqueda potente de archivos. Soporta -mtime -7 (últimos 7 días), -size +100M, -perm 777, -exec.' },
+      { name: 'locate', syntax: 'locate <b>nombre</b>', desc: 'Búsqueda ultrarrápida usando base de datos indexada. Actualizar con updatedb antes de usar.' },
+      { name: 'tree', syntax: 'tree <b>-L 3</b> -a ruta', desc: 'Muestra estructura de directorios en árbol. -L limita profundidad, -a incluye ocultos.' },
+      { name: 'ln', syntax: 'ln <b>-s</b> origen enlace', desc: 'Crea enlaces. -s crea symlink (enlace simbólico). Sin -s crea enlace duro.' },
+      { name: 'touch', syntax: 'touch archivo', desc: 'Crea archivo vacío o actualiza su timestamp. Útil para crear archivos placeholder.' },
+      { name: 'stat', syntax: 'stat archivo', desc: 'Muestra metadatos detallados: tamaño, inodo, permisos, fechas de acceso/modificación/cambio.' },
+      { name: 'file', syntax: 'file archivo', desc: 'Detecta el tipo real de un archivo analizando su contenido (magic bytes), sin depender de la extensión.' },
+      { name: 'du', syntax: 'du <b>-sh</b> *', desc: 'Disk Usage: muestra tamaño de directorios. -s total, -h legible, --max-depth=1 para un nivel.' },
+      { name: 'df', syntax: 'df <b>-h</b>', desc: 'Disk Free: muestra espacio en sistemas de archivos montados. -h formato humano, -T muestra tipo.' },
+      { name: 'dd', syntax: 'dd <b>if=/dev/sda of=imagen.img bs=4M status=progress</b>', desc: 'Copia bit-a-bit de dispositivos. Crea imágenes de disco, escribe ISOs. ¡Sin confirmación, sin retorno!', badge: 'danger' },
+      { name: 'shred', syntax: 'shred <b>-vfz -n 35</b> archivo', desc: 'Sobrescribe archivo para evitar recuperación forense. -n pasadas, -z ceros al final, -f fuerza.', badge: 'sec' },
+      { name: 'rsync', syntax: 'rsync <b>-avz --delete</b> origen/ destino/', desc: 'Sincronización incremental con checksums. -a preserva todo, -v verbose, -z comprime, --delete sincroniza borrados.' },
+      { name: 'split', syntax: 'split <b>-b 1G</b> archivo prefijo', desc: 'Divide archivos grandes en partes. -b por bytes, -l por líneas. Unir: cat prefijo* > original.' },
+      { name: 'realpath', syntax: 'realpath <b>-e</b> archivo', desc: 'Resuelve ruta absoluta canónica. -e verifica existencia, -s no sigue symlinks.' },
+      { name: 'mktemp', syntax: 'mktemp <b>-d</b> /tmp/prefix.XXXXXX', desc: 'Crea archivo/directorio temporal único. -d directorio. Esencial en scripts seguros para evitar race conditions.' },
+      { name: 'bat', syntax: 'bat <b>-n --language=python</b> archivo', desc: 'cat mejorado: resaltado de sintaxis, números de línea, integración git. --list-languages muestra soportados.' },
+      { name: 'eza', syntax: 'eza <b>-la --icons --git</b>', desc: 'ls moderno con colores, iconos, metadatos git y árbol integrado. Reemplazo drop-in de ls.' },
+      { name: 'fzf', syntax: 'find . -type f | fzf', desc: 'Fuzzy finder interactivo. Pipea cualquier lista y filtra en tiempo real. Integra con history (Ctrl+R mejorado).' },
+      { name: 'fd', syntax: 'fd <b>-e py -H</b> "patrón"', desc: 'Alternativa moderna a find: más rápido, sintaxis regex por defecto. -H incluye ocultos, -e filtra por extensión.' },
+      { name: 'mc', syntax: 'mc', desc: 'Midnight Commander: gestor de archivos de dos paneles. F4 edita, F5 copia, F6 mueve, F8 borra.' },
+{ name: 'basename', syntax: 'basename <b>/ruta/archivo.txt</b>', desc: 'Extrae solo el nombre del archivo de una ruta completa. útil en scripts.' },
+      { name: 'dirname', syntax: 'dirname <b>/ruta/archivo.txt</b>', desc: 'Extrae solo el directorio padre de una ruta. Complemento de basename.' },
+      { name: 'readlink', syntax: 'readlink <b>-f</b> symlink', desc: 'Resuelve el destino de un enlace simbólico. -f resuelve recursivamente hasta el archivo real.' },
+      { name: 'install', syntax: 'install <b>-Dm644</b> archivo destino', desc: 'Copia archivos con permisos específicos. -D crea dirs intermedios, -m modo, -s strip binarios.' },
+      { name: 'csplit', syntax: 'csplit <b>-f part</b> archivo /regex/', desc: 'Divide archivo por contexto (regex). Más inteligente que split para logs estructurados.' },
+      { name: 'ranger', syntax: 'ranger', desc: 'File manager TUI (Text User Interface) con preview, bulk rename, integración con vim. Vim-like keybindings.' },
+    ]
+  },
+
+  // ── 3. TEXTO Y PROCESAMIENTO ─────────────────────────────────────────
+  {
+    id: 'text',
+    icon: '📄',
+    name: 'Texto y procesamiento',
+    color: '#00e5ff',
+    commands: [
+      { name: 'cat', syntax: 'cat <b>-n</b> archivo', desc: 'Concatena y muestra contenido. -n numera líneas, -A muestra caracteres especiales.' },
+      { name: 'less', syntax: 'less <b>+F</b> archivo', desc: 'Paginador interactivo. +F sigue en tiempo real (como tail -f). / busca, q sale, G va al final.' },
+      { name: 'head', syntax: 'head <b>-n 20</b> archivo', desc: 'Muestra las primeras N líneas. Por defecto 10. -c muestra bytes en lugar de líneas.' },
+      { name: 'tail', syntax: 'tail <b>-f -n 100</b> archivo', desc: 'Últimas líneas de un archivo. -f sigue en tiempo real (logs), -F sigue aunque rote, -n cantidad.' },
+      { name: 'grep', syntax: 'grep <b>-rniE</b> "patrón" ruta', desc: 'Busca patrones. -r recursivo, -n número de línea, -i insensible a mayúsculas, -E regex extendido, -v invierte.' },
+      { name: 'rg (ripgrep)', syntax: 'rg <b>-n -C 2</b> "patrón" ruta/', desc: 'grep ultrarrápido con respeto a .gitignore. -C contexto, -n números, -i insensible, -l solo archivos con match.' },
+      { name: 'sed', syntax: 'sed <b>-i</b> "s/viejo/nuevo/g" archivo', desc: 'Stream Editor: transforma texto. -i edita en sitio, s/a/b/g sustituye todo, /patrón/d elimina líneas.' },
+      { name: 'awk', syntax: 'awk <b>"{print $1,$3}"</b> archivo', desc: 'Procesador de texto por columnas. $1,$2… son campos, NR es número de línea, FS es separador.' },
+      { name: 'cut', syntax: 'cut <b>-d: -f1,3</b> archivo', desc: 'Extrae columnas. -d define delimitador, -f selecciona campos, -c corta por posición de carácter.' },
+      { name: 'sort', syntax: 'sort <b>-nrk 2</b> archivo', desc: 'Ordena líneas. -n numérico, -r reverso, -k columna, -u elimina duplicados, -t define separador.' },
+      { name: 'uniq', syntax: 'uniq <b>-c</b> archivo', desc: 'Filtra líneas duplicadas consecutivas. -c cuenta ocurrencias, -d solo muestra duplicados.' },
+      { name: 'wc', syntax: 'wc <b>-l</b> archivo', desc: 'Cuenta líneas (-l), palabras (-w) y caracteres/bytes (-c) de un archivo o stdin.' },
+      { name: 'tr', syntax: 'echo "abc" | tr <b>"a-z" "A-Z"</b>', desc: 'Traduce/elimina caracteres. Mayúsculas, eliminar saltos de línea (-d "\\n"), comprimir espacios (-s " ").' },
+      { name: 'tac', syntax: 'tac archivo', desc: 'cat al revés: muestra líneas en orden inverso (última primero). Útil para ver logs recientes primero.' },
+      { name: 'diff', syntax: 'diff <b>-u</b> archivo1 archivo2', desc: 'Compara archivos línea a línea. -u formato unificado (estilo git), -r recursivo para directorios.' },
+      { name: 'strings', syntax: 'strings <b>-a -n 6</b> binario | grep -i "http\\|pass"', desc: 'Extrae cadenas de texto legibles de binarios. Imprescindible en análisis forense/malware.' },
+      { name: 'xxd', syntax: 'xxd <b>-l 64</b> archivo', desc: 'Dump hexadecimal. -l limita bytes, -r convierte hex a binario. Útil en análisis forense.' },
+      { name: 'column', syntax: 'column <b>-t -s ","</b> archivo', desc: 'Formatea texto en columnas alineadas. -t auto-alinea, -s especifica separador.' },
+      { name: 'jq', syntax: 'jq <b>".campo[]"</b> archivo.json', desc: 'Procesador de JSON en la terminal. Filtra, transforma y formatea JSON. Muy potente con pipes.' },
+      { name: 'paste', syntax: 'paste <b>-d ","</b> file1 file2', desc: 'Combina líneas de múltiples archivos lado a lado. -d delimitador. Complemento de cut.' },
+      { name: 'join', syntax: 'join <b>-1 1 -2 1</b> file1 file2', desc: 'Une líneas de dos archivos sobre campo común (tipo SQL JOIN). Requiere archivos ordenados.' },
+      { name: 'iconv', syntax: 'iconv <b>-f latin1 -t utf-8</b> archivo', desc: 'Convierte codificación de archivo. -f from, -t to. Útil para limpiar CSVs legacy.' },
+      { name: 'pdftotext', syntax: 'pdftotext <b>-layout</b> archivo.pdf -', desc: 'Extrae texto plano de PDF manteniendo layout. - para stdout. Útil para grep en PDFs.' },
+{ name: 'rg', syntax: 'rg <b>-n -C 2</b> "patrón" ruta/', desc: 'grep ultrarrápido con respeto a .gitignore. -C contexto, -n números, -i insensible, -l solo archivos con match.' },
+      { name: 'ag', syntax: 'ag <b>-i --python</b> "patrón"', desc: 'Buscador de código tipo grep, respeta .gitignore, rápido. --python filtra por tipo de archivo.' },
+      { name: 'fdupes', syntax: 'fdupes <b>-r -d -N</b> /ruta', desc: 'Encuentra y opcionalmente elimina archivos duplicados por contenido (hash). -r recursivo, -d delete, -N no confirmar.' },
+      { name: 'nl', syntax: 'nl <b>-ba</b> archivo', desc: 'Numera líneas de archivo. -ba numera todas incluyendo vacías (body, all). Más flexible que cat -n.' },
+      { name: 'fmt', syntax: 'fmt <b>-w 80</b> archivo', desc: 'Reformatea párrafos a ancho especificado. Útil para limpiar texto copiado de PDFs o mails.' },
+      { name: 'fold', syntax: 'fold <b>-w 80 -s</b> archivo', desc: 'Rompe líneas largas a ancho fijo. -s rompe en espacio (no corta palabras).' },
+      { name: 'comm', syntax: 'comm <b>-12</b> file1 file2', desc: 'Compara dos archivos ORDENADOS línea a línea. -1 suprime únicos de file1, -2 de file2, -3 comunes.' },
+      { name: 'look', syntax: 'look <b>-f</b> prefijo archivo', desc: 'Busca líneas que empiecen con prefijo en archivo ordenado. Más rápido que grep para prefijos. -f insensible.' },
+      { name: 'pdfinfo', syntax: 'pdfinfo <b>archivo.pdf</b>', desc: 'Extrae metadatos de PDFs: autor, título, fechas, páginas, versión PDF. Herramienta poppler.' },
+    ]
+  },
+
+  // ── 4. PERMISOS Y USUARIOS ───────────────────────────────────────────
+  {
+    id: 'perms',
+    icon: '🔐',
+    name: 'Permisos y usuarios',
+    color: '#b388ff',
+    commands: [
+      { name: 'chmod', syntax: 'chmod <b>755</b> archivo', desc: 'Cambia permisos. Octal: 7=rwx, 6=rw-, 5=r-x, 4=r--. Simbólico: u+x, g-w, o=r, a+x.' },
+      { name: 'chown', syntax: 'chown <b>-R usuario:grupo</b> ruta', desc: 'Cambia propietario y/o grupo. -R recursivo. Requiere privilegios de root.' },
+      { name: 'chgrp', syntax: 'chgrp <b>grupo</b> archivo', desc: 'Cambia solo el grupo propietario de un archivo.' },
+      { name: 'umask', syntax: 'umask <b>022</b>', desc: 'Define máscara de permisos para nuevos archivos. 022 → archivos 644, directorios 755.' },
+      { name: 'sudo', syntax: 'sudo <b>-u usuario</b> comando', desc: 'Ejecuta con privilegios elevados. -u otro usuario, -i shell raíz interactiva, -l lista permisos disponibles.' },
+      { name: 'su', syntax: 'su <b>-</b> usuario', desc: 'Cambia de usuario. El guion (-) carga el entorno completo del usuario destino.' },
+      { name: 'passwd', syntax: 'passwd <b>[usuario]</b>', desc: 'Cambia contraseña. Sin argumento cambia la del usuario actual. Con usuario necesita sudo.' },
+      { name: 'id', syntax: 'id <b>[usuario]</b>', desc: 'Muestra UID, GID y todos los grupos del usuario actual o del especificado.' },
+      { name: 'groups', syntax: 'groups <b>[usuario]</b>', desc: 'Lista los grupos a los que pertenece un usuario. Más simple que id para ver membresías.' },
+      { name: 'getent', syntax: 'getent <b>passwd usuario</b>', desc: 'Consulta bases de datos del sistema (passwd, group, hosts). Más completo que cat /etc/passwd.' },
+      { name: 'visudo', syntax: 'visudo', desc: 'Edita /etc/sudoers de forma segura, validando sintaxis antes de guardar. Nunca editar el archivo directamente.' },
+      { name: 'setfacl', syntax: 'setfacl <b>-m u:user:rwx</b> archivo', desc: 'Establece ACLs extendidas: permisos granulares más allá del modelo usuario/grupo/otros.' },
+      { name: 'getfacl', syntax: 'getfacl archivo', desc: 'Muestra las ACLs de un archivo. Ver todos los permisos extendidos asignados.' },
+{ name: 'newgrp', syntax: 'newgrp <b>grupo</b>', desc: 'Cambia el grupo efectivo actual. Útil para acceder a recursos sin reloguear.' },
+      { name: 'useradd', syntax: 'useradd <b>-m -s /bin/bash -G sudo</b> usuario', desc: 'Crea usuario. -m crea home, -s shell, -G grupos secundarios. Requiere root.', badge: 'priv' },
+      { name: 'usermod', syntax: 'usermod <b>-aG sudo</b> usuario', desc: 'Modifica usuario existente. -aG añade a grupos (¡sin -a reemplaza todos!). -L bloquea, -U desbloquea.', badge: 'priv' },
+      { name: 'userdel', syntax: 'userdel <b>-r</b> usuario', desc: 'Elimina usuario. -r borra home y mail. ¡Irreversible!', badge: 'danger' },
+      { name: 'groupadd', syntax: 'groupadd <b>grupo</b>', desc: 'Crea grupo nuevo. -g GID específico, -f fuerza sin error si existe.', badge: 'priv' },
+      { name: 'chage', syntax: 'chage <b>-l</b> usuario', desc: 'Gestiona política de contraseñas. -l lista, -M máx días, -m mín días, -W warning, -I inactividad.', badge: 'priv' },
+      { name: 'faillog', syntax: 'faillog <b>-a</b>', desc: 'Muestra intentos de login fallidos. -a todos los usuarios, -u específico, -r resetea contador.', badge: 'sec' },
+    ]
+  },
+
+  // ── 5. PROCESOS Y SISTEMA ─────────────────────────────────────────────
+  {
+    id: 'proc',
+    icon: '⚙️',
+    name: 'Procesos y sistema',
+    color: '#ffb300',
+    commands: [
+      { name: 'ps', syntax: 'ps <b>aux</b>', desc: 'Lista todos los procesos con usuario, CPU, RAM y comando completo. Combinar con grep para filtrar.' },
+      { name: 'top', syntax: 'top <b>-u usuario</b>', desc: 'Monitor de procesos en tiempo real. P ordena por CPU, M por memoria, k mata proceso, q sale.' },
+      { name: 'htop', syntax: 'htop', desc: 'Monitor interactivo mejorado con barras de CPU/RAM, árbol de procesos y colores.' },
+      { name: 'kill', syntax: 'kill <b>-9</b> PID', desc: 'Envía señal a proceso. -9 (SIGKILL) fuerza terminación inmediata, -15 (SIGTERM) termina limpiamente.', badge: 'danger' },
+      { name: 'killall', syntax: 'killall <b>-9</b> nombre', desc: 'Mata todos los procesos por nombre. -i pide confirmación, -u solo del usuario especificado.' },
+      { name: 'pkill', syntax: 'pkill <b>-f "patrón"</b>', desc: 'Mata procesos por patrón en nombre o argumentos. -f busca en la línea de comando completa.' },
+      { name: 'pgrep', syntax: 'pgrep <b>-la</b> nombre', desc: 'Busca PIDs por nombre. -l muestra nombre, -a línea de comando completa.' },
+      { name: 'nice', syntax: 'nice <b>-n -10</b> comando', desc: 'Lanza proceso con prioridad. -20 máxima (root), 19 mínima. Valores negativos requieren privilegios.' },
+      { name: 'renice', syntax: 'renice <b>10</b> -p PID', desc: 'Cambia prioridad de proceso en ejecución. -p por PID, -u por usuario.' },
+      { name: 'nohup', syntax: 'nohup comando <b>&</b>', desc: 'Ejecuta ignorando hangup. Continúa tras cerrar sesión. Salida va a nohup.out por defecto.' },
+      { name: 'bg / fg', syntax: 'bg <b>%1</b> / fg <b>%1</b>', desc: 'Envía proceso a segundo plano / lo trae de vuelta. %1 es el job ID (ver con jobs).' },
+      { name: 'lsof', syntax: 'lsof <b>-p PID</b>', desc: 'Lista archivos abiertos. -i conexiones de red, -u por usuario, -p por PID. Imprescindible en forense.', badge: 'sec' },
+      { name: 'strace', syntax: 'strace <b>-p PID</b>', desc: 'Traza llamadas al sistema de un proceso. Imprescindible para debugging y análisis de malware.' },
+      { name: 'free', syntax: 'free <b>-h</b>', desc: 'Muestra uso de memoria RAM y swap. -h formato humano, -s N actualiza cada N segundos.' },
+      { name: 'vmstat', syntax: 'vmstat <b>1 5</b>', desc: 'Estadísticas de memoria virtual, procesos, I/O y CPU. Números: intervalo y repeticiones.' },
+      { name: 'iostat', syntax: 'iostat <b>-x 1</b>', desc: 'Estadísticas de CPU y E/S de dispositivos. -x extendido, número es intervalo en segundos.' },
+      { name: 'dmesg', syntax: 'dmesg <b>-T -l err,warn</b>', desc: 'Mensajes del kernel. -T timestamps legibles, -l filtra por nivel (err, warn, info).' },
+      { name: 'systemctl', syntax: 'systemctl <b>status/start/stop/enable</b> servicio', desc: 'Gestiona servicios systemd. status, start, stop, restart, enable (arranque auto), disable.' },
+      { name: 'journalctl', syntax: 'journalctl <b>-u servicio -f -n 100</b>', desc: 'Logs de systemd. -u filtra por unidad, -f tiempo real, -n últimas N líneas, --since filtra por tiempo.' },
+      { name: 'sar', syntax: 'sar <b>-u 1 10</b>', desc: 'Estadísticas de sistema históricas y en tiempo real. -u CPU, -r memoria, -d disco, -n red. Intervalo y repeticiones.' },
+{ name: 'jobs', syntax: 'jobs <b>-l</b>', desc: 'Lista jobs (procesos en segundo plano) de la sesión actual. -l incluye PIDs.' },
+      { name: 'ltrace', syntax: 'ltrace <b>./binario</b>', desc: 'Traza llamadas a librerías dinámicas. Complemento a strace para análisis de binarios.' },
+      { name: 'pidof', syntax: 'pidof <b>-x</b> nombre', desc: 'Devuelve PID(s) de proceso por nombre. -x incluye scripts. Útil para scripts de monitoreo.' },
+      { name: 'fuser', syntax: 'fuser <b>-v -m</b> /ruta', desc: 'Identifica procesos usando archivos/sockets. -v verbose, -m punto de montaje, -k mata procesos. Útil para unmount.' },
+      { name: 'mpstat', syntax: 'mpstat <b>-P ALL 1</b>', desc: 'Estadísticas por CPU individual. -P ALL todas, número intervalo. Útil para detectar desbalanceo de carga.' },
+      { name: 'pidstat', syntax: 'pidstat <b>-u -p PID 1</b>', desc: 'Estadísticas por proceso individual. -u CPU, -r memoria, -d I/O. Complemento de top para un PID.' },
+      { name: 'iotop', syntax: 'iotop <b>-o</b>', desc: 'Monitor de I/O por proceso (requiere root). -o solo procesos con I/O. Similar a top pero para disco.' },
+      { name: 'atop', syntax: 'atop', desc: 'Monitor avanzado de recursos: CPU, memoria, disco, red por proceso. Guarda logs históricos.' },
+      { name: 'glances', syntax: 'glances', desc: 'Monitor cross-platform con web UI opcional. Muestra todo en una pantalla: CPU, mem, red, disco, procesos.' },
+      { name: 'cpulimit', syntax: 'cpulimit <b>-p PID -l 50</b>', desc: 'Limita %CPU de proceso existente. Útil para contener procesos runaway sin matarlos.' },
+      { name: 'sysctl', syntax: 'sysctl <b>-a | grep ipv4</b>', desc: 'Consulta/modifica parámetros del kernel en runtime. -a lista todos, -w escribe, -p carga /etc/sysctl.conf.' },
+      { name: 'modprobe', syntax: 'modprobe <b>-r</b> modulo', desc: 'Carga/elimina módulos del kernel. -r remove, -c muestra config, --show-depends lista dependencias.', badge: 'priv' },
+      { name: 'lsmod', syntax: 'lsmod', desc: 'Lista módulos del kernel cargados actualmente. Muestra uso, dependencias, tamaño.' },
+      { name: 'insmod', syntax: 'insmod <b>/ruta/modulo.ko</b>', desc: 'Carga módulo del kernel desde archivo. Más bajo nivel que modprobe (no resuelve dependencias).', badge: 'priv' },
+      { name: 'rmmod', syntax: 'rmmod <b>-f</b> modulo', desc: 'Elimina módulo del kernel. -f fuerza (peligroso).', badge: 'danger' },
+      { name: 'depmod', syntax: 'depmod <b>-a</b>', desc: 'Genera mapa de dependencias de módulos. -a todas las versiones de kernel. Necesario tras instalar módulos.' },
+      { name: 'kmod', syntax: 'kmod <b>list</b>', desc: 'Herramienta moderna para gestión de módulos. list, load, unload, info. Reemplaza lsmod/insmod/rmmod.' },
+    ]
+  },
+
+  // ── 6. RED Y CONECTIVIDAD ─────────────────────────────────────────────
+  {
+    id: 'net',
+    icon: '🌐',
+    name: 'Red y conectividad',
+    color: '#00e5ff',
+    commands: [
+      { name: 'ip', syntax: 'ip <b>a / r / neigh</b>', desc: 'Gestión de red moderna. ip a: interfaces/IPs, ip r: rutas, ip neigh: tabla ARP, ip link: estado.', badge: 'net' },
+      { name: 'ss', syntax: 'ss <b>-tulnp</b>', desc: 'Sockets abiertos. -t TCP, -u UDP, -l escuchando, -n numérico, -p proceso. Reemplaza netstat.', badge: 'net' },
+      { name: 'ping', syntax: 'ping <b>-c 4</b> host', desc: 'Verifica conectividad enviando ICMP. -c cuenta, -i intervalo, -W timeout.', badge: 'net' },
+      { name: 'traceroute', syntax: 'traceroute <b>-n</b> host', desc: 'Traza la ruta de paquetes mostrando cada salto. -n no resuelve DNS (más rápido).', badge: 'net' },
+      { name: 'mtr', syntax: 'mtr <b>--report</b> host', desc: 'Combina ping y traceroute en tiempo real. Muestra pérdida y latencia por salto.', badge: 'net' },
+      { name: 'curl', syntax: 'curl <b>-sIL</b> https://url', desc: 'Transfiere datos por URL. -s silencioso, -I cabeceras, -L sigue redirecciones, -o guarda archivo.', badge: 'net' },
+      { name: 'wget', syntax: 'wget <b>-qc</b> url', desc: 'Descarga archivos HTTP/FTP. -r recursivo, --spider solo comprueba, -c reanuda descarga.', badge: 'net' },
+      { name: 'dig', syntax: 'dig <b>+short ANY</b> dominio', desc: 'Consultas DNS detalladas. +short output mínimo, ANY todos los registros, @8.8.8.8 servidor específico.', badge: 'net' },
+      { name: 'nslookup', syntax: 'nslookup <b>-type=MX</b> dominio', desc: 'Consultas DNS. -type especifica registro (A, MX, TXT, NS, CNAME). Útil para enumeración.', badge: 'net' },
+      { name: 'whois', syntax: 'whois <b>dominio/IP</b>', desc: 'Información de registro de dominio o IP: propietario, organización, servidores DNS, fechas.', badge: 'net' },
+      { name: 'tcpdump', syntax: 'tcpdump <b>-i eth0 -w cap.pcap</b>', desc: 'Captura paquetes de red. -i interfaz, -w escribe pcap, port 80 / host X para filtros.', badge: 'sec' },
+      { name: 'nc (netcat)', syntax: 'nc <b>-lvp 4444</b>', desc: 'Navaja suiza de redes. Escucha puertos (-l), escanea (-z), transfiere archivos, crea túneles.', badge: 'net' },
+      { name: 'ssh', syntax: 'ssh <b>-i clave -p 2222</b> user@host', desc: 'Conexión segura remota. -i clave privada, -p puerto, -L/-R/-D port forwarding y túneles.', badge: 'net' },
+      { name: 'scp', syntax: 'scp <b>-r -P 22</b> origen user@host:dest', desc: 'Copia segura por SSH. -r recursivo, -P puerto. Para grandes volúmenes preferir rsync.', badge: 'net' },
+      { name: 'iptables', syntax: 'iptables <b>-L -n -v</b>', desc: 'Reglas del firewall del kernel. -L lista, -n numérico, -v detallado, -A añade regla.', badge: 'sec' },
+      { name: 'ufw', syntax: 'ufw <b>status verbose</b>', desc: 'Frontend simplificado de iptables (Ubuntu/Debian). allow, deny, enable, disable.' },
+{ name: 'ifconfig', syntax: 'ifconfig <b>eth0</b>', desc: 'Info de interfaces de red (heredado). Muestra IP, MAC, paquetes. Reemplazado por ip.', badge: 'net' },
+      { name: 'netstat', syntax: 'netstat <b>-tulnp</b>', desc: 'Conexiones de red, puertos y estadísticas (heredado). Usar ss en sistemas modernos.', badge: 'net' },
+      { name: 'host', syntax: 'host <b>-a</b> dominio', desc: 'Resolución DNS simple. -a todos los registros. Más simple que dig para uso rápido.', badge: 'net' },
+      { name: 'arp', syntax: 'arp <b>-n</b>', desc: 'Muestra/gestiona tabla ARP. -n no resuelve nombres. Ver también ip neigh.', badge: 'net' },
+      { name: 'route', syntax: 'route <b>-n</b>', desc: 'Tabla de enrutamiento (heredado). -n sin resolución DNS. Usar ip r en sistemas modernos.', badge: 'net' },
+      { name: 'nc', syntax: 'nc <b>-lvp 4444</b>', desc: 'El "navaja suiza" de redes. Escucha puertos (-l), escanea (-z), transfiere archivos.', badge: 'net' },
+      { name: 'ip route', syntax: 'ip <b>route add 192.168.1.0/24 via 10.0.0.1</b>', desc: 'Gestión de tabla de enrutamiento. add, del, flush, get. Reemplaza route de forma moderna.', badge: 'net' },
+      { name: 'ip neigh', syntax: 'ip <b>neigh show</b>', desc: 'Tabla ARP/NDP. show, flush, add, del. Reemplaza arp. Muestra MACs conocidas en la red local.', badge: 'net' },
+      { name: 'ip link', syntax: 'ip <b>link set eth0 up</b>', desc: 'Gestión de interfaces: up/down, set mtu, set promisc on (modo promiscuo para sniffing).', badge: 'net' },
+      { name: 'ethtool', syntax: 'ethtool <b>-S eth0</b>', desc: 'Configuración avanzada de interfaces. -S estadísticas, -p identifica físicamente (LED parpadea), -s ajusta.', badge: 'net' },
+      { name: 'nmcli', syntax: 'nmcli <b>dev wifi list</b>', desc: 'CLI de NetworkManager. dev wifi list, con up, con down, con mod. Scriptable.' },
+      { name: 'tshark', syntax: 'tshark <b>-i eth0 -w cap.pcap</b>', desc: 'Wireshark en CLI. Captura y analiza pcap. -Y filtro display, -T campos para exportar CSV.', badge: 'sec' },
+      { name: 'masscan', syntax: 'masscan <b>-p1-65535 --rate=1000</b> 192.168.1.0/24', desc: 'Escáner de puertos masivo y rápido (asíncrono). Mucho más veloz que nmap para rangos grandes.', badge: 'sec' },
+      { name: 'proxychains', syntax: 'proxychains <b>-q</b> nmap objetivo', desc: 'Redirige tráfico de cualquier app por proxy SOCKS4/5/TOR. -q silencioso. Config en /etc/proxychains.conf.', badge: 'net' },
+      { name: 'sshuttle', syntax: 'sshuttle <b>-r user@host 0/0</b>', desc: 'VPN transparente sobre SSH. Redirige todo el tráfico (0/0) o subredes específicas via túnel SSH.', badge: 'net' },
+      { name: 'socat', syntax: 'socat <b>TCP-LISTEN:8080,fork TCP:target:80</b>', desc: '"Navaja suiza" de red avanzada. Proxy, forwarding, serial-over-TCP, UNIX sockets. Más potente que nc.', badge: 'net' },
+      { name: 'aria2c', syntax: 'aria2c <b>-x 16 -s 16</b> URL', desc: 'Downloader multi-conexión. -x conexiones por servidor, -s splits, -c reanuda, -j max descargas paralelas.', badge: 'net' },
+    ]
+  },
+
+  // ── 7. SEGURIDAD Y AUDITORÍA ─────────────────────────────────────────
+  {
+    id: 'sec',
+    icon: '🔍',
+    name: 'Seguridad y auditoría',
+    color: '#ffb300',
+    commands: [
+      { name: 'nmap', syntax: 'nmap <b>-sV -sC -O -p-</b> objetivo', desc: 'Escáner de puertos y servicios. -sV versiones, -sC scripts por defecto, -O OS detection, -p- todos los puertos.', badge: 'sec' },
+      { name: 'nmap (vuln)', syntax: 'nmap <b>--script vuln</b> objetivo', desc: 'Scripts NSE de vulnerabilidades. También: --script smb-vuln*, http-vuln*, ssl-enum-ciphers.', badge: 'sec' },
+      { name: 'rustscan', syntax: 'rustscan <b>-a host -- -A</b>', desc: 'Escáner de puertos ultrarrápido en Rust. Pasa resultados a nmap automáticamente para fingerprinting.', badge: 'sec' },
+      { name: 'nikto', syntax: 'nikto <b>-h https://objetivo</b>', desc: 'Escáner de vulnerabilidades web. Detecta configuraciones inseguras, CVEs, archivos sensibles expuestos.', badge: 'sec' },
+      { name: 'gobuster', syntax: 'gobuster dir <b>-u URL -w wordlist</b>', desc: 'Fuerza bruta de directorios/archivos web y subdominios DNS. Muy rápido con múltiples hilos.', badge: 'sec' },
+      { name: 'ffuf', syntax: 'ffuf <b>-w list -u URL/FUZZ</b>', desc: 'Fuzzer web rápido para descubrir rutas, parámetros, subdominios. FUZZ marca la posición variable.', badge: 'sec' },
+      { name: 'nuclei', syntax: 'nuclei <b>-l hosts.txt -t cves/ -severity critical,high</b>', desc: 'Escáner de vulnerabilidades basado en templates. Más de 4000 templates CVE. Rápido y masivo.', badge: 'sec' },
+      { name: 'sqlmap', syntax: 'sqlmap <b>-u "URL?id=1" --dump --batch</b>', desc: 'Detección y explotación automatizada de SQL Injection. --dump extrae datos, --batch no interactivo.', badge: 'sec' },
+      { name: 'hydra', syntax: 'hydra <b>-L users -P pass ssh://objetivo</b>', desc: 'Fuerza bruta de autenticación. Soporta SSH, FTP, HTTP, RDP, SMB y más de 50 protocolos.', badge: 'sec' },
+      { name: 'john', syntax: 'john <b>--wordlist=rockyou</b> hashes', desc: 'John the Ripper: cracker de contraseñas. Soporta MD5, SHA, bcrypt, NTLM, etc.', badge: 'sec' },
+      { name: 'hashcat', syntax: 'hashcat <b>-m 0 -a 0</b> hashes wordlist', desc: 'Cracker de hashes por GPU. -m tipo (0=MD5, 1000=NTLM, 22000=WPA), -a modo ataque.', badge: 'sec' },
+      { name: 'openssl', syntax: 'openssl <b>s_client -connect host:443</b>', desc: 'Toolkit SSL/TLS/crypto. Inspecciona certificados, cifra/descifra, genera claves, verifica hashes.', badge: 'sec' },
+      { name: 'testssl.sh', syntax: 'testssl.sh <b>-U --severity MEDIUM host:443</b>', desc: 'Auditoría completa de configuración SSL/TLS. Detecta vulnerabilidades, ciphers débiles, certificados.', badge: 'sec' },
+      { name: 'lynis', syntax: 'lynis <b>audit system</b>', desc: 'Auditoría de seguridad del sistema local. Analiza configuración, permisos, servicios y genera informe.', badge: 'sec' },
+      { name: 'rkhunter', syntax: 'rkhunter <b>--check</b>', desc: 'Rootkit Hunter: busca rootkits, backdoors y archivos sospechosos. --update actualiza firmas.', badge: 'sec' },
+      { name: 'chkrootkit', syntax: 'chkrootkit', desc: 'Detecta rootkits conocidos analizando binarios del sistema y señales de compromiso.', badge: 'sec' },
+      { name: 'fail2ban-client', syntax: 'fail2ban-client <b>status sshd</b>', desc: 'Estado de jaulas de fail2ban. status general o por jail, unban IP desbloquea IP baneada.', badge: 'sec' },
+      { name: 'auditctl', syntax: 'auditctl <b>-w /etc/passwd -p wa</b>', desc: 'Configura reglas de auditoría del kernel. -w watch, -p permisos (r,w,a,x). Ver logs con ausearch.', badge: 'sec' },
+      { name: 'yara', syntax: 'yara <b>-r rules/ /ruta</b>', desc: 'Pattern matching de malware. -r recursivo, -s muestra strings coincidentes, -g tag matching.', badge: 'sec' },
+      { name: 'objdump', syntax: 'objdump <b>-d -M intel</b> binario', desc: 'Desensamblador de binarios ELF. -d código, -M intel sintaxis Intel, -t tabla de símbolos.', badge: 'sec' },
+      { name: 'readelf', syntax: 'readelf <b>-a</b> binario', desc: 'Analiza binarios ELF: cabeceras, secciones, segmentos, símbolos, dependencias dinámicas.', badge: 'sec' },
+      { name: 'radare2', syntax: 'radare2 <b>-A archivo.bin</b>', desc: 'Framework completo de reverse engineering. Disassembly, debugging, decompilation. -A analyze all.', badge: 'sec' },
+      { name: 'volatility3', syntax: 'volatility3 <b>-f mem.raw windows.pslist</b>', desc: 'Análisis forense de volcados de memoria RAM. Detecta procesos ocultos, conexiones, inyecciones.', badge: 'sec' },
+      { name: 'binwalk', syntax: 'binwalk <b>-e firmware.bin</b>', desc: 'Analiza y extrae contenido embebido en binarios/firmware. Muy usado en análisis de IoT y malware.' },
+      { name: 'foremost', syntax: 'foremost <b>-t jpg,pdf,doc -i imagen.raw</b>', desc: 'Carving de archivos borrados por tipo de firma. -t tipos, -o output. Forense clásico.', badge: 'sec' },
+      { name: 'photorec', syntax: 'photorec <b>/dev/sda1</b>', desc: 'Recuperación de archivos borrados por firma. No necesita filesystem intacto. Más agresivo que foremost.', badge: 'sec' },
+      { name: 'bulk_extractor', syntax: 'bulk_extractor <b>-o out/ imagen.raw</b>', desc: 'Extracción masiva de evidencia de imágenes de disco. Emails, URLs, tarjetas, dominios, EXIF.', badge: 'sec' },
+      { name: 'dcfldd', syntax: 'dcfldd <b>if=/dev/sda of=img.raw bs=512 hash=md5,sha256</b>', desc: 'dd forense con hashing en vivo. Calcula hash mientras copia. Estándar en adquisición forense.', badge: 'sec' },
+      { name: 'zeek', syntax: 'zeek <b>-C -r cap.pcap</b>', desc: 'Analizador de tráfico de red. Extrae logs estructurados: conn, dns, http, files, ssl.', badge: 'sec' },
+      { name: 'suricata', syntax: 'suricata <b>-c /etc/suricata/suricata.yaml -i eth0</b>', desc: 'IDS/IPS de alta performance. Rules Snort-compatible, Lua scripting, extracción de archivos.', badge: 'sec' },
+      { name: 'bettercap', syntax: 'bettercap <b>-iface eth0</b>', desc: 'Framework de MITM moderno. ARP spoof, DNS spoof, proxy HTTP/HTTPS, captura de credenciales.', badge: 'sec' },
+      { name: 'responder', syntax: 'responder <b>-I eth0 -wrfv</b>', desc: 'Envenena LLMNR, NBT-NS, MDNS. Captura hashes NTLMv1/v2. -w proxy WPAD, -f fingerprint.', badge: 'sec' },
+      { name: 'crackmapexec', syntax: 'crackmapexec <b>smb 192.168.1.0/24</b>', desc: 'Navaja suiza de pentesting AD/SMB. Enumera shares, usuarios, ejecuta comandos, spray de passwords.', badge: 'sec' },
+      { name: 'gau', syntax: 'gau <b>dominio.com</b>', desc: 'GetAllUrls: extrae URLs conocidas de Wayback Machine, Common Crawl, AlienVault OTX. OSINT pasivo.', badge: 'sec' },
+      { name: 'plaso (log2timeline)', syntax: 'log2timeline.py <b>--storage-file timeline.plaso imagen.raw</b>', desc: 'Crea super-timeline forense de múltiples fuentes. Parte del framework Plaso.', badge: 'sec' },
+      { name: 'sigma', syntax: 'sigma <b>-t splunk -c windows rules/</b>', desc: 'Reglas genéricas de detección de amenazas. Convierte a queries SIEM: Splunk, Elastic, QRadar.', badge: 'sec' },
+      { name: 'chainsaw', syntax: 'chainsaw <b>search -e EventID=4625</b> /var/log/evtx', desc: 'Análisis rápido de logs EVTX Windows usando reglas Sigma. Rust-based, muy rápido.', badge: 'sec' },
+      { name: 'aircrack-ng', syntax: 'aircrack-ng <b>-w wordlist -b BSSID cap-01.cap</b>', desc: 'Crackea handshakes WPA/WEP. Necesita captura previa con airodump-ng.', badge: 'sec' },
+      { name: 'hashcat (WPA)', syntax: 'hashcat <b>-m 22000 hash.hc22000 wordlist</b>', desc: 'Crackea handshakes WPA con GPU vía hcxpcapngtool. Mucho más rápido que aircrack en GPU.', badge: 'sec' },
+{ name: 'gpg', syntax: 'gpg <b>--encrypt -r dest</b> archivo', desc: 'Cifrado OpenPGP. --encrypt cifra, --sign firma, --decrypt descifra, --verify verifica firma.' },
+      { name: 'ssh-keygen', syntax: 'ssh-keygen <b>-t ed25519 -C "mail"</b>', desc: 'Genera par de claves SSH. -t tipo (ed25519, rsa), -b bits (para RSA), -C comentario.' },
+      { name: 'fail2ban', syntax: 'fail2ban-client <b>status sshd</b>', desc: 'Muestra estado de jaulas de fail2ban. status general, status [jail], unban IP desbloquea IP.', badge: 'sec' },
+      { name: 'clamscan', syntax: 'clamscan <b>-r --bell</b> /ruta', desc: 'Antivirus ClamAV. -r recursivo, --bell alerta sonora, --remove elimina infectados, --move mueve.' },
+      { name: 'md5sum', syntax: 'sha256sum <b>archivo</b>', desc: 'Calcula hash de integridad. sha256sum es el estándar actual. sha512sum para mayor seguridad.', badge: 'sec' },
+      { name: 'tcpdump (análisis)', syntax: 'tcpdump <b>-r cap.pcap -X port 80</b>', desc: 'Analiza capturas existentes. -X muestra hex+ASCII, -A solo ASCII, -e include cabeceras Ethernet.', badge: 'sec' },
+      { name: 'volatility', syntax: 'vol.py <b>-f mem.dmp imageinfo</b>', desc: 'Análisis forense de volcados de memoria RAM. Detecta procesos ocultos, conexiones, inyecciones.', badge: 'sec' },
+      { name: 'strings (forense)', syntax: 'strings <b>-a -n 6</b> binario | grep -i "http\|pass\|key"', desc: 'Extrae cadenas de texto de binarios. Combinado con grep permite encontrar IOCs, URLs, credenciales.', badge: 'sec' },
+      { name: 'hexdump', syntax: 'hexdump <b>-C</b> archivo | head -20', desc: 'Dump hex con representación ASCII. -C canónico (hex + ASCII). Alternativa más simple a xxd.', badge: 'sec' },
+      { name: 'nmap (scripts)', syntax: 'nmap <b>--script=banner,smb-os-discovery</b> host', desc: 'Scripts NSE específicos. banner grabbing, descubrimiento OS SMB, enumeración shares, vuln scan.', badge: 'sec' },
+      { name: 'nmap (evasion)', syntax: 'nmap <b>-f -D RND:10 -g 53 --data-length 24</b> host', desc: 'Técnicas de evasión: fragmentación (-f), decoys (-D), source port (-g), payload random. IDS evasion.', badge: 'sec' },
+      { name: 'impacket-psexec', syntax: 'impacket-psexec <b>user:pass@host</b>', desc: 'Ejecuta comandos remotos via SMB (como PsExec). Parte del toolkit impacket para AD pentesting.', badge: 'sec' },
+      { name: 'impacket-secretsdump', syntax: 'impacket-secretsdump <b>-sam SAM -system SYSTEM LOCAL</b>', desc: 'Extrae hashes NT/LM de SAM y LSA secrets. LOCAL para archivos offline, remoto con credenciales.', badge: 'sec' },
+      { name: 'bloodhound.py', syntax: 'bloodhound.py <b>-u user -p pass -d domain -c all</b>', desc: 'Recopila datos AD para análisis de BloodHound. -c all: usuarios, grupos, ACLs, trusts, sessions.', badge: 'sec' },
+      { name: 'ghidra', syntax: 'ghidraRun', desc: 'Suite de reverse engineering NSA. Decompilation, scripting, debugging.', badge: 'sec' },
+      { name: 'gdb', syntax: 'gdb <b>-q archivo.bin</b>', desc: 'Debugger GNU. -q quiet, -p attach PID, -c core dump.', badge: 'sec' },
+      { name: 'pypykatz', syntax: 'pypykatz <b>lsa minidump lsass.dmp</b>', desc: 'Implementación Python de Mimikatz. Analiza LSASS, SAM, SECURITY, DPAPI.', badge: 'sec' },
+      { name: 'lazagne', syntax: 'lazagne <b>all</b>', desc: 'Recupera passwords de múltiples apps: browsers, chats, databases, git, wifi. Post-explotación/forense.', badge: 'sec' },
+      { name: 'mimipenguin', syntax: 'mimipenguin <b>-v</b>', desc: 'Extrae passwords en claro de memoria Linux (como Mimikatz). -v verbose. Post-explotación.', badge: 'sec' },
+      { name: 'testdisk', syntax: 'testdisk <b>/dev/sda</b>', desc: 'Recuperación de particiones y filesystems. Repara tablas de partición, recupera boot sectors. forense.', badge: 'sec' },
+      { name: 'autopsy', syntax: 'autopsy', desc: 'GUI forense basada en TSK. Timeline, keyword search, file carving, EXIF, hash databases.', badge: 'sec' },
+      { name: 'dc3dd', syntax: 'dc3dd <b>if=/dev/sda of=imagen.raw hash=md5 log=audit.log</b>', desc: 'dd forense del DoD. Logging completo, hashing, splitting, wiping. Estándar.', badge: 'sec' },
+      { name: 'ewfacquire', syntax: 'ewfacquire <b>-u -c best -S 4G /dev/sda</b>', desc: 'Adquiere imagen en formato EWF (Expert Witness). Compresión, segmentación, hash integrado. forense.', badge: 'sec' },
+      { name: 'xmount', syntax: 'xmount <b>--in ewf imagen.E01 --out raw /mnt/point</b>', desc: 'Monta imágenes forenses (EWF, AFF, raw) como dispositivo virtual.', badge: 'sec' },
+      { name: 'lime', syntax: 'insmod <b>lime.ko "path=/tmp/mem.lime format=lime"</b>', desc: 'Linux Memory Extractor. Módulo kernel para dumpear RAM en vivo sin tocar disco.', badge: 'sec' },
+      { name: 'avml', syntax: 'avml <b>/tmp/mem.lime</b>', desc: 'Acquire Volatile Memory for Linux. Dumpea RAM sin I/O a disco (solo a red). Más sigiloso que lime.', badge: 'sec' },
+      { name: 'rekall', syntax: 'rekall <b>-f mem.raw pslist</b>', desc: 'Framework forense de memoria alternativo a Volatility. pslist, netscan, malfind, yarascan.', badge: 'sec' },
+      { name: 'timesketch', syntax: 'timesketch <b>import timeline.csv</b>', desc: 'Plataforma web para análisis colaborativo de timelines. Importa CSV/Plaso, colabora, anota. forense.', badge: 'sec' },
+      { name: 'wazuh (agent)', syntax: 'wazuh-agentd', desc: 'Agente Wazuh (fork moderno de OSSEC). EDR, FIM, vulnerability detection.', badge: 'sec' },
+      { name: 'ossec (analysis)', syntax: 'ossec-analysisd', desc: 'Daemon de análisis de HIDS OSSEC. Detecta intrusiones, integridad de archivos, logs. forense/HIDS.', badge: 'sec' },
+      { name: 'falco', syntax: 'falco <b>-r rules.yaml</b>', desc: 'Runtime security para containers. Detecta comportamiento anómalo en syscalls.', badge: 'sec' },
+      { name: 'sysdig', syntax: 'sysdig <b>-c spy_users</b>', desc: 'Herramienta de troubleshooting/forense de sistema. Captura syscalls en vivo. -c chisels. forense.', badge: 'sec' },
+      { name: 'tlog', syntax: 'tlog-rec <b>-o journal user</b>', desc: 'Graba sesiones de terminal en formato estructurado. Reproducible, searchable.', badge: 'sec' },
+      { name: 'hcxdumptool', syntax: 'hcxdumptool <b>-i wlan0mon -o cap.pcapng --enable_status=1</b>', desc: 'Captura handshakes WPA y PMKID. Más eficiente que airodump. Necesario para hashcat -m 22000.', badge: 'sec' },
+      { name: 'hcxpcapngtool', syntax: 'hcxpcapngtool <b>-o hash.hc22000 -E wordlist cap.pcapng</b>', desc: 'Convierte capturas a formato hashcat 22000 (WPA). Extrae PMKID y handshakes para cracking.', badge: 'sec' },
+    ]
+  },
+
+  // ── 8. COMPRESIÓN Y EMPAQUETADO ──────────────────────────────────────
+  {
+    id: 'compress',
+    icon: '📦',
+    name: 'Compresión y empaquetado',
+    color: '#ff9800',
+    commands: [
+      { name: 'tar', syntax: 'tar <b>-czvf</b> archivo.tar.gz ruta', desc: 'Empaqueta y comprime. c=crear, x=extraer, z=gzip, j=bzip2, J=xz, v=verbose, f=archivo.' },
+      { name: 'tar (extraer)', syntax: 'tar <b>-xzvf</b> archivo.tar.gz <b>-C</b> destino/', desc: 'Extrae en directorio específico con -C. --strip-components=1 elimina el directorio raíz del tar.' },
+      { name: 'tar (listar)', syntax: 'tar <b>-tzvf</b> archivo.tar.gz', desc: 'Lista contenido sin extraer. Útil para verificar antes de descomprimir.' },
+      { name: 'gzip', syntax: 'gzip <b>-9 -k</b> archivo', desc: 'Comprime/descomprime gzip. -9 máxima compresión, -k mantiene original, -d descomprime.' },
+      { name: 'zstd', syntax: 'zstd <b>-19 -T8 -k</b> archivo', desc: 'Compresión moderna de Facebook. -19 nivel máximo, -T hilos, -k mantiene original. Más rápido que xz.' },
+      { name: 'pigz', syntax: 'pigz <b>-p 8 -k</b> archivo', desc: 'gzip paralelo multicore. -p procesos, -k mantiene original. Mucho más rápido en CPUs modernos.' },
+      { name: 'zip / unzip', syntax: 'zip <b>-r -e</b> archivo.zip dir/', desc: 'Formato ZIP multiplataforma. -r recursivo, -e encripta con contraseña, unzip -l lista sin extraer.' },
+      { name: '7z', syntax: '7z <b>a -p -mhe=on</b> archivo.7z dir/', desc: 'Máxima compresión 7-Zip. a añade, x extrae, l lista, -p contraseña, -mhe=on cifra cabeceras.' },
+{ name: 'bzip2', syntax: 'bzip2 <b>-k</b> archivo', desc: 'Compresión bzip2 (mejor ratio que gzip, más lento). -k mantiene original, -d descomprime.' },
+      { name: 'xz', syntax: 'xz <b>-9 -k</b> archivo', desc: 'Compresión xz/LZMA2. Mejor compresión que bzip2, más lento. Usado en distribuciones Linux.' },
+      { name: 'zip', syntax: 'zip <b>-r</b> archivo.zip dir/', desc: 'Formato ZIP multiplataforma. -r recursivo, -e encripta, -9 máx compresión. unzip -l lista.' },
+      { name: 'tar (exclude)', syntax: 'tar <b>--exclude="*.log"</b> -czvf backup.tar.gz /ruta', desc: 'Empaqueta excluyendo patrones. --exclude múltiples veces, -X file con lista. Útil para backups limpios.' },
+      { name: 'tar (append)', syntax: 'tar <b>-rvf</b> backup.tar archivo', desc: 'Añade archivos a tar existente. -r append, sin comprimir. No funciona con tar.gz (comprimido).' },
+      { name: 'tar (update)', syntax: 'tar <b>-uvf</b> backup.tar archivo', desc: 'Actualiza solo archivos modificados en tar. -u update, más eficiente que recrear todo.' },
+      { name: 'tar (compare)', syntax: 'tar <b>-dvf</b> backup.tar', desc: 'Compara contenido de tar con filesystem. -d diff, detecta corrupción o modificaciones.' },
+      { name: 'pbzip2', syntax: 'pbzip2 <b>-p8 -k</b> archivo', desc: 'bzip2 paralelo multicore. -p procesos, -k keep. Alternativa rápida a bzip2 monohilo.' },
+      { name: 'pxz', syntax: 'pxz <b>-T 8 -k</b> archivo', desc: 'xz paralelo multicore. -T threads, -k keep. Compresión máxima a máxima velocidad.' },
+      { name: 'lz4', syntax: 'lz4 <b>-9 -k</b> archivo', desc: 'Compresión ultrarrápida (pero ratio bajo). -9 máximo, -k keep. Útil para compresión en tiempo real.' },
+      { name: 'cpio', syntax: 'find . | cpio <b>-o -H newc</b> > initrd.cpio', desc: 'Empaqueta en formato cpio. -o output, -H formato (newc para initramfs).' },
+      { name: 'unrar', syntax: 'unrar <b>x -o+</b> archivo.rar /destino', desc: 'Extrae RAR. x con paths, -o+ overwrite, -p password.' },
+      { name: 'zcat', syntax: 'zcat <b>archivo.gz</b>', desc: 'cat de gzip sin descomprimir a disco.' },
+      { name: 'zstdcat', syntax: 'zstdcat <b>archivo.zst</b>', desc: 'cat de archivo zstd comprimido. Similar a zcat para gzip.' },
+    ]
+  },
+
+  // ── 9. SHELL Y SCRIPTING ─────────────────────────────────────────────
+  {
+    id: 'shell',
+    icon: '💡',
+    name: 'Shell y scripting',
+    color: '#a5d6a7',
+    commands: [
+      { name: 'history', syntax: 'history <b>| grep "ssh"</b>', desc: 'Historial de comandos. !! repite el último, !n ejecuta el nº n, Ctrl+R búsqueda reversa interactiva.' },
+      { name: 'alias', syntax: 'alias <b>ll="ls -lah --color"</b>', desc: 'Crea atajos de comandos. Sin argumentos lista todos. unalias nombre para eliminar.' },
+      { name: 'export', syntax: 'export <b>VAR=valor</b>', desc: 'Define variables de entorno disponibles para subprocesos. env lista todas las variables.' },
+      { name: 'source', syntax: 'source <b>~/.bashrc</b>', desc: 'Ejecuta script en el shell actual (no en subshell). Necesario para que cambios de entorno surtan efecto.' },
+      { name: 'which', syntax: 'which <b>python3</b>', desc: 'Localiza el ejecutable de un comando en el PATH. whereis también busca páginas man y código fuente.' },
+      { name: 'type', syntax: 'type <b>-a ls</b>', desc: 'Muestra cómo el shell interpreta un nombre: built-in, alias, función o ejecutable externo.' },
+      { name: 'xargs', syntax: 'cat lista.txt | xargs <b>-P 4 -I{}</b> cmd {}', desc: 'Construye y ejecuta comandos desde stdin. -P paralelismo, -I{} marcador de posición, -n max args.' },
+      { name: 'tee', syntax: 'comando | tee <b>-a</b> archivo', desc: 'Lee stdin y escribe a stdout Y a archivo simultáneamente. -a modo append.' },
+      { name: 'tmux', syntax: 'tmux <b>new -s nombre</b>', desc: 'Multiplexor de terminal moderno. Ctrl+B: c nueva ventana, d desconecta, % split vertical, " split horizontal.' },
+      { name: 'screen', syntax: 'screen <b>-S nombre</b>', desc: 'Multiplexor clásico. Ctrl+A D desconecta, screen -r reanuda, screen -ls lista sesiones.' },
+      { name: 'crontab', syntax: 'crontab <b>-e</b>', desc: 'Edita tareas periódicas. -l lista, formato: min hora día mes díaDeLaSemana comando.' },
+      { name: 'watch', syntax: 'watch <b>-n 2 -d</b> comando', desc: 'Ejecuta un comando cada N segundos. -d resalta diferencias, -c interpreta colores.' },
+      { name: 'trap', syntax: 'trap <b>"limpiar; exit"</b> INT TERM', desc: 'Captura señales del sistema en scripts. Útil para limpiar archivos temporales al interrumpir.' },
+      { name: 'set -euo pipefail', syntax: 'set <b>-euo pipefail</b>', desc: 'Buenas prácticas en scripts: -e sale en error, -u error en variables no definidas, -o pipefail errores en pipe.' },
+      { name: 'printf', syntax: 'printf <b>"%s\\n"</b> "$var"', desc: 'Formato C-style de output. Más control que echo. %s string, %d entero, %x hex.' },
+{ name: 'env', syntax: 'env <b>| grep PATH</b>', desc: 'Lista variables de entorno. printenv VAR muestra el valor de una variable específica.' },
+      { name: 'cron', syntax: 'crontab <b>-e</b>', desc: 'Programa tareas periódicas. -e edita, -l lista, formato: min hora día mes dow comando.' },
+      { name: 'at', syntax: 'at <b>now + 5 min</b>', desc: 'Programa tarea de ejecución única. at now+1h, at 14:30 tomorrow. atq lista, atrm cancela.' },
+      { name: 'time', syntax: 'time <b>comando</b>', desc: 'Mide el tiempo de ejecución de un comando. Muestra real, user y sys (tiempo en kernel).' },
+      { name: 'read', syntax: 'read <b>-rsp "Contraseña: "</b> pass', desc: 'Lee input del usuario en scripts. -r no procesa backslash, -s silencioso, -p prompt, -t timeout.' },
+      { name: 'test', syntax: '[ <b>-f archivo</b> ] && echo ok', desc: 'Evalúa condiciones. -f existe y es file, -d directorio, -z string vacío, -n no vacío, -eq igualdad numérica.' },
+      { name: 'set', syntax: 'set <b>-o vi</b>', desc: 'Configura opciones del shell. -o vi modo vi, -o emacs modo emacs, -x debug, -e exit on error, -u unset vars error.' },
+      { name: 'shopt', syntax: 'shopt <b>-s globstar</b>', desc: 'Configura opciones de bash. -s set, -u unset, -p print. globstar para **, histappend, checkwinsize.' },
+      { name: 'eval', syntax: 'eval <b>"$comando"</b>', desc: 'Ejecuta string como comando. Peligroso con input no sanitizado.', badge: 'danger' },
+      { name: 'exec', syntax: 'exec <b>comando</b>', desc: 'Reemplaza shell actual con comando. No retorna. exec < file redirige stdin.' },
+      { name: 'seq', syntax: 'seq <b>-s "," -f "%04g"</b> 1 100', desc: 'Genera secuencias numéricas. -s separator, -f format, -w equal width.' },
+      { name: 'date', syntax: 'date <b>+"%Y-%m-%d %H:%M:%S"</b>', desc: 'Fecha con formato custom. %Y año, %m mes, %d día, %H hora, %M minuto, %S segundo.' },
+      { name: 'date (epoch)', syntax: 'date <b>+%s</b>', desc: 'Timestamp Unix (segundos desde 1970).' },
+      { name: 'date (convert)', syntax: 'date <b>-d "@1715904000"</b>', desc: 'Convierte epoch a fecha legible. -d date string.' },
+      { name: 'bc', syntax: 'echo <b>"scale=10; 22/7"</b> | bc', desc: 'Calculadora de precisión arbitraria. scale decimales, -l math library.' },
+      { name: 'shuf', syntax: 'shuf <b>-n 10 -o out.txt</b> archivo', desc: 'Mezcla líneas aleatoriamente. -n líneas, -o output, -r repetición.' },
+      { name: 'md5sum (check)', syntax: 'md5sum <b>-c</b> checksums.md5', desc: 'Verifica hashes desde archivo. -c check, --quiet solo errores.' },
+      { name: 'sha256sum (check)', syntax: 'sha256sum <b>-c --quiet</b> checksums.sha256', desc: 'Verifica SHA256 silenciosamente. --quiet solo fallos.' },
+      { name: 'openssl (enc)', syntax: 'openssl <b>enc -aes-256-cbc -salt -in file -out file.enc</b>', desc: 'Cifrado simétrico de archivos. -d descifra, -salt protección contra rainbow tables, -pbkdf2 moderno.' },
+      { name: 'openssl (rand)', syntax: 'openssl <b>rand -base64 32</b>', desc: 'Genera bytes aleatorios criptográficos. -base64 output, -hex hexadecimal. Para claves/IVs.' },
+      { name: 'base64', syntax: 'base64 <b>-w 0</b> archivo', desc: 'Codifica/decodifica base64. -w wrap width, -d decode' },
+      { name: 'hexdump', syntax: 'hexdump <b>-C</b> archivo | head', desc: 'Hex dump con ASCII. -C canonical, -x hex, -o octal.' },
+      { name: 'xxd (reverse)', syntax: 'xxd <b>-r -p</b> hex.txt > binary', desc: 'Convierte hex a binario. -r reverse, -p plain hex.' },
+    ]
+  },
+
+  // ── 10. INFO DEL SISTEMA ─────────────────────────────────────────────
+  {
+    id: 'sysinfo',
+    icon: '📊',
+    name: 'Info del sistema',
+    color: '#80deea',
+    commands: [
+      { name: 'uname', syntax: 'uname <b>-a</b>', desc: 'Info del kernel y sistema. -a todo, -r solo versión kernel, -m arquitectura.' },
+      { name: 'hostname', syntax: 'hostname <b>-I</b>', desc: 'Nombre del host. -I todas las IPs, -f FQDN. hostnamectl para gestión systemd.' },
+      { name: 'lscpu', syntax: 'lscpu', desc: 'Información detallada del procesador: arquitectura, núcleos, hilos, velocidad, caché, flags de virtualización.' },
+      { name: 'lspci', syntax: 'lspci <b>-v -k</b>', desc: 'Lista dispositivos PCI. -v detallado, -k muestra módulo kernel cargado, -nn incluye IDs numéricos.' },
+      { name: 'lsusb', syntax: 'lsusb <b>-t</b>', desc: 'Lista dispositivos USB. -v verbose, -t árbol de topología USB.' },
+      { name: 'lsblk', syntax: 'lsblk <b>-f</b>', desc: 'Lista dispositivos de bloque (discos, particiones). -f sistemas de archivos y UUIDs.' },
+      { name: 'smartctl', syntax: 'smartctl <b>-a /dev/sda</b>', desc: 'Info SMART completa de disco. -a todo, -H solo estado de salud. Detecta fallos inminentes.', badge: 'sec' },
+      { name: 'dmidecode', syntax: 'dmidecode <b>-t system</b>', desc: 'Información del hardware desde SMBIOS/DMI. -t tipos: system, bios, processor, memory, baseboard.' },
+      { name: 'sensors', syntax: 'sensors', desc: 'Temperatura y voltajes del hardware (requiere lm-sensors). watch sensors para monitoreo continuo.' },
+      { name: 'inxi', syntax: 'inxi <b>-Fzxx</b>', desc: 'Reporte completo del sistema. -F todo, -z censura info sensible, -xx info extra. Ideal para reportes de soporte.' },
+      { name: 'lshw', syntax: 'lshw <b>-short -C network</b>', desc: 'Lista hardware detallado. -short resumen tabular, -C filtra por clase (disk, network, memory, display).' },
+      { name: 'upower', syntax: 'upower <b>-i /org/freedesktop/UPower/devices/battery_BAT0</b>', desc: 'Info de batería/UPS: estado, carga, capacidad, ciclos. Útil en laptops.' },
+{ name: 'lsmem', syntax: 'lsmem', desc: 'Información sobre los bloques de memoria RAM del sistema.' },
+      { name: 'blkid', syntax: 'blkid', desc: 'Muestra UUID, tipo de filesystem y etiqueta de cada dispositivo de bloque.' },
+      { name: 'fdisk', syntax: 'fdisk <b>-l</b>', desc: 'Lista y gestiona particiones. -l lista todas. Manipulación de tablas de partición (MBR).', badge: 'danger' },
+      { name: 'parted', syntax: 'parted <b>-l</b>', desc: 'Gestión de particiones GPT y MBR. Más moderno que fdisk. Soporta GPT.', badge: 'danger' },
+      { name: 'mount', syntax: 'mount <b>-o ro</b> /dev/sdb1 /mnt', desc: 'Monta/desmonta sistemas de archivos. -o ro solo lectura (forense), -t tipo de FS. mount sin args lista todos.' },
+      { name: 'hwinfo', syntax: 'hwinfo <b>--short</b>', desc: 'Info de hardware completo. --short resumen, --all todo.' },
+      { name: 'hdparm', syntax: 'hdparm <b>-I /dev/sda</b>', desc: 'Info detallada de disco IDE/SATA. -I info, -i identificación.' },
+      { name: 'nvme', syntax: 'nvme <b>list</b>', desc: 'Lista SSDs NVMe.' },
+      { name: 'turbostat', syntax: 'turbostat <b>--show Busy%,Bzy_MHz,IRQ,PkgWatt</b>', desc: 'Estadísticas de CPU Intel detalladas. C-states, P-states, wattage.' },
+      { name: 'powertop', syntax: 'powertop', desc: 'Análisis de consumo energético. Calibrar, tuning, report.' },
+      { name: 'procinfo', syntax: 'procinfo', desc: 'Info del sistema desde /proc. CPU, memoria, carga, uptime.' },
+      { name: 'hardinfo', syntax: 'hardinfo', desc: 'Info detallada del hardware con benchmark.' },
+    ]
+  },
+
+  // ── 11. GESTIÓN DE PAQUETES ──────────────────────────────────────────
+  {
+    id: 'pkg',
+    icon: '📥',
+    name: 'Gestión de paquetes',
+    color: '#f48fb1',
+    commands: [
+      { name: 'apt', syntax: 'apt <b>install / remove / search</b> paquete', desc: 'Gestor Debian/Ubuntu. update actualiza índices, upgrade instala actualizaciones, autoremove limpia.' },
+      { name: 'apt-get', syntax: 'apt-get <b>install -y</b> paquete', desc: 'Frontend clásico de apt. -y responde sí automáticamente. Preferir apt en uso interactivo.' },
+      { name: 'dpkg', syntax: 'dpkg <b>-i / -r / -l</b> paquete', desc: 'Gestor .deb de bajo nivel. -i instala, -r elimina, -l lista, -L archivos de paquete, --verify verifica.' },
+      { name: 'apt-file', syntax: 'apt-file <b>search</b> archivo', desc: 'Busca en qué paquete está un archivo. Requiere apt-file update primero.' },
+      { name: 'snap', syntax: 'snap <b>install / list / info</b> paquete', desc: 'Paquetes snap en sandbox. install instala, remove elimina, list instalados, refresh actualiza.' },
+      { name: 'flatpak', syntax: 'flatpak <b>install / run</b> app', desc: 'Paquetes flatpak en sandbox. Principalmente para aplicaciones de escritorio.' },
+      { name: 'dnf', syntax: 'dnf <b>install / update / search</b> paquete', desc: 'Gestor Fedora/RHEL/CentOS. Sucesor de yum. dnf history para ver historial de cambios.' },
+      { name: 'rpm', syntax: 'rpm <b>-ivh / -qa / -Va</b> paquete', desc: 'Gestor RPM de bajo nivel. -i instala, -q consulta, -V verifica integridad de archivos instalados.' },
+      { name: 'pacman', syntax: 'pacman <b>-Syu / -Ss / -R</b> paquete', desc: 'Gestor de Arch Linux. -S instala, -Syu actualiza todo, -Ss busca, -R elimina, -Qo dueño de archivo.' },
+      { name: 'pip', syntax: 'pip <b>list / freeze / audit</b>', desc: 'Gestor de paquetes Python. list instalados, freeze formato requirements, install -r requirements.txt.' },
+      { name: 'npm', syntax: 'npm <b>audit</b>', desc: 'Auditoría de seguridad de dependencias Node.js. audit fix para corrección automática.' },
+{ name: 'apt (full-upgrade)', syntax: 'apt <b>full-upgrade</b>', desc: 'Actualización completa con resolución de dependencias. Más agresivo que upgrade.' },
+      { name: 'apt (autoremove)', syntax: 'apt <b>autoremove</b>', desc: 'Elimina paquetes huérfanos.' },
+      { name: 'apt (purge)', syntax: 'apt <b>purge</b> paquete', desc: 'Elimina paquete y config files.' },
+      { name: 'apt (list)', syntax: 'apt <b>list --installed</b>', desc: 'Lista paquetes. --installed, --upgradeable, --all-versions.' },
+      { name: 'apt (show)', syntax: 'apt <b>show</b> paquete', desc: 'Muestra info de paquete.' },
+      { name: 'apt (depends)', syntax: 'apt <b>depends</b> paquete', desc: 'Muestra dependencias.' },
+      { name: 'apt-cache (search)', syntax: 'apt-cache <b>search</b> paquete', desc: 'Busca paquetes en caché.' },
+      { name: 'apt-file (search)', syntax: 'apt-file <b>search</b> archivo', desc: 'Busca archivo en paquetes.' },
+      { name: 'deborphan', syntax: 'deborphan', desc: 'Encuentra paquetes huérfanos.' },
+      { name: 'checkinstall', syntax: 'checkinstall <b>make install</b>', desc: 'Crea paquete .deb de instalación manual.' },
+      { name: 'alien', syntax: 'alien <b>-d -k paquete.rpm</b>', desc: 'Convierte entre formatos de paquetes.' },
+      { name: 'rpm (query)', syntax: 'rpm <b>-qa | grep</b> paquete', desc: 'Lista todos los paquetes instalados.' },
+      { name: 'rpm (verify)', syntax: 'rpm <b>-Va</b>', desc: 'Verifica integridad de todos los archivos instalados.' },
+      { name: 'yum (provides)', syntax: 'yum <b>provides</b> archivo', desc: 'Qué paquete provee archivo.' },
+      { name: 'dnf (repoquery)', syntax: 'dnf <b>repoquery -l</b> paquete', desc: 'Lista archivos de paquete en repo.' },
+      { name: 'pacman (query-file)', syntax: 'pacman <b>-Qo /ruta/archivo</b>', desc: 'Dueño de archivo.' },
+      { name: 'pacman (query-orphans)', syntax: 'pacman <b>-Qdt</b>', desc: 'Dependencias huérfanas.' },
+      { name: 'makepkg', syntax: 'makepkg <b>-si</b>', desc: 'Compila e instala desde PKGBUILD.' },
+      { name: 'yay', syntax: 'yay <b>-S paquete</b>', desc: 'AUR helper.' },
+      { name: 'pip (list)', syntax: 'pip <b>list</b>', desc: 'Lista paquetes Python.' },
+      { name: 'pip (freeze)', syntax: 'pip <b>freeze</b>', desc: 'Lista en formato requirements.' },
+      { name: 'npm (audit)', syntax: 'npm <b>audit</b>', desc: 'Auditoría de seguridad.' },
+      { name: 'composer (audit)', syntax: 'composer <b>audit</b>', desc: 'Auditoría de seguridad PHP.' },
+    ]
+  },
+
+  // ── 12. LOGS Y MONITOREO ─────────────────────────────────────────────
+  {
+    id: 'logs',
+    icon: '📋',
+    name: 'Logs y monitoreo',
+    color: '#ce93d8',
+    commands: [
+      { name: 'tail -f', syntax: 'tail <b>-F /var/log/syslog</b>', desc: 'Sigue un log en tiempo real. -F sigue incluso si el archivo se rota o renombra. Fundamental para monitoreo.' },
+      { name: 'journalctl', syntax: 'journalctl <b>-xe -p err..emerg</b>', desc: 'Logs systemd filtrados. -x contexto extra, -e final del log, -p prioridad, --since/-until rango temporal.' },
+      { name: 'grep en logs', syntax: 'grep <b>-iE "error|FAIL|warn"</b> /var/log/*', desc: 'Búsqueda de problemas en múltiples logs. -i insensible, -h sin nombre de archivo, -n con número de línea.' },
+      { name: 'lnav', syntax: 'lnav <b>/var/log</b>', desc: 'Log navigator avanzado con queries SQL integradas. Indexa y busca en múltiples archivos simultáneamente.' },
+      { name: 'logwatch', syntax: 'logwatch <b>--detail High --service sshd</b>', desc: 'Resumen de actividad de logs del sistema. Filtrable por servicio, rango de tiempo y nivel de detalle.' },
+      { name: 'multitail', syntax: 'multitail <b>-i</b> log1 <b>-i</b> log2', desc: 'Monitorea múltiples archivos de log en splits de terminal simultáneamente.' },
+      { name: 'last / lastb', syntax: 'lastb <b>-n 20</b>', desc: 'lastb: intentos de login fallidos desde /var/log/btmp. Útil para detectar ataques de fuerza bruta.', badge: 'sec' },
+      { name: '/var/log/', syntax: 'ls /var/log/', desc: 'Directorio principal de logs: auth.log (autenticaciones), syslog (sistema), kern.log (kernel), dpkg.log (paquetes).' },
+      { name: 'logrotate', syntax: 'logrotate <b>-d /etc/logrotate.conf</b>', desc: 'Gestión de rotación de logs. -d modo debug (no ejecuta), -f fuerza rotación inmediata.' },
+      { name: 'sar (historial)', syntax: 'sar <b>-u -r -d</b> -f /var/log/sysstat/saDD', desc: 'Lee estadísticas históricas de CPU, memoria y disco del día DD. Requiere sysstat instalado.' },
+      { name: 'goaccess', syntax: 'goaccess <b>/var/log/nginx/access.log -o report.html</b>', desc: 'Analizador de logs web en tiempo real. Genera reportes HTML interactivos desde logs Apache/Nginx.' },
+{ name: 'logger', syntax: 'logger <b>-t "mi-app" -p local0.info</b> "msg"', desc: 'Escribe mensajes en el log del sistema (syslog). -t tag, -p facility.level.' },
+      { name: 'tail (follow)', syntax: 'tail <b>-f -n 0</b> archivo', desc: 'Sigue archivo desde el final sin líneas previas. -n 0 solo nuevas líneas.' },
+      { name: 'tail (retry)', syntax: 'tail <b>-F</b> archivo', desc: 'Sigue aunque se rote/renombre. -F follow con retry.' },
+      { name: 'multitail (colors)', syntax: 'multitail <b>-ci green</b> log1 <b>-ci red</b> log2', desc: 'Multitail con colores por archivo. -ci color.' },
+      { name: 'multitail (filter)', syntax: 'multitail <b>-e "ERROR"</b> log', desc: 'Filtra líneas con regex. -e regex, -E case insensitive.' },
+      { name: 'lnav (export)', syntax: 'lnav <b>-c ":export-json-to out.json"</b> log', desc: 'Exporta a JSON.' },
+      { name: 'grc', syntax: 'grc <b>ping google.com</b>', desc: 'Colorizador genérico de output.' },
+      { name: 'ccze', syntax: 'tail -f log | ccze <b>-A</b>', desc: 'Colorizador de logs. -A all plugins.' },
+      { name: 'logwatch (service)', syntax: 'logwatch <b>--service sshd --service httpd</b>', desc: 'Filtra por servicios.' },
+      { name: 'logwatch (archives)', syntax: 'logwatch <b>--archives</b>', desc: 'Incluye archivos rotados.' },
+      { name: 'swatch', syntax: 'swatch <b>-c swatch.conf -t logfile</b>', desc: 'Monitorea logs con acciones.' },
+      { name: 'logcheck', syntax: 'logcheck <b>-c /etc/logcheck/logcheck.conf</b>', desc: 'Chequeo periódico de logs.' },
+      { name: 'fail2ban-client (set)', syntax: 'fail2ban-client <b>set sshd maxretry 3</b>', desc: 'Setea parámetro de jail.' },
+      { name: 'fail2ban-client (ban)', syntax: 'fail2ban-client <b>set sshd banip 192.168.1.1</b>', desc: 'Banea IP manualmente.' },
+      { name: 'fail2ban-client (unban)', syntax: 'fail2ban-client <b>set sshd unbanip 192.168.1.1</b>', desc: 'Desbanea IP.' },
+      { name: 'fail2ban-regex', syntax: 'fail2ban-regex <b>--print-all-missed</b> log filter', desc: 'Testea regex de filtro.' },
+      { name: 'goaccess (real-time)', syntax: 'goaccess <b>--real-time-html -o report.html</b>', desc: 'Reporte HTML en tiempo real' },
+      { name: 'awstats', syntax: 'awstats <b>-config=misitio -update</b>', desc: 'Analizador de logs web avanzado.' },
+      { name: 'sar (cpu)', syntax: 'sar <b>-u 1 10</b>', desc: 'CPU usage cada 1 segundo, 10 veces.' },
+      { name: 'sar (memory)', syntax: 'sar <b>-r 1 10</b>', desc: 'Memory usage.' },
+      { name: 'sar (disk)', syntax: 'sar <b>-d 1 10</b>', desc: 'Disk activity.' },
+      { name: 'sar (network)', syntax: 'sar <b>-n DEV 1 10</b>', desc: 'Network interfaces.' },
+      { name: 'sar (file)', syntax: 'sar <b>-f /var/log/sysstat/sa17</b>', desc: 'Lee archivo histórico.' },
+      { name: 'pidstat (cpu)', syntax: 'pidstat <b>-u -p ALL 1</b>', desc: 'CPU por proceso.' },
+      { name: 'pidstat (memory)', syntax: 'pidstat <b>-r -p ALL 1</b>', desc: 'Memory por proceso.' },
+      { name: 'pidstat (io)', syntax: 'pidstat <b>-d -p ALL 1</b>', desc: 'I/O por proceso.' },
+      { name: 'mpstat (cpu)', syntax: 'mpstat <b>-P ALL 1</b>', desc: 'Por CPU individual' },
+      { name: 'iostat (extended)', syntax: 'iostat <b>-x -d sda 1</b>', desc: 'Estadísticas extendidas de disco.' },
+      { name: 'vmstat (timestamp)', syntax: 'vmstat <b>-t 1</b>', desc: 'Con timestamp.' },
+      { name: 'dmesg (level)', syntax: 'dmesg <b>-l err,warn</b>', desc: 'Filtra por nivel.' },
+      { name: 'dmesg (decode)', syntax: 'dmesg <b>-x</b>', desc: 'Decodifica facility/level.' },
+      { name: 'dmesg (json)', syntax: 'dmesg <b>-J</b>', desc: 'Output JSON.' },
+      { name: 'dmesg (follow)', syntax: 'dmesg <b>-w</b>', desc: 'Wait for new messages.' },
+      { name: 'journalctl (boot)', syntax: 'journalctl <b>-b</b>', desc: 'Mensajes del boot actual.' },
+      { name: 'journalctl (boot-id)', syntax: 'journalctl <b>-b -1</b>', desc: 'Boot anterior.' },
+      { name: 'journalctl (list-boots)', syntax: 'journalctl <b>--list-boots</b>', desc: 'Lista boots disponibles.' },
+      { name: 'journalctl (disk-usage)', syntax: 'journalctl <b>--disk-usage</b>', desc: 'Uso de disco de journal.' },
+      { name: 'journalctl (vacuum-size)', syntax: 'journalctl <b>--vacuum-size=100M</b>', desc: 'Limpia por tamaño.', badge: 'priv' },
+      { name: 'journalctl (vacuum-time)', syntax: 'journalctl <b>--vacuum-time=30d</b>', desc: 'Limpia por tiempo.', badge: 'priv' },
+      { name: 'journalctl (verify)', syntax: 'journalctl <b>--verify</b>', desc: 'Verifica integridad del journal.' },
+      { name: 'journalctl (output-fields)', syntax: 'journalctl <b>-o json --output-fields=MESSAGE,PRIORITY</b>', desc: 'Campos específicos en JSON.' },
+      { name: 'journalctl (catalog)', syntax: 'journalctl <b>-x</b>', desc: 'Añade explicaciones del catálogo.' },
+      { name: 'journalctl (unit)', syntax: 'journalctl <b>-u nginx.service</b>', desc: 'Por unidad.' },
+      { name: 'journalctl (pid)', syntax: 'journalctl <b>_PID=1</b>', desc: 'Por PID.' },
+      { name: 'journalctl (uid)', syntax: 'journalctl <b>_UID=0</b>', desc: 'Por UID.' },
+      { name: 'logger (priority)', syntax: 'logger <b>-p local0.err</b> "error message"', desc: 'Con prioridad específica.' },
+      { name: 'logger (server)', syntax: 'logger <b>-n logserver</b> "message"', desc: 'A servidor remoto.' },
+      { name: 'syslog-ng-ctl', syntax: 'syslog-ng-ctl <b>stats</b>', desc: 'Control de syslog-ng' },
+      { name: 'rsyslogd (config)', syntax: 'rsyslogd <b>-N1</b>', desc: 'Verifica config.' },
+      { name: 'logrotate (debug)', syntax: 'logrotate <b>-d /etc/logrotate.conf</b>', desc: 'Modo debug.' },
+      { name: 'logrotate (force)', syntax: 'logrotate <b>-f /etc/logrotate.conf</b>', desc: 'Fuerza rotación.' },
+      { name: 'newsyslog', syntax: 'newsyslog <b>-v</b>', desc: 'Rota logs (BSD).' },
+    ]
+  },
+
+];
+
+// ── BUILD DOM ──────────────────────────────────────────────────────────────
+const sidebar      = document.getElementById('sidebar');
+const mainContent  = document.getElementById('main-content');
+const searchInput  = document.getElementById('search');
+const searchResults= document.getElementById('search-results');
+const totalCount   = document.getElementById('total-count');
+const visibleCount = document.getElementById('visible-count');
+
+let allCommands = [];
+let activeCategory = 'all';
+
+function badge(type) {
+  if (!type) return '';
+  const labels = { danger:'PELIGRO', net:'RED', sec:'SEGURIDAD', priv:'PRIVILEGIO' };
+  return `<span class="cmd-badge badge-${type}">${labels[type]||type}</span>`;
+}
+
+function buildCard(cmd) {
+  const hasInterp = !!cmd.interp;
+  return `
+    <div class="cmd-card${hasInterp ? ' has-interp' : ''}" data-name="${cmd.name.toLowerCase()}" data-desc="${cmd.desc.toLowerCase()}" data-cat="${cmd.catId}">
+      <button class="copy-btn" title="Copiar nombre del comando">copiar</button>
+      <div class="cmd-header">
+        <span class="cmd-name">${cmd.name}</span>
+        ${badge(cmd.badge)}
+      </div>
+      <div class="cmd-syntax">${cmd.syntax}</div>
+      <div class="cmd-desc">${cmd.desc}</div>
+      ${hasInterp ? `<div class="cmd-interp">${cmd.interp}</div>` : ''}
+      ${hasInterp ? `<div class="interp-hint">← hover para ver cómo leer el output</div>` : ''}
+    </div>`;
+}
+
+// Build sidebar + sections
+CATEGORIES.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'nav-btn';
+  btn.dataset.cat = cat.id;
+  btn.innerHTML = `<span class="icon">${cat.icon}</span>${cat.name}<span class="nav-count">${cat.commands.length}</span>`;
+  btn.onclick = () => showCategory(cat.id);
+  sidebar.appendChild(btn);
+
+  const sec = document.createElement('div');
+  sec.className = 'cat-section';
+  sec.id = 'cat-' + cat.id;
+
+  const cards = cat.commands.map(c => {
+    const full = { ...c, catId: cat.id };
+    allCommands.push(full);
+    return buildCard(full);
+  }).join('');
+
+  sec.innerHTML = `
+    <div class="section-header">
+      <div class="section-title">${cat.icon} ${cat.name}</div>
+      <div class="section-subtitle">${cat.commands.length} comandos</div>
+    </div>
+    <div class="cmd-grid">${cards}</div>`;
+
+  mainContent.appendChild(sec);
+});
+
+// "Todos" button
+const allBtn = document.createElement('button');
+allBtn.className = 'nav-btn active';
+allBtn.dataset.cat = 'all';
+allBtn.innerHTML = `<span class="icon">📌</span>Todos<span class="nav-count">${allCommands.length}</span>`;
+allBtn.onclick = () => showCategory('all');
+sidebar.insertBefore(allBtn, sidebar.firstChild);
+sidebar.insertBefore(Object.assign(document.createElement('div'), { className: 'nav-label', textContent: 'Categorías' }), sidebar.children[1]);
+
+totalCount.textContent  = allCommands.length;
+visibleCount.textContent= allCommands.length;
+
+function showCategory(catId) {
+  activeCategory = catId;
+  searchInput.value = '';
+  searchResults.classList.remove('visible');
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.nav-btn[data-cat="${catId}"]`).classList.add('active');
+  if (catId === 'all') {
+    document.querySelectorAll('.cat-section').forEach(s => s.classList.add('visible'));
+    visibleCount.textContent = allCommands.length;
+  } else {
+    document.getElementById('cat-' + catId)?.classList.add('visible');
+    visibleCount.textContent = CATEGORIES.find(c => c.id === catId)?.commands.length || 0;
+  }
+  mainContent.scrollTop = 0;
+}
+
+showCategory('all');
+
+// ── SEARCH ──────────────────────────────────────────────────────────────
+function doSearch(q) {
+  if (!q) { showCategory(activeCategory); return; }
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  const matches = allCommands.filter(cmd => {
+    const hay = cmd.name.toLowerCase() + ' '
+      + cmd.desc.toLowerCase() + ' '
+      + cmd.syntax.toLowerCase().replace(/<[^>]+>/g,'')
+      + (cmd.interp ? cmd.interp.toLowerCase().replace(/<[^>]+>/g,'') : '');
+    return terms.every(t => hay.includes(t));
+  });
+
+  if (matches.length === 0) {
+    searchResults.innerHTML = `<div class="no-results visible"><div class="nr-icon">∅</div><div class="nr-text">Sin resultados para "${q}"</div><div class="nr-sub">Prueba otro término</div></div>`;
+  } else {
+    searchResults.innerHTML = `
+      <div class="section-header">
+        <div class="section-title">🔎 Resultados</div>
+        <div class="section-subtitle">${matches.length} comando${matches.length!==1?'s':''} encontrado${matches.length!==1?'s':''}</div>
+      </div>
+      <div class="cmd-grid">${matches.map(buildCard).join('')}</div>`;
+  }
+  searchResults.classList.add('visible');
+  visibleCount.textContent = matches.length;
+}
+
+let searchTimer;
+searchInput.addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => doSearch(e.target.value.trim()), 150);
+});
+
+// ── COPY ──────────────────────────────────────────────────────────────
+document.addEventListener('click', e => {
+  if (!e.target.classList.contains('copy-btn')) return;
+  const name = e.target.closest('.cmd-card').querySelector('.cmd-name').textContent;
+  navigator.clipboard?.writeText(name).then(() => {
+    e.target.textContent = '✓ copiado';
+    e.target.classList.add('copied');
+    setTimeout(() => { e.target.textContent = 'copiar'; e.target.classList.remove('copied'); }, 1400);
+  });
+});
+</script>
+</body>
+</html>
