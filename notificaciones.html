@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Agente de Notificaciones</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #4ea8de; }
+.eyebrow { color: #4ea8de; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #4ea8de; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+code { background: #131a24; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.85em; color: #4ea8de; }
+.pipeline { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.pipestep { background: #131a24; border-left: 3px solid #4ea8de; border-radius: 0 6px 6px 0; padding: 0.7rem 1rem; font-size: 0.85rem; }
+.status-badge { display: inline-block; font-size: 0.7rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 10px; margin-left: 0.5rem; }
+.status-done { background: #1e4d2b; color: #6ee7b7; }
+.status-pending { background: #4d3a1e; color: #f5c563; }
+.caution-box { background: #1a1610; border: 1px solid #4d3a1e; border-radius: 8px; padding: 1.2rem 1.4rem; margin-top: 1rem; }
+.caution-box strong { color: #f5c563; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Zolvi Compliance · Componente 4 de 4</div>
+<h1>Agente de Notificaciones — Ciclo autónomo cada 12 horas</h1>
+<p class="lead">Reporte periódico por mail y alertas críticas por Telegram, sin que el score dependa de nada de esto.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>El ciclo completo</h2>
+<div class="pipeline">
+<div class="pipestep">1. Corre el motor determinístico <span class="status-badge status-done">funcionando</span></div>
+<div class="pipestep">2. Exporta el ranking a Excel con color por nivel de riesgo <span class="status-badge status-done">funcionando</span></div>
+<div class="pipestep">3. Detecta qué alertas son nuevas en ALTO/CRÍTICO desde la corrida anterior <span class="status-badge status-done">funcionando, con test de no-duplicación</span></div>
+<div class="pipestep">4. Manda el reporte completo por Gmail (HTML + Excel adjuntos) <span class="status-badge status-pending">código listo, credenciales pendientes</span></div>
+<div class="pipestep">5. Manda un resumen por Telegram <strong>solo si hay novedad</strong> <span class="status-badge status-pending">código listo, credenciales pendientes</span></div>
+<div class="pipestep">6. Sella todo en la cadena de auditoría del agente <span class="status-badge status-done">funcionando</span></div>
+</div>
+</section>
+
+<section>
+<h2><span class="num">02</span>Por qué no manda un mensaje por alerta</h2>
+<p>Si el bot notificara cada una de las 850 alertas semanales, recreamos el mismo problema que estamos resolviendo — fatiga de alertas, ahora en Telegram. Por diseño: <strong>el mail completo siempre se manda</strong> (es el reporte de trabajo), pero <strong>Telegram solo dispara si hay algo nuevo en nivel ALTO o CRÍTICO</strong>, agrupado, máximo 10 alertas detalladas por mensaje.</p>
+</section>
+
+<section>
+<h2><span class="num">03</span>Idempotencia — no reenvía lo mismo dos veces</h2>
+<p>Cada notificación queda registrada en la cadena de auditoría del agente con la operación <code>notificacion_enviada</code>. Antes de mandar cualquier alerta, el sistema chequea si ya se notificó esa misma alerta en ese mismo nivel de riesgo. Hay un test específico que corre el ciclo dos veces seguidas y confirma que no se duplica ningún envío — está en verde.</p>
+</section>
+
+<section>
+<h2><span class="num">04</span>Decisión consciente: supervisado, no autónomo sin monitoreo</h2>
+<div class="caution-box">
+<strong>Nota de diseño deliberada:</strong> la propia guía de seguridad de Anthropic para agentes con acceso a
+comunicaciones recomienda no programar tareas que envíen mensajes de forma completamente autónoma
+sin supervisión, especialmente con datos sensibles. Por eso, para esta etapa, el agente se corre de forma
+supervisada — alguien del equipo lo ejecuta y confirma el resultado — en lugar de dejarlo en un cron
+desatendido. Es una decisión de seguridad consciente, no una limitación técnica.
+</div>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Componente: Agente de Notificaciones · Gmail + Telegram, idempotente, supervisado.</div>
+</body></html>
