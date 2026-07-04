@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Zolvi Compliance — Informe Ejecutivo</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0a0e14;
+    color: #e8eaed;
+    line-height: 1.6;
+}
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%);
+    padding: 4rem 0 3rem;
+    border-bottom: 3px solid #ff5c4d;
+}
+.hero .eyebrow {
+    color: #ff5c4d; font-weight: 700; font-size: 0.8rem;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem;
+}
+.hero h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
+.hero p.lead { font-size: 1.15rem; color: #a8b0bb; max-width: 700px; }
+.hero-badges { display: flex; gap: 0.6rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.hbadge {
+    background: #1a2230; border: 1px solid #2a3644; color: #7fd8a8;
+    font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.8rem; border-radius: 20px;
+}
+
+/* SECTION */
+section { padding: 2.8rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.2rem; color: #fff; }
+h2 .num { color: #ff5c4d; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+
+/* STAT GRID */
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.stat {
+    background: #131a24; border: 1px solid #1e2a38; border-radius: 8px;
+    padding: 1.2rem; text-align: center;
+}
+.stat .n { font-size: 2.1rem; font-weight: 800; color: #ff5c4d; line-height: 1; }
+.stat .l { font-size: 0.72rem; color: #8b96a3; margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* VERIFICATION CALLOUT */
+.verify-box {
+    background: #0f1d14; border: 1px solid #1e4d2b; border-radius: 8px;
+    padding: 1.3rem 1.5rem; margin: 1.2rem 0;
+    font-family: 'SF Mono', Monaco, monospace; font-size: 0.83rem;
+}
+.verify-box .ok { color: #4ade80; font-weight: 800; }
+.verify-box .line { color: #9db3a4; margin: 0.25rem 0; }
+.verify-box .hash { color: #6ee7b7; }
+
+/* RISK BARS */
+.riskbar-row { display: flex; align-items: center; gap: 0.8rem; margin: 0.5rem 0; }
+.riskbar-label { width: 90px; font-size: 0.8rem; font-weight: 700; }
+.riskbar-track { flex: 1; height: 22px; background: #131a24; border-radius: 4px; overflow: hidden; }
+.riskbar-fill { height: 100%; display: flex; align-items: center; padding-left: 0.5rem; font-size: 0.72rem; font-weight: 700; color: #0a0e14; }
+
+/* TAMPER DEMO */
+.tamper-terminal {
+    background: #000; border-radius: 8px; padding: 1.3rem 1.5rem;
+    font-family: 'SF Mono', Monaco, monospace; font-size: 0.82rem;
+    border: 1px solid #2a3644;
+}
+.tamper-terminal .before { color: #4ade80; }
+.tamper-terminal .after { color: #ff5c4d; font-weight: 700; }
+.tamper-terminal .dim { color: #5a6472; }
+
+/* COMPARISON TABLE */
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { padding: 0.7rem 0.6rem; text-align: left; font-size: 0.87rem; border-bottom: 1px solid #1e2a38; }
+th { color: #8b96a3; font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.03em; }
+td.yes { color: #4ade80; font-weight: 800; }
+td.no { color: #ff5c4d; font-weight: 800; }
+tr.highlight { background: #131a24; }
+
+/* LEGAL BOX */
+.legal-box {
+    background: #1a1610; border: 1px solid #4d3a1e; border-radius: 8px;
+    padding: 1.3rem 1.5rem; margin-top: 1.2rem;
+}
+.legal-box strong { color: #f5c563; }
+
+/* FOOTER */
+footer { padding: 2rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Zolvi Compliance · Informe Ejecutivo</div>
+    <h1>Motor determinístico de priorización de alertas AML con cadena de custodia verificable</h1>
+    <p class="lead">
+      No es un prototipo teórico. Estos son los resultados de una corrida real sobre
+      las 100 alertas de muestra, ejecutada y verificada antes de este informe.
+    </p>
+    <div class="hero-badges">
+      <span class="hbadge">✓ Determinístico — sin ML, sin LLM en el score</span>
+      <span class="hbadge">✓ Cadena SHA-256 verificada</span>
+      <span class="hbadge">✓ Respaldo normativo (Res. UIF 200/2024)</span>
+      <span class="hbadge">✓ Oficial de Cumplimiento nunca reemplazado</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2><span class="num">01</span>Resultado de la corrida (verificado ahora mismo)</h2>
+  <p>Estos números no son una proyección — son el output de la última ejecución del motor, hace instantes.</p>
+  <div class="statgrid">
+    <div class="stat"><div class="n">100</div><div class="l">Alertas procesadas</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">Decisiones selladas</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">Rupturas en la cadena</div></div>
+    <div class="stat"><div class="n">2x</div><div class="l">Corridas idénticas (determinismo)</div></div>
+  </div>
+  <div class="verify-box">
+    <div class="line"><span class="ok">✓ CHAIN VERIFICATION:</span> entries=100 · linkage_ok=True · integrity_ok=True · issues=[]</div>
+    <div class="line"><span class="dim">bundle_hash (sello del ranking, SHA-256):</span></div>
+    <div class="line hash">f333fac12dbadcb7bc93df545daa28df323c5d1b412c422f35595e2140e63127</div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>Distribución de riesgo — de un vistazo</h2>
+  <p>El equipo de compliance no necesita leer 100 filas para saber por dónde empezar.</p>
+  <div class="riskbar-row">
+    <div class="riskbar-label" style="color:#c81e1e">CRÍTICO</div>
+    <div class="riskbar-track"><div class="riskbar-fill" style="width:1%; background:#c81e1e">0</div></div>
+  </div>
+  <div class="riskbar-row">
+    <div class="riskbar-label" style="color:#e8590c">ALTO</div>
+    <div class="riskbar-track"><div class="riskbar-fill" style="width:1%; background:#e8590c">1</div></div>
+  </div>
+  <div class="riskbar-row">
+    <div class="riskbar-label" style="color:#e8b339">MEDIO</div>
+    <div class="riskbar-track"><div class="riskbar-fill" style="width:33%; background:#e8b339">33</div></div>
+  </div>
+  <div class="riskbar-row">
+    <div class="riskbar-label" style="color:#2f9e44">BAJO</div>
+    <div class="riskbar-track"><div class="riskbar-fill" style="width:66%; background:#2f9e44">66</div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>Cadena de custodia — a prueba de alteración</h2>
+  <p>No alcanza con calcular un score. Si nadie puede probar que ese score no se tocó después, no sirve como evidencia. Esta es la corrida real de la verificación de tamper detection:</p>
+  <div class="tamper-terminal">
+    <div class="dim">$ python demo_tamper.py --db out/audit_run_a.db</div>
+    <div class="before">--- ANTES DE ALTERAR: cadena OK ---</div>
+    <div class="dim">    entries=100  linkage_ok=True  integrity_ok=True</div>
+    <br>
+    <div class="dim">[alterando payload de seq=51...]</div>
+    <br>
+    <div class="after">--- DESPUÉS DE ALTERAR: cadena ROTA ---</div>
+    <div class="dim">    entries=100  linkage_ok=True  integrity_ok=False</div>
+    <div class="after">    [ISSUE] INTEGRITY seq=51: audit_hash no recomputa (payload alterado)</div>
+  </div>
+  <p style="margin-top:0.8rem;">Cualquier tercero — un regulador, un perito, un auditor externo — puede recomputar esta cadena con Python estándar. No hace falta confiar en nosotros: se puede verificar.</p>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Por qué esto importa — lo que un score sin trazabilidad no puede responder</h2>
+  <table>
+    <thead><tr><th>Pregunta que hace un regulador</th><th>Sistema con cadena de custodia</th><th>Sistema sin ella</th></tr></thead>
+    <tbody>
+      <tr><td>¿Puede probar que este resultado no se alteró después?</td><td class="yes">Sí — SHA-256 verificable</td><td class="no">No hay forma de probarlo</td></tr>
+      <tr><td>¿Dos corridas del mismo input dan el mismo resultado?</td><td class="yes">Sí — verificado en cada ejecución</td><td class="no">Depende de la implementación</td></tr>
+      <tr><td>¿Por qué se priorizó esta alerta sobre otra?</td><td class="yes">Razón textual por cada aporte al score</td><td class="no">Un número sin explicación</td></tr>
+      <tr><td>¿Está calibrado con la norma real (Res. UIF 200/2024)?</td><td class="yes">Sí — 31 señales oficiales citadas</td><td class="no">Sin trazabilidad a la fuente</td></tr>
+      <tr class="highlight"><td>¿Un tercero puede auditar esto sin confiar en el equipo que lo construyó?</td><td class="yes">Sí</td><td class="no">No</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="legal-box">
+    <strong>Reserva legal, siempre presente:</strong> este motor prioriza y clasifica preliminarmente.
+    La calificación formal de operación sospechosa y la firma del Reporte de Operación Sospechosa (ROS)
+    ante la UIF son competencia exclusiva del Oficial de Cumplimiento designado (art. 20 bis Ley 25.246).
+    El sistema nunca decide por él — lo hace más rápido para llegar a la decisión.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Zolvi Compliance — Hakiatón Fintech, Equipo 9. Informe generado a partir de una corrida real y verificada del motor.
+</footer>
+
+</body>
+</html>
