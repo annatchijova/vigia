@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Solución y Resultados Esperados</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #6ee7b7; }
+.eyebrow { color: #6ee7b7; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #6ee7b7; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+.layer { display: flex; gap: 1rem; align-items: center; background: #131a24; border: 1px solid #1e2a38; border-radius: 8px; padding: 0.9rem 1.2rem; margin: 0.5rem 0; }
+.layer .num2 { background: #1a2230; color: #6ee7b7; font-weight: 800; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.statgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.stat { background: #131a24; border: 1px solid #1e2a38; border-radius: 8px; padding: 1.2rem; text-align: center; }
+.stat .n { font-size: 1.8rem; font-weight: 800; color: #6ee7b7; line-height: 1; }
+.stat .l { font-size: 0.7rem; color: #8b96a3; margin-top: 0.4rem; text-transform: uppercase; }
+.limit-box { background: #1a1610; border: 1px solid #4d3a1e; border-radius: 8px; padding: 1.1rem 1.3rem; margin-top: 1rem; font-size: 0.85rem; }
+.limit-box strong { color: #f5c563; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Documento del proyecto · Sección 2 de 2</div>
+<h1>Solución desarrollada y resultados esperados</h1>
+<p class="lead">Motor determinístico + skills normativas + agente de notificación, con el Oficial de Cumplimiento siempre al mando.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>Arquitectura de 4 capas</h2>
+<div class="layer"><div class="num2">1</div><div><strong>Motor determinístico</strong> — prioriza las 850 alertas con reglas explicables y aritmética exacta, sella cada decisión en una cadena SHA-256.</div></div>
+<div class="layer"><div class="num2">2</div><div><strong>Skill zolvi-plaft-analyst</strong> — clasifica preliminarmente contra tipologías GAFI y las 31 señales oficiales de la Res. UIF 200/2024.</div></div>
+<div class="layer"><div class="num2">3</div><div><strong>Oficial de Cumplimiento</strong> — decide formalmente, con el análisis preliminar como insumo, nunca como veredicto.</div></div>
+<div class="layer"><div class="num2">4</div><div><strong>Skill zolvi-ros-drafter</strong> — redacta el borrador del Reporte de Operación Sospechosa, si el Oficial decidió reportar.</div></div>
+</section>
+
+<section>
+<h2><span class="num">02</span>Resultados medidos (no proyectados)</h2>
+<div class="statgrid">
+  <div class="stat"><div class="n">100/100</div><div class="l">Alertas procesadas y selladas</div></div>
+  <div class="stat"><div class="n">0</div><div class="l">Rupturas en la cadena de auditoría</div></div>
+  <div class="stat"><div class="n">2x</div><div class="l">Corridas idénticas (determinismo)</div></div>
+</div>
+<p>El único caso real confirmado en la muestra queda en la posición 33 de 100 con la calibración actual — dentro de la ventana de revisión proporcional del equipo, aunque no en el tope. Esa es la métrica honesta, no la más favorable.</p>
+</section>
+
+<section>
+<h2><span class="num">03</span>Resultado esperado en producción</h2>
+<p>Con el dato de contraparte (hoy ausente en la muestra, documentado como límite conocido), la señal #19 de la Res. UIF 200/2024 — "cuenta que recibe fondos de terceros y los transfiere o retira inmediatamente" — permitiría detectar el patrón de cuenta mula de forma directa, en vez de depender de señales indirectas como recurrencia o diversidad de motivos.</p>
+</section>
+
+<section>
+<h2><span class="num">04</span>Cuellos de botella para producción real</h2>
+<div class="limit-box">
+<strong>Declarados, no escondidos:</strong> falta historial de baseline por comercio, falta el dato de contraparte
+para las señales de mayor peso normativo, y 27 de las 31 señales oficiales no tienen regla implementada
+todavía porque requieren columnas que no existen en los datos actuales de Zolvi. Todo esto está catalogado
+con la columna exacta que hace falta para cada una.
+</div>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Documento del proyecto, Sección 2: Solución y resultados esperados.</div>
+</body></html>
