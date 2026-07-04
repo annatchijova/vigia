@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Motor de Scoring</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #6ee7b7; }
+.eyebrow { color: #6ee7b7; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #6ee7b7; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+code { background: #131a24; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.85em; color: #6ee7b7; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { padding: 0.6rem 0.5rem; text-align: left; font-size: 0.85rem; border-bottom: 1px solid #1e2a38; vertical-align: top; }
+th { color: #8b96a3; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; }
+.weight { display: inline-block; background: #1e4d2b; color: #6ee7b7; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 3px; font-size: 0.78rem; }
+.verify-box { background: #0f1d14; border: 1px solid #1e4d2b; border-radius: 8px; padding: 1.2rem 1.4rem; margin: 1rem 0; font-family: 'SF Mono', Monaco, monospace; font-size: 0.82rem; }
+.ok { color: #4ade80; font-weight: 800; }
+.hash { color: #6ee7b7; word-break: break-all; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+.norma { border-left: 3px solid #6ee7b7; padding-left: 0.9rem; margin: 0.6rem 0; color: #9db3a4; font-size: 0.85rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Zolvi Compliance · Componente 1 de 4</div>
+<h1>Motor de Scoring — Priorización determinística de alertas</h1>
+<p class="lead">Reglas explícitas, aritmética exacta, respaldo normativo verificado. Sin ML, sin LLM en el camino de decisión.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>Qué hace</h2>
+<p>Toma las 850 alertas semanales y las reordena según un score compuesto, calculado con <code>fractions.Fraction</code> (aritmética exacta, sin errores de redondeo de punto flotante). Cada alerta sale con un número y una <strong>lista de razones textuales</strong> que explican de dónde vino cada punto.</p>
+<div class="verify-box">
+<span class="ok">✓ Última corrida verificada:</span> 100 alertas procesadas · determinismo confirmado (2 corridas idénticas)<br>
+<span class="hash">bundle_hash: f333fac12dbadcb7bc93df545daa28df323c5d1b412c422f35595e2140e63127</span>
+</div>
+</section>
+
+<section>
+<h2><span class="num">02</span>Las 4 reglas activas</h2>
+<table>
+<thead><tr><th>Regla</th><th>Qué mide</th><th>Peso</th><th>Respaldo normativo</th></tr></thead>
+<tbody>
+<tr><td><code>prior_motivo</code></td><td>Prior histórico según el tipo de motivo original de la alerta</td><td><span class="weight">0-2</span></td><td>Señal #4, art. 34 inc. b) Res. UIF 200/2024 (montos inusualmente elevados)</td></tr>
+<tr><td><code>recurrencia_90d</code></td><td>Cuántas otras alertas tuvo el mismo comercio en 90 días</td><td><span class="weight">0-4</span></td><td>Señal #2 (periodicidad que excede prácticas usuales)</td></tr>
+<tr><td><code>multi_motivo_90d</code></td><td>Diversidad de motivos distintos acumulados por el comercio</td><td><span class="weight">0-2</span></td><td>Señal #24 (combinación parcial de pautas)</td></tr>
+<tr><td><code>percentil_monto</code></td><td>Monto relativo al percentil del corpus, no absoluto</td><td><span class="weight">0-2</span></td><td>Señal #4 (montos inusualmente elevados)</td></tr>
+</tbody>
+</table>
+<div class="norma">
+Las 4 reglas citan señales explícitas del art. 34 inc. b) de la Resolución UIF 200/2024 —
+verificadas contra el Boletín Oficial (BO N° 35571, 19/12/2024), no inferidas.
+</div>
+</section>
+
+<section>
+<h2><span class="num">03</span>Por qué no hay Machine Learning</h2>
+<p>La muestra disponible tiene <strong>1 solo caso real confirmado en 100 alertas</strong>. Con esa proporción, entrenar cualquier modelo estadístico sería sobreajuste garantizado — el modelo aprendería ruido, no señal. Un motor de reglas explícito, con pesos calibrados sobre datos + normativa, es la única opción defendible ante un regulador con esta cantidad de evidencia.</p>
+</section>
+
+<section>
+<h2><span class="num">04</span>Resultado sobre el caso real conocido</h2>
+<p>El único caso de lavado confirmado en la muestra (ZLV-0095) queda priorizado en la <strong>posición 33 de 100</strong> — dentro de la ventana de revisión real del equipo (que hoy cubre ~200 de 850, proporcionalmente equivalente). No es top-5, y eso se declara así en el informe de limitaciones: sin el dato de contraparte (necesario para la señal #19, la más específica para lavado vía cuentas mula), el motor no puede subirlo más.</p>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Componente técnico: Motor de Scoring · Datos de una corrida real, no simulada.</div>
+</body></html>
