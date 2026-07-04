@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Cadena de Auditoría</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #ff5c4d; }
+.eyebrow { color: #ff5c4d; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #ff5c4d; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+.tamper-terminal { background: #000; border-radius: 8px; padding: 1.2rem 1.4rem; font-family: 'SF Mono', Monaco, monospace; font-size: 0.82rem; border: 1px solid #2a3644; margin: 1rem 0; }
+.before { color: #4ade80; } .after { color: #ff5c4d; font-weight: 700; } .dim { color: #5a6472; }
+.step { display: flex; gap: 1rem; margin: 1rem 0; align-items: flex-start; }
+.step .n { background: #1a2230; color: #ff5c4d; font-weight: 800; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.85rem; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Zolvi Compliance · Componente 2 de 4</div>
+<h1>Cadena de Auditoría — Custodia tamper-evident con SHA-256</h1>
+<p class="lead">Cada decisión del motor queda sellada y enlazada a la anterior. Si alguien altera un registro, se detecta.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>Cómo funciona</h2>
+<div class="step"><div class="n">1</div><p>Cada vez que el motor scorea una alerta, calcula <code>audit_hash = SHA256(payload_canónico + prev_hash)</code>.</p></div>
+<div class="step"><div class="n">2</div><p><code>prev_hash</code> es el hash de la entrada anterior — por eso es una <strong>cadena</strong>, no una lista de hashes sueltos.</p></div>
+<div class="step"><div class="n">3</div><p>Si alguien cambia un byte de un registro del medio, su hash ya no coincide con lo que recomputa la verificación — y como el siguiente registro depende de ese hash, la ruptura se detecta en cascada.</p></div>
+</div>
+</section>
+
+<section>
+<h2><span class="num">02</span>Prueba real — no es teoría</h2>
+<p>Esto es exactamente lo que corrió, sobre la base de datos real de la última ejecución:</p>
+<div class="tamper-terminal">
+<div class="dim">$ python demo_tamper.py --db out/audit_run_a.db</div>
+<div class="before">--- ANTES DE ALTERAR: cadena OK ---</div>
+<div class="dim">    entries=100  linkage_ok=True  integrity_ok=True</div>
+<br>
+<div class="dim">[2] Alterando el payload de seq=51...</div>
+<div class="dim">    payload_bytes de seq=51 modificado en el disco.</div>
+<br>
+<div class="after">--- DESPUÉS DE ALTERAR: cadena ROTA ---</div>
+<div class="dim">    entries=100  linkage_ok=True  integrity_ok=False</div>
+<div class="after">    [ISSUE] INTEGRITY seq=51: audit_hash no recomputa (payload alterado)</div>
+</div>
+<p>El sistema no solo detecta "algo se rompió" — dice exactamente en qué <code>seq</code> ocurrió.</p>
+</section>
+
+<section>
+<h2><span class="num">03</span>Por qué esto es lo que un regulador necesita</h2>
+<p>Un score sin cadena de custodia es una afirmación que hay que creer por confianza. Un score con cadena de custodia es una afirmación que <strong>cualquier tercero puede verificar</strong> — un perito, un auditor externo, la UIF misma — recomputando los hashes con Python estándar, sin depender del equipo que construyó el sistema ni de sus buenas intenciones.</p>
+</section>
+
+<section>
+<h2><span class="num">04</span>Verificación independiente por entrada</h2>
+<p>La función <code>verify_chain()</code> recorre las 100 entradas y confirma dos cosas por separado: <strong>linkage</strong> (cada <code>prev_hash</code> apunta correctamente al hash anterior) e <strong>integrity</strong> (cada <code>audit_hash</code> se recomputa igual desde su payload). Las dos vinieron en <code>True</code> en la última corrida limpia.</p>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Componente técnico: Cadena de Auditoría · Corrida real de demo_tamper.py.</div>
+</body></html>
