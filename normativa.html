@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Skills Normativas</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #f5c563; }
+.eyebrow { color: #f5c563; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #f5c563; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+code { background: #131a24; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.85em; color: #f5c563; }
+.skillcard { background: #131a24; border: 1px solid #1e2a38; border-radius: 8px; padding: 1.3rem 1.5rem; margin: 1rem 0; }
+.skillcard h3 { color: #f5c563; font-size: 1rem; margin-bottom: 0.5rem; }
+.flow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 1rem 0; }
+.flow .box { background: #1a2230; border: 1px solid #2a3644; border-radius: 6px; padding: 0.6rem 1rem; font-size: 0.82rem; font-weight: 700; }
+.flow .arrow { color: #5a6472; }
+.legal-box { background: #1a1610; border: 1px solid #4d3a1e; border-radius: 8px; padding: 1.2rem 1.4rem; margin-top: 1rem; }
+.legal-box strong { color: #f5c563; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Zolvi Compliance · Componente 3 de 4</div>
+<h1>Skills de Claude — Análisis normativo, nunca decisión</h1>
+<p class="lead">Dos skills especializadas que asisten al equipo de compliance sin cruzar nunca la línea legal de la decisión formal.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>El flujo completo</h2>
+<div class="flow">
+  <div class="box">Motor determinístico</div><div class="arrow">→</div>
+  <div class="box">zolvi-plaft-analyst</div><div class="arrow">→</div>
+  <div class="box">Oficial de Cumplimiento (decide)</div><div class="arrow">→</div>
+  <div class="box">zolvi-ros-drafter</div>
+</div>
+<p>Cada flecha es una frontera de responsabilidad. El motor prioriza. La skill clasifica preliminarmente. El humano decide. La otra skill redacta el borrador. Nunca se salta un paso.</p>
+</section>
+
+<section>
+<h2><span class="num">02</span>zolvi-plaft-analyst</h2>
+<div class="skillcard">
+<h3>Analista senior PLA/FT</h3>
+<p>Recibe el JSON sellado de una alerta priorizada y la contrasta contra <strong>7 tipologías GAFI</strong> (fraccionamiento, cuentas embudo, movimiento rápido, comercio ficticio, contraparte de alto riesgo, round-tripping, cambio de patrón) y contra las <strong>31 señales oficiales</strong> del art. 34 inc. b) de la Resolución UIF 200/2024.</p>
+<p>Devuelve una de tres clasificaciones: <code>MATCH_TIPOLOGIA</code>, <code>SIN_MATCH_TIPOLOGIA</code>, o <code>INFORMACION_INSUFICIENTE</code> — nunca "sospechosa" ni "no sospechosa". Esa palabra está reservada por ley al Oficial de Cumplimiento.</p>
+</div>
+</section>
+
+<section>
+<h2><span class="num">03</span>zolvi-ros-drafter</h2>
+<div class="skillcard">
+<h3>Redactor de borrador de ROS</h3>
+<p>Se activa solo <strong>después</strong> de que el Oficial ya decidió reportar. Estructura el borrador en los 6 bloques que exige la práctica normativa (sujeto obligado, cliente reportado, cronología, fundamentos, respaldo documental, medidas adoptadas).</p>
+<p>Regla dura: si falta un dato, lo marca <code>[PENDIENTE]</code> explícito. Nunca completa con supuestos. El Oficial completa, revisa, edita y firma — la skill nunca firma nada.</p>
+</div>
+</section>
+
+<section>
+<h2><span class="num">04</span>Por qué esto no es solo "usar Claude"</h2>
+<p>Cualquiera puede pedirle a un LLM que "diga si una alerta es sospechosa". La diferencia acá es que <strong>ninguna de las dos skills puede hacer eso</strong> — está bloqueado explícitamente en sus instrucciones. Es una decisión de arquitectura, no una limitación técnica: en Argentina, el art. 20 bis de la Ley 25.246 pone la responsabilidad penal sobre el Oficial de Cumplimiento designado. Un sistema que decidiera por él lo dejaría expuesto legalmente.</p>
+<div class="legal-box">
+<strong>Reserva legal en las dos skills, sin excepción:</strong> la calificación formal de operación sospechosa
+y la firma del ROS son competencia exclusiva del Oficial de Cumplimiento (art. 20 bis Ley 25.246).
+</div>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Componente: Skills normativas de Claude · zolvi-plaft-analyst + zolvi-ros-drafter.</div>
+</body></html>
