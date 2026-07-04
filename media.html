@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Alerta ZLV-0006 — Riesgo MEDIO</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #1a1608 100%); padding: 3rem 0 2rem; border-bottom: 3px solid #e8b339; }
+.eyebrow { color: #e8b339; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem; }
+h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.6rem; }
+.tag-real { background: #1e4d2b; color: #6ee7b7; font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 4px; margin-top: 0.6rem; display: inline-block; }
+
+.gauge-section { display: flex; align-items: center; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid #1a2230; flex-wrap: wrap; }
+.gauge-wrap { text-align: center; }
+.gauge-caption { font-size: 0.68rem; color: #8b96a3; margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.risk-tag-big { display: inline-block; font-size: 1.3rem; font-weight: 900; padding: 0.25rem 0.9rem; border-radius: 6px; background: #e8b339; color: #1a1608; }
+.risk-desc { font-size: 0.9rem; color: #c3ccd6; margin-top: 0.6rem; max-width: 420px; }
+.legend-row { display: flex; gap: 0.9rem; margin-top: 0.8rem; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: #8b96a3; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+section { padding: 1.8rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.9rem; color: #fff; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.55rem 0.5rem; text-align: left; font-size: 0.83rem; border-bottom: 1px solid #1e2a38; }
+th { color: #8b96a3; font-weight: 700; text-transform: uppercase; font-size: 0.68rem; }
+.peso-badge { display: inline-block; background: #e8b339; color: #1a1608; font-weight: 800; font-size: 0.7rem; padding: 0.05rem 0.4rem; border-radius: 3px; margin-right: 0.4rem; }
+.datalabel { font-size: 0.7rem; color: #8b96a3; text-transform: uppercase; }
+.dataval { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.7rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.hashbox { font-family: 'SF Mono', Monaco, monospace; font-size: 0.72rem; color: #6b7684; word-break: break-all; margin-top: 0.4rem; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.75rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Alerta priorizada · Riesgo MEDIO</div>
+<h1>ZLV-0006 — COM-0239</h1>
+<span class="tag-real">Caso real de la corrida de hoy — no es un ejemplo inventado</span>
+</div></div>
+
+<div class="wrap">
+
+<div class="gauge-section">
+  <div class="gauge-wrap">
+    <svg width="200" height="120" viewBox="0 0 220 130">
+      <path d="M 20 110 A 90 90 0 0 1 68 30"  stroke="#2f9e44" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <path d="M 68 30  A 90 90 0 0 1 110 20" stroke="#e8b339" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <path d="M 110 20 A 90 90 0 0 1 152 30" stroke="#e8590c" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <path d="M 152 30 A 90 90 0 0 1 200 110" stroke="#c81e1e" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <!-- score 4 sobre max 10, aguja en el tramo MEDIO -->
+      <line x1="110" y1="110" x2="82" y2="35" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="110" cy="110" r="7" fill="#fff"/>
+      <text x="110" y="105" font-size="24" font-weight="800" fill="#fff" text-anchor="middle" dy="-14">4</text>
+    </svg>
+    <div class="gauge-caption">Score del motor (máx. teórico: 10)</div>
+  </div>
+  <div>
+    <span class="risk-tag-big">RIESGO MEDIO</span>
+    <p class="risk-desc">Al menos una señal de riesgo moderado, combinada con recurrencia y diversidad de motivos. Corresponde revisión dentro de la ventana normal del ciclo semanal — no requiere escalar fuera de proceso.</p>
+    <div class="legend-row">
+      <div class="legend-item"><span class="legend-dot" style="background:#2f9e44"></span>BAJO (0-2)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e8b339"></span>MEDIO (3-4)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e8590c"></span>ALTO (5-6)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#c81e1e"></span>CRÍTICO (7-10)</div>
+    </div>
+  </div>
+</div>
+
+<section>
+<h2>Datos de la operación</h2>
+<div class="grid2">
+  <div>
+    <div class="datalabel">Comercio</div><div class="dataval">COM-0239</div>
+    <div class="datalabel">Motivo original</div><div class="dataval">Cambio de patrón</div>
+  </div>
+  <div>
+    <div class="datalabel">Fecha</div><div class="dataval">08/06/2026</div>
+    <div class="datalabel">Monto</div><div class="dataval">$430.566</div>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>Desglose del score (4 puntos, real, sin redondear)</h2>
+<table>
+<thead><tr><th>Regla</th><th>Peso</th><th>Razón</th></tr></thead>
+<tbody>
+<tr><td>prior_motivo</td><td><span class="peso-badge">+1</span></td><td>Motivo "Cambio de patrón" tiene prior 1 (histórico con casos reales o alta correlación AML)</td></tr>
+<tr><td>recurrencia_90d</td><td><span class="peso-badge">+1</span></td><td>1 alerta previa del comercio en los últimos 90 días</td></tr>
+<tr><td>multi_motivo_90d</td><td><span class="peso-badge">+2</span></td><td>El comercio acumula 1 motivo distinto en 90 días: "Monto inusual"</td></tr>
+<tr><td>percentil_monto</td><td><span class="peso-badge" style="background:#3a3a3a; color:#999">+0</span></td><td>Monto $430.566 bajo percentil 75 (umbral: $607.104) — no suma</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>Trazabilidad</h2>
+<div class="datalabel">Audit hash (SHA-256, sellado en la cadena)</div>
+<div class="hashbox">9f2954bfdf71a2d492615a1fe7639755657d4d5d438874e9cc02e2dcc2cfe41d</div>
+<p style="margin-top:0.8rem; font-size:0.83rem; color:#8b96a3;">Estado: aún no revisada por el equipo · no marcada como falso positivo · no es el caso real confirmado de la muestra.</p>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Alerta de ejemplo, nivel MEDIO. Datos extraídos de la corrida real del motor, sin modificar.</div>
+</body></html>
