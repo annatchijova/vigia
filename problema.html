@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Zolvi — Descripción del Problema</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e14; color: #e8eaed; line-height: 1.6; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+.hero { background: linear-gradient(135deg, #0a0e14 0%, #131a24 100%); padding: 3.5rem 0 2.5rem; border-bottom: 3px solid #ff5c4d; }
+.eyebrow { color: #ff5c4d; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+p.lead { font-size: 1.05rem; color: #a8b0bb; max-width: 680px; }
+section { padding: 2.4rem 0; border-bottom: 1px solid #1a2230; }
+h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
+h2 .num { color: #ff5c4d; margin-right: 0.5rem; }
+p { color: #c3ccd6; margin-bottom: 0.8rem; }
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.stat { background: #131a24; border: 1px solid #1e2a38; border-radius: 8px; padding: 1.2rem; text-align: center; }
+.stat .n { font-size: 2rem; font-weight: 800; color: #ff5c4d; line-height: 1; }
+.stat .l { font-size: 0.7rem; color: #8b96a3; margin-top: 0.4rem; text-transform: uppercase; }
+.anecdote { background: #1a1414; border-left: 3px solid #ff5c4d; padding: 1.2rem 1.4rem; margin: 1.2rem 0; font-size: 0.95rem; color: #e0c0bc; font-style: italic; }
+.footer { padding: 1.5rem 0; text-align: center; color: #5a6472; font-size: 0.78rem; }
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+<div class="eyebrow">Documento del proyecto · Sección 1 de 2</div>
+<h1>Descripción del problema</h1>
+<p class="lead">Zolvi — fintech de pagos a comercios, equipo de compliance de 4 personas.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+<h2><span class="num">01</span>El número que lo explica todo</h2>
+<div class="statgrid">
+  <div class="stat"><div class="n">850</div><div class="l">Alertas por semana</div></div>
+  <div class="stat"><div class="n">200</div><div class="l">Las que el equipo puede revisar</div></div>
+  <div class="stat"><div class="n">92%</div><div class="l">De las revisadas, falso positivo</div></div>
+  <div class="stat"><div class="n">1</div><div class="l">Caso real que se les escapó</div></div>
+</div>
+<p>El equipo de compliance de Zolvi tiene capacidad para revisar el 23% de lo que el sistema genera. De ese 23%, 9 de cada 10 alertas resultan ser ruido — un comercio que tuvo una buena semana de ventas, nada más.</p>
+</section>
+
+<section>
+<h2><span class="num">02</span>Lo que pasó hace dos meses</h2>
+<div class="anecdote">
+"Un caso real de lavado de dinero estuvo activo varias semanas sin que nadie lo viera, porque estaba
+enterrado entre cientos de alertas irrelevantes."
+</div>
+<p>No es un problema hipotético. Ya pasó. El sistema generó la alerta correcta — el problema no fue de detección, fue de <strong>priorización</strong>. La señal estaba ahí, perdida entre el ruido.</p>
+</section>
+
+<section>
+<h2><span class="num">03</span>Por qué "más alertas" no es la solución</h2>
+<p>El sistema automático ya genera más señales de las que el equipo humano puede procesar. Agregar más reglas de detección sin cambiar cómo se ordenan solo empeora la saturación. El problema no es de sensibilidad — es de <strong>ordenamiento y trazabilidad de la decisión</strong>.</p>
+</section>
+
+<section>
+<h2><span class="num">04</span>Por qué esto no es solo un problema de Zolvi</h2>
+<p>El benchmark internacional de falsos positivos en sistemas AML se ubica entre 85% y 95% — Zolvi, con 92%, está exactamente en el promedio del sector. Esto no exime al problema de ser grave; al contrario, confirma que la solución tiene valor más allá de esta empresa puntual.</p>
+</section>
+
+</div>
+<div class="footer">Zolvi Compliance — Documento del proyecto, Sección 1: Descripción del problema.</div>
+</body></html>
