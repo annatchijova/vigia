@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna Tchijova — Evidencia computacional</title>
+<meta name="description" content="Investigación computacional independiente. Sistemas deterministas, auditables e interrogables: forense de intención, memoria con cadena de custodia, cumplimiento explicable.">
+<meta property="og:title" content="Anna Tchijova — Evidencia computacional">
+<meta property="og:description" content="No construyo modelos que piden confianza. Construyo evidencia computacional: determinista, auditable, interrogable.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#ECEAE1">
+<link rel="alternate" hreflang="es" href="?lang=es">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="ru" href="?lang=ru">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ANNA TCHIJOVA — el archivo
+   Paredes de papel frío; vitrinas oscuras para los instrumentos.
+   paper #ECEAE1 · ink #16171C · signal #96660A (ámbar sobre papel)
+   vitrine #0B0C10 · bone #E9E4D6 · signal-d #E9A23B · verify #0E6B63
+   ============================================================ */
+:root{
+  --paper:#ECEAE1;
+  --paper-2:#E3E1D6;
+  --paper-3:#DAD8CB;
+  --ink:#16171C;
+  --ink-dim:#54555E;
+  --ink-faint:#8A8B90;
+  --signal:#96660A;          /* ámbar del vigía, oscurecido para contraste AA sobre papel */
+  --signal-soft:rgba(150,102,10,.12);
+  --verify:#0E6B63;
+  --stamp:#A03A2E;
+  --line:rgba(22,23,28,.16);
+  --line-2:rgba(22,23,28,.09);
+  /* vitrina (heredado de las páginas de los proyectos) */
+  --vit:#0B0C10;
+  --vit-2:#12141B;
+  --bone:#E9E4D6;
+  --bone-dim:#9A978A;
+  --signal-d:#E9A23B;
+  --verify-d:#3FD0C9;
+  --vline:rgba(233,228,214,.12);
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Hanken Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --max:1120px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:400;
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* grano de papel, apenas */
+body::before{
+  content:"";position:fixed;inset:0;z-index:2000;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.05;mix-blend-mode:multiply;
+}
+::selection{background:var(--signal);color:var(--paper)}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.06;letter-spacing:-.015em}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--signal);font-weight:500;
+}
+section{position:relative}
+.pad{padding:clamp(84px,10vw,150px) 0}
+.hairline{height:1px;background:var(--line);margin:0 28px}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  border-bottom:1px solid transparent;
+  background:linear-gradient(rgba(236,234,225,.92),rgba(236,234,225,.75));
+  backdrop-filter:blur(10px);
+  transition:border-color .3s;
+}
+nav.solid{border-color:var(--line)}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;gap:26px}
+.brand{font-family:var(--mono);font-size:.82rem;letter-spacing:.22em;font-weight:500;text-decoration:none;white-space:nowrap}
+.brand b{color:var(--signal);font-weight:500}
+.navlinks{display:flex;gap:22px;margin-left:auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
+.navlinks a{color:var(--ink-dim);text-decoration:none;transition:color .2s}
+.navlinks a:hover{color:var(--ink)}
+.langs{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-left:18px}
+.langs button{
+  background:none;border:0;padding:6px 12px;font-family:var(--mono);font-size:.68rem;
+  letter-spacing:.08em;color:var(--ink-dim);transition:all .2s;
+}
+.langs button.on{background:var(--ink);color:var(--paper)}
+.langs button:focus-visible{outline:2px solid var(--signal);outline-offset:-2px}
+@media(max-width:900px){.navlinks{display:none}.langs{margin-left:auto}}
+
+/* ---------- hero ---------- */
+#hero{min-height:100svh;display:flex;align-items:center;overflow:hidden}
+#triad{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero-in{position:relative;z-index:2;width:100%;padding:120px 0 90px}
+.kicker{display:flex;align-items:center;gap:14px;margin-bottom:34px;flex-wrap:wrap}
+.kicker .rule{width:44px;height:1px;background:var(--signal)}
+h1.statement{
+  font-size:clamp(2.9rem,7.6vw,6.4rem);
+  font-weight:340;max-width:15ch;
+}
+h1.statement em{font-style:italic;font-weight:480;color:var(--signal)}
+.hero-sub{
+  font-size:clamp(1.05rem,1.7vw,1.3rem);color:var(--ink-dim);
+  max-width:620px;margin-top:34px;font-weight:400;
+}
+.hero-sub b{color:var(--ink);font-weight:500}
+.cue{
+  position:absolute;bottom:26px;left:28px;z-index:2;
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-faint);
+}
+.cue .ln{display:inline-block;width:34px;height:1px;background:var(--ink-faint);margin-right:12px;vertical-align:middle;animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleX(.4);opacity:.4}50%{transform:scaleX(1);opacity:1}}
+
+/* ---------- section heads ---------- */
+.shead{max-width:740px;margin-bottom:58px}
+.shead h2{font-size:clamp(2.1rem,4.6vw,3.6rem);margin:16px 0 18px}
+.shead h2 em{font-style:italic;color:var(--signal)}
+.shead p{font-size:1.12rem;color:var(--ink-dim)}
+
+/* ---------- 01 · el patrón ---------- */
+.pat{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:start}
+@media(max-width:880px){.pat{grid-template-columns:1fr;gap:30px}}
+.concepts{list-style:none;border-top:1px solid var(--line)}
+.concepts li{border-bottom:1px solid var(--line)}
+.concepts button{
+  width:100%;background:none;border:0;text-align:left;
+  display:flex;align-items:baseline;gap:16px;justify-content:space-between;
+  padding:15px 4px;font-family:var(--mono);font-size:.92rem;letter-spacing:.02em;color:var(--ink);
+  transition:padding .2s,color .2s;
+}
+.concepts button:hover,.concepts li.on button{color:var(--signal);padding-left:14px}
+.concepts li.on button{background:var(--signal-soft)}
+.concepts .n{font-size:.72rem;color:var(--ink-faint);white-space:nowrap}
+.concepts li.on .n{color:var(--signal)}
+.readout{
+  position:sticky;top:92px;border:1px solid var(--line);background:var(--paper-2);
+  padding:30px 30px 26px;min-height:280px;
+}
+.readout .rlabel{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-faint)}
+.readout h3{font-size:1.55rem;margin:12px 0 6px}
+.readout .rcount{font-family:var(--mono);font-size:.78rem;color:var(--signal);margin-bottom:18px}
+.readout .rnames{display:flex;flex-wrap:wrap;gap:8px}
+.readout .rnames span{
+  font-family:var(--mono);font-size:.72rem;padding:5px 10px;border:1px solid var(--line);
+  background:var(--paper);border-radius:2px;color:var(--ink-dim);
+}
+@media(max-width:880px){.readout{position:static}}
+
+/* ---------- 02 · el archivo: salas y placas ---------- */
+.room{padding:64px 0 8px}
+.roomhead{display:grid;grid-template-columns:110px 1fr;gap:26px;align-items:baseline;margin-bottom:26px}
+.room-no{font-family:var(--serif);font-style:italic;font-weight:340;font-size:clamp(2.6rem,5vw,4rem);color:var(--paper-3);-webkit-text-stroke:1px var(--ink-dim);line-height:1}
+.roomhead h3{font-size:clamp(1.5rem,2.8vw,2.15rem)}
+.roomhead .rq{font-family:var(--mono);font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:10px}
+.room-blurb{color:var(--ink-dim);max-width:640px;margin:2px 0 14px;grid-column:2}
+@media(max-width:700px){.roomhead{grid-template-columns:1fr;gap:6px}.room-blurb{grid-column:1}}
+
+.plaque{
+  display:grid;grid-template-columns:86px 1fr 190px;gap:26px;
+  padding:34px 0 32px;border-top:1px solid var(--line);
+}
+.plaque:last-child{border-bottom:1px solid var(--line)}
+.cat{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);letter-spacing:.14em;padding-top:8px}
+.cat .yr{display:block;margin-top:8px;color:var(--ink-faint)}
+.pmain h4{font-size:clamp(1.35rem,2.4vw,1.7rem);letter-spacing:-.01em}
+.pmain .event{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px}
+.thesis{font-size:1.05rem;margin-top:12px;color:var(--ink);font-weight:500;max-width:62ch}
+.detail{margin-top:10px;color:var(--ink-dim);font-size:.97rem;max-width:68ch}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.tags span{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;color:var(--ink-dim);
+  border:1px solid var(--line);padding:3px 8px;border-radius:2px;background:var(--paper-2);
+  cursor:default;transition:all .2s;
+}
+.tags span:hover{color:var(--signal);border-color:var(--signal)}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px}
+.links a{
+  font-family:var(--mono);font-size:.78rem;color:var(--ink);text-decoration:none;
+  border-bottom:1px solid var(--signal);padding-bottom:1px;transition:color .2s;
+}
+.links a:hover{color:var(--signal)}
+.links a::after{content:"↗";font-size:.68rem;margin-left:4px;color:var(--signal)}
+.pside{display:flex;flex-direction:column;align-items:flex-end;gap:12px;padding-top:6px}
+@media(max-width:820px){
+  .plaque{grid-template-columns:1fr}
+  .pside{flex-direction:row;align-items:center;order:-1;justify-content:space-between}
+  .cat{padding-top:0}
+}
+
+/* sellos de estado */
+.stamp{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;
+  padding:7px 12px 6px;border:1.6px solid currentColor;border-radius:3px;white-space:nowrap;
+  font-weight:500;
+}
+.stamp.public{color:var(--verify)}
+.stamp.soon{color:var(--signal);border-style:dashed}
+.stamp.private{
+  color:var(--stamp);transform:rotate(-4deg);
+  box-shadow:0 0 0 1px rgba(160,58,46,.15);
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='30'%3E%3Cfilter id='r'%3E%3CfeTurbulence baseFrequency='0.6' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -0.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='white' filter='url(%23r)'/%3E%3C/svg%3E");
+  mask-size:cover;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='30'%3E%3Cfilter id='r'%3E%3CfeTurbulence baseFrequency='0.6' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -0.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='white' filter='url(%23r)'/%3E%3C/svg%3E");
+  -webkit-mask-size:cover;
+}
+.stamp.private.thunk{animation:thunk .45s cubic-bezier(.16,1,.3,1) both}
+@keyframes thunk{0%{transform:rotate(-4deg) scale(1.6);opacity:0}60%{transform:rotate(-4deg) scale(.96);opacity:1}100%{transform:rotate(-4deg) scale(1)}}
+
+/* puerta cerrada */
+.door{
+  margin:52px 0 8px;border:1.5px dashed var(--line);padding:26px 30px;
+  display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  color:var(--ink-dim);background:repeating-linear-gradient(-45deg,transparent 0 14px,rgba(22,23,28,.025) 14px 28px);
+}
+.door .dname{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--ink)}
+.door .dnote{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em}
+
+/* ---------- vitrinas (secciones oscuras) ---------- */
+.vitrine{background:var(--vit);color:var(--bone);position:relative;overflow:hidden}
+.vitrine::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.16) 3px);opacity:.35;
+}
+.vitrine .eyebrow{color:var(--signal-d)}
+.vitrine h2,.vitrine h3,.vitrine h4{color:var(--bone)}
+.vitrine ::selection{background:var(--signal-d);color:var(--vit)}
+.vframe{border-top:6px solid var(--paper);border-bottom:6px solid var(--paper)}
+.vinner{position:relative;z-index:2}
+
+/* VIGÍA */
+.vhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+.reticle{width:18px;height:18px;position:relative;flex:none}
+.reticle::before,.reticle::after{content:"";position:absolute;background:var(--signal-d)}
+.reticle::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px)}
+.reticle::after{top:50%;left:0;right:0;height:1px;transform:translateY(-.5px)}
+.reticle i{position:absolute;inset:3px;border:1px solid var(--signal-d);border-radius:50%;animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vtitle{font-size:clamp(3.4rem,10vw,7.6rem);font-weight:320;letter-spacing:-.03em;line-height:.9}
+.vtitle em{font-style:italic;font-weight:480;color:var(--signal-d)}
+.vlede{font-family:var(--serif);font-size:clamp(1.25rem,2.4vw,1.8rem);font-weight:340;max-width:680px;margin-top:26px;line-height:1.32}
+.vlede b{color:var(--signal-d);font-weight:480;font-style:italic}
+.vlede .strike{text-decoration:line-through;text-decoration-color:#ff5d52;text-decoration-thickness:2px;opacity:.6}
+.vquote{font-family:var(--mono);font-size:.82rem;color:var(--bone-dim);margin-top:20px;letter-spacing:.04em}
+.vstats{display:flex;gap:44px;margin:44px 0 8px;flex-wrap:wrap;font-family:var(--mono);font-size:.74rem;color:var(--bone-dim)}
+.vstats b{display:block;color:var(--bone);font-size:1.7rem;font-weight:400;letter-spacing:.01em}
+.vstats .amber b{color:var(--signal-d)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--vline);border:1px solid var(--vline);margin-top:44px}
+@media(max-width:760px){.vgrid{grid-template-columns:1fr}}
+.vgrid>div{background:var(--vit-2);padding:32px 30px}
+.vgrid .gt{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--signal-d);margin-bottom:14px}
+.vgrid .old .gt{color:var(--bone-dim)}
+.vgrid .q{font-family:var(--mono);font-size:.88rem;padding:8px 0;border-top:1px solid rgba(233,228,214,.07);color:var(--bone-dim)}
+.vgrid .new .q{color:var(--bone)}
+.found{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
+.found span{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;border:1px solid var(--vline);padding:7px 13px;border-radius:2px;color:var(--bone-dim)}
+.found span b{color:var(--signal-d);font-weight:500}
+.break12{
+  margin-top:34px;border-left:2px solid var(--signal-d);padding:4px 0 4px 22px;
+  max-width:720px;color:var(--bone-dim);font-size:.98rem;
+}
+.break12 b{color:var(--bone);font-weight:500}
+.vlinks{display:flex;flex-wrap:wrap;gap:10px;margin-top:40px}
+.vlinks a{
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-decoration:none;
+  border:1px solid var(--vline);padding:10px 16px;border-radius:2px;color:var(--bone);
+  transition:all .2s;background:rgba(233,228,214,.02);
+}
+.vlinks a:hover{border-color:var(--signal-d);color:var(--signal-d)}
+.vlinks a.star{border-color:var(--signal-d);color:var(--signal-d)}
+.vlinks a small{color:var(--bone-dim);margin-left:6px}
+
+/* sala restringida */
+.rcases{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:44px}
+@media(max-width:880px){.rcases{grid-template-columns:1fr}}
+.rcase{border:1px solid var(--vline);background:var(--vit-2);padding:38px 34px;position:relative}
+.rcase .stamp.private{position:absolute;top:26px;right:24px}
+.rcase h4{font-size:clamp(1.6rem,3vw,2.1rem);margin:6px 0 4px}
+.rcase .thesis{color:var(--bone);font-weight:400;font-family:var(--serif);font-style:italic;font-size:1.14rem;margin-top:14px}
+.rcase .detail{color:var(--bone-dim);margin-top:14px}
+.rcase .links a{color:var(--bone);border-bottom-color:var(--signal-d)}
+.rcase .links a:hover{color:var(--signal-d)}
+.rcase .novideo{font-family:var(--mono);font-size:.7rem;color:var(--bone-dim);margin-top:16px;letter-spacing:.08em}
+
+/* ---------- 03 · doctrina ---------- */
+.laws{border-top:1px solid var(--line);counter-reset:law}
+.law{display:grid;grid-template-columns:86px 1fr;gap:26px;padding:30px 0;border-bottom:1px solid var(--line)}
+.law .lno{font-family:var(--mono);font-size:.78rem;color:var(--signal);letter-spacing:.14em;padding-top:10px}
+.law h4{font-size:clamp(1.3rem,2.4vw,1.7rem)}
+.law p{color:var(--ink-dim);margin-top:8px;max-width:66ch}
+@media(max-width:700px){.law{grid-template-columns:1fr;gap:8px}}
+.codified{
+  margin-top:40px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.82rem;color:var(--ink-dim);
+}
+.codified a{color:var(--ink);border-bottom:1px solid var(--signal);text-decoration:none;padding-bottom:1px}
+.codified a:hover{color:var(--signal)}
+.reveal{padding-top:90px;text-align:left}
+.reveal h3{font-size:clamp(2rem,5.4vw,4.1rem);max-width:20ch}
+.reveal h3 b{color:var(--signal);font-weight:400;font-variant-numeric:tabular-nums}
+.reveal h3 em{font-style:italic}
+
+/* ---------- anexo · obra invitada ---------- */
+.guest{
+  border:1px solid var(--line);outline:1px solid var(--line);outline-offset:5px;
+  padding:40px 38px;background:var(--paper-2);
+}
+.guest .glabel{font-family:var(--mono);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--signal)}
+.guest h4{font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 4px}
+.guest .credit{font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--ink);margin-top:12px}
+.guest .detail{margin-top:12px}
+.guest .links{margin-top:18px}
+
+/* ---------- 04 · retrato ---------- */
+.portrait{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+@media(max-width:880px){.portrait{grid-template-columns:1fr;gap:40px}}
+.questions{list-style:none;border-top:1px solid var(--line)}
+.questions li{
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.55rem);
+  padding:22px 4px;border-bottom:1px solid var(--line);line-height:1.3;
+}
+.questions li::before{content:"— ";color:var(--signal);font-style:normal}
+.constants h4{font-family:var(--mono);font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;margin-bottom:16px}
+.constants p{color:var(--ink-dim);margin-bottom:16px;font-size:.99rem}
+.constants p b{color:var(--ink);font-weight:500}
+.persona{margin-top:44px;max-width:820px}
+.persona p{font-size:1.08rem;color:var(--ink);margin-bottom:18px}
+.persona p.dim{color:var(--ink-dim);font-size:1rem}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.cta a{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-decoration:none;
+  border:1.5px solid var(--ink);padding:12px 20px;border-radius:2px;color:var(--ink);transition:all .2s;
+}
+.cta a:hover{background:var(--ink);color:var(--paper)}
+.cta a.amber{border-color:var(--signal);color:var(--signal)}
+.cta a.amber:hover{background:var(--signal);color:var(--paper)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:60px 0 70px;background:var(--paper-2)}
+.foot{display:flex;justify-content:space-between;gap:36px;flex-wrap:wrap}
+.seal{max-width:560px}
+.seal .slabel{font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px}
+.seal code{
+  display:block;font-family:var(--mono);font-size:.74rem;color:var(--verify);
+  word-break:break-all;line-height:1.6;border:1px solid var(--line);
+  padding:14px 16px;background:var(--paper);border-radius:2px;
+}
+.seal .snote{font-size:.82rem;color:var(--ink-dim);margin-top:12px;font-family:var(--mono)}
+.fmeta{text-align:right;font-family:var(--mono);font-size:.74rem;color:var(--ink-dim);line-height:2}
+.fmeta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--signal)}
+.fmeta a:hover{color:var(--signal)}
+@media(max-width:760px){.fmeta{text-align:left}}
+
+/* accesibilidad */
+a:focus-visible,button:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;transition:none}
+  .cue .ln{animation:none}
+  .reticle i{animation:none}
+  .stamp.private.thunk{animation:none}
+}
+</style>
+</head>
+<body id="top">
+
+<noscript>
+  <div style="max-width:760px;margin:40px auto;padding:0 28px;font-family:system-ui">
+    <p><strong>Anna Tchijova — evidencia computacional.</strong></p>
+    <p>Este sitio se renderiza con JavaScript y tu navegador lo tiene desactivado. No hay versión plausible sobre datos rotos: solo los enlaces esenciales.</p>
+    <p><a href="https://github.com/annatchijova">GitHub</a> · <a href="https://www.linkedin.com/in/anna-tchijova/">LinkedIn</a> · <a href="https://annatchijova.github.io/vigia/vigia.html">VIGÍA</a></p>
+  </div>
+</noscript>
+
+<nav id="topnav" aria-label="Principal">
+  <div class="nav-in">
+    <a class="brand" href="#top">ANNA&nbsp;<b>TCHIJOVA</b></a>
+    <div class="navlinks">
+      <a href="#pattern" data-i18n="nav_pattern">El patrón</a>
+      <a href="#archive" data-i18n="nav_archive">El archivo</a>
+      <a href="#doctrine" data-i18n="nav_doctrine">La doctrina</a>
+      <a href="#portrait" data-i18n="nav_portrait">Retrato</a>
+    </div>
+    <div class="langs" role="group" aria-label="Idioma / Language / Язык">
+      <button type="button" data-lang="es" class="on">ES</button>
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="ru">RU</button>
+    </div>
+  </div>
+</nav>
+
+<header id="hero">
+  <canvas id="triad" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="kicker rv">
+      <span class="rule"></span>
+      <span class="eyebrow" data-i18n="kicker">Investigadora computacional independiente</span>
+    </div>
+    <h1 class="statement rv d1" data-i18n-html="statement">Sistemas que pueden demostrar <em>por qué</em> decidieron.</h1>
+    <p class="hero-sub rv d2" data-i18n-html="herosub"></p>
+    <p class="cue rv d3"><span class="ln"></span><span data-i18n="cue">Desplazate para inferir</span></p>
+  </div>
+</header>
+
+<section id="pattern" class="pad">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="eyebrow" data-i18n="pat_eyebrow">01 · El patrón</span>
+      <h2 data-i18n-html="pat_h2">Antes de los proyectos, <em>las obsesiones</em>.</h2>
+      <p data-i18n="pat_p"></p>
+    </div>
+    <div class="pat">
+      <ul class="concepts rv d1" id="concepts"></ul>
+      <aside class="readout rv d2" id="readout" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<section id="archive" class="pad" style="padding-bottom:46px">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="eyebrow" data-i18n="arc_eyebrow">02 · El archivo</span>
+      <h2 data-i18n-html="arc_h2">Cinco salas, <em>una pregunta cada una</em>.</h2>
+      <p data-i18n="arc_p"></p>
+    </div>
+  </div>
+  <div id="rooms"></div>
+</section>
+
+<template id="tpl-vigia">
+  <section class="vitrine vframe" id="vigia" style="margin:26px 0 58px">
+    <div class="wrap vinner" style="padding:clamp(64px,8vw,110px) 28px">
+      <div class="vhead rv">
+        <span class="reticle" aria-hidden="true"><i></i></span>
+        <span class="eyebrow" data-i18n="v_eyebrow">Pieza central · Sala I</span>
+      </div>
+      <h3 class="vtitle rv">VIG<em>Í</em>A</h3>
+      <p class="vlede rv d1" data-i18n-html="v_lede"></p>
+      <p class="vquote rv d2" data-i18n="v_quote"></p>
+      <div class="vstats rv d2">
+        <div class="amber"><b data-count="118838">0</b><span data-i18n="v_s1">líneas de código</span></div>
+        <div><b>22</b><span data-i18n="v_s2">vectores canónicos</span></div>
+        <div><b>0</b><span data-i18n="v_s3">modelos opacos en el veredicto</span></div>
+        <div><b>7+1</b><span data-i18n="v_s4">siete IA, una humana</span></div>
+      </div>
+      <div class="vgrid rv">
+        <div class="old">
+          <div class="gt" data-i18n="v_old_t">La pregunta vieja · IoC</div>
+          <div class="q" data-i18n="v_old_1">¿Qué hash?</div>
+          <div class="q" data-i18n="v_old_2">¿Qué IP?</div>
+          <div class="q" data-i18n="v_old_3">¿Qué archivo se tocó?</div>
+        </div>
+        <div class="new">
+          <div class="gt" data-i18n="v_new_t">La pregunta nueva · IoI</div>
+          <div class="q" data-i18n="v_new_1">¿Por qué esta secuencia?</div>
+          <div class="q" data-i18n="v_new_2">¿Por qué este orden y no otro?</div>
+          <div class="q" data-i18n="v_new_3">¿A quién le conviene que parezca un accidente?</div>
+        </div>
+      </div>
+      <div class="found rv">
+        <span data-i18n="v_found">Fundamentos:</span>
+        <span><b>Peirce</b></span><span><b>Grice</b></span><span><b>Eco</b></span><span><b>ENFSI</b></span><span><b>Daubert</b></span>
+      </div>
+      <p class="break12 rv" data-i18n-html="v_break"></p>
+      <div class="vlinks rv">
+        <a class="star" href="https://github.com/annatchijova/vigia-intent-analysis">repo</a>
+        <a href="https://youtu.be/NOquYzUwMkg">video</a>
+        <a href="https://annatchijova.github.io/vigia/vigia.html"><span data-i18n="lk_site">sitio</span><small>EN</small></a>
+        <a href="https://annatchijova.github.io/vigia/vigia-es.html"><span data-i18n="lk_site">sitio</span><small>ES</small></a>
+        <a href="https://annatchijova.github.io/vigia/vigia-ru.html"><span data-i18n="lk_site">sitio</span><small>RU</small></a>
+        <a href="https://annatchijova.github.io/vigia/vigia_diagrams.html" data-i18n="lk_diagrams">diagramas</a>
+        <a href="https://annatchijova.github.io/vigia/vigia_commands_en.html" data-i18n="lk_commands">comandos</a>
+        <a href="https://annatchijova.github.io/vigia/simulador.html"><span data-i18n="lk_sim">simulador</span><small>ES</small></a>
+        <a href="https://annatchijova.github.io/vigia/simulator.html"><span data-i18n="lk_sim">simulador</span><small>EN</small></a>
+        <a href="https://github.com/annatchijova/vigia-cases">dataset</a>
+      </div>
+    </div>
+  </section>
+</template>
+
+<section class="vitrine" id="restricted">
+  <div class="wrap vinner pad">
+    <div class="shead rv">
+      <span class="eyebrow" data-i18n="r_eyebrow">Sala restringida</span>
+      <h2 data-i18n-html="r_h2">Dos piezas se exhiben <em>a puertas cerradas</em>.</h2>
+      <p style="color:var(--bone-dim)" data-i18n="r_p"></p>
+    </div>
+    <div class="rcases">
+      <article class="rcase rv">
+        <span class="stamp private" data-i18n="st_private">Privado</span>
+        <div class="cat" style="color:var(--bone-dim)" data-i18n="janus_cat">Simulación adversarial · Factor humano</div>
+        <h4>JANUS</h4>
+        <p class="thesis" data-i18n="janus_thesis"></p>
+        <p class="detail" data-i18n="janus_detail"></p>
+      </article>
+      <article class="rcase rv d1">
+        <span class="stamp private" data-i18n="st_private">Privado</span>
+        <div class="cat" style="color:var(--bone-dim)" data-i18n="phylo_cat">Ingeniería evolutiva · Performance</div>
+        <h4>PHYLO</h4>
+        <p class="thesis" data-i18n="phylo_thesis"></p>
+        <p class="detail" data-i18n="phylo_detail"></p>
+        <div class="links">
+          <a href="https://phylo-oeqw.vercel.app/">demo</a>
+          <a href="https://phylo-anna-tchijova.vercel.app/" data-i18n="lk_runs">corridas reales</a>
+        </div>
+        <p class="novideo" data-i18n="phylo_novideo">Video: en preparación</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="doctrine" class="pad">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="eyebrow" data-i18n="doc_eyebrow">03 · La doctrina</span>
+      <h2 data-i18n-html="doc_h2">Seis leyes, <em>ningún misterio</em>.</h2>
+      <p data-i18n="doc_p"></p>
+    </div>
+    <div class="laws" id="laws"></div>
+    <p class="codified rv" data-i18n-html="doc_codified"></p>
+    <div class="reveal rv">
+      <h3 data-i18n-html="doc_reveal">No eran <b id="nproj">23</b> proyectos. <em>Era un solo programa de investigación.</em></h3>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<section id="annex" class="pad" style="padding-top:70px;padding-bottom:70px">
+  <div class="wrap">
+    <div class="guest rv">
+      <span class="glabel" data-i18n="g_label">Anexo · Obra invitada</span>
+      <h4>REBOUND</h4>
+      <p class="credit" data-i18n="g_credit"></p>
+      <p class="detail" data-i18n="g_detail"></p>
+      <div class="links">
+        <a href="https://github.com/annatchijova/rebound">repo</a>
+        <a href="https://rebound-olga.duckdns.org/">demo</a>
+        <a href="https://www.youtube.com/watch?v=pFYyWHYeHPc">video</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<section id="portrait" class="pad">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="eyebrow" data-i18n="por_eyebrow">04 · Retrato</span>
+      <h2 data-i18n-html="por_h2">La autora, <em>en constantes</em>.</h2>
+    </div>
+    <div class="portrait">
+      <ul class="questions rv" id="questions"></ul>
+      <div class="constants rv d1">
+        <h4 data-i18n="con_h">Constantes</h4>
+        <p data-i18n-html="con_1"></p>
+        <p data-i18n-html="con_2"></p>
+        <p data-i18n-html="con_3"></p>
+      </div>
+    </div>
+    <div class="persona rv">
+      <p data-i18n="per_1"></p>
+      <p class="dim" data-i18n="per_2"></p>
+      <div class="cta">
+        <a class="amber" href="https://github.com/annatchijova/vigia-intent-analysis" data-i18n="cta_vigia">Explorar VIGÍA</a>
+        <a href="https://github.com/annatchijova">GitHub</a>
+        <a href="https://www.linkedin.com/in/anna-tchijova/">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="seal rv">
+      <div class="slabel" data-i18n="f_seal">Sello del catálogo · SHA-256</div>
+      <code id="sealhash">computando…</code>
+      <p class="snote" data-i18n="f_note"></p>
+    </div>
+    <div class="fmeta rv d1">
+      <a href="https://github.com/annatchijova">github.com/annatchijova</a><br>
+      <a href="https://www.linkedin.com/in/anna-tchijova/">linkedin.com/in/anna-tchijova</a><br>
+      <span data-i18n="f_hand">hecho a mano · un solo archivo</span><br>
+      <span>© 2026 Anna Tchijova</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ============================================================
+   I18N — chrome + secciones estáticas
+   ============================================================ */
+const I18N = {
+es: {
+  title: "Anna Tchijova — Evidencia computacional",
+  nav_pattern: "El patrón", nav_archive: "El archivo", nav_doctrine: "La doctrina", nav_portrait: "Retrato",
+  kicker: "Investigadora computacional independiente",
+  statement: "Sistemas que pueden demostrar <em>por qué</em> decidieron.",
+  herosub: "Forense digital, semiótica de C.S. Peirce y aritmética exacta. Construyo motores deterministas donde <b>el veredicto queda sellado antes de que un LLM pronuncie una palabra</b> — y cualquiera puede verificarlo offline, bit a bit.",
+  cue: "Desplazate para inferir",
+
+  pat_eyebrow: "01 · El patrón",
+  pat_h2: "Antes de los proyectos, <em>las obsesiones</em>.",
+  pat_p: "Diez ideas aparecen una y otra vez, en dominios que no se tocan. Pasá el cursor o tocá cada concepto para ver dónde reaparece. Los conteos no están escritos a mano: se computan del catálogo, acá, en tu navegador.",
+  r_label: "Traza", r_pick: "Elegí un concepto", r_pieces: "piezas", r_piece: "pieza",
+
+  arc_eyebrow: "02 · El archivo",
+  arc_h2: "Cinco salas, <em>una pregunta cada una</em>.",
+  arc_p: "Esto no es un portfolio: es la ruta curatorial de un programa de investigación. Cada sala abre con una pregunta; cada pieza es un intento de responderla con evidencia verificable.",
+  room_word: "Sala",
+
+  v_eyebrow: "Pieza central · Sala I",
+  v_lede: "Un motor forense que no pregunta <span class=\"strike\">qué pasó</span>, sino <b>por qué — y a quién le conviene</b>.",
+  v_quote: "«Hacer que mentir sea computacionalmente caro.»",
+  v_s1: "líneas de código", v_s2: "vectores canónicos", v_s3: "modelos opacos en el veredicto", v_s4: "siete IA, una humana",
+  v_old_t: "La pregunta vieja · IoC", v_old_1: "¿Qué hash?", v_old_2: "¿Qué IP?", v_old_3: "¿Qué archivo se tocó?",
+  v_new_t: "La pregunta nueva · IoI", v_new_1: "¿Por qué esta secuencia?", v_new_2: "¿Por qué este orden y no otro?", v_new_3: "¿A quién le conviene que parezca un accidente?",
+  v_found: "Fundamentos:",
+  v_break: "<b>BREAK-012 — la trampa del consenso:</b> cuatro modelos de acuerdo no producen prueba nueva. El acuerdo se registra; no se convierte en evidencia.",
+  lk_site: "sitio", lk_diagrams: "diagramas", lk_commands: "comandos", lk_sim: "simulador", lk_runs: "corridas reales", lk_play: "jugar", lk_app: "app", lk_service: "servicio", lk_page: "página", lk_demo: "demo",
+
+  st_public: "Público", st_soon: "Pronto", st_private: "Privado",
+  door_note: "Sala en preparación",
+
+  r_eyebrow: "Sala restringida",
+  r_h2: "Dos piezas se exhiben <em>a puertas cerradas</em>.",
+  r_p: "Lo privado también se cataloga. Estas fichas existen para que el hueco tenga forma.",
+  janus_cat: "Simulación adversarial · Factor humano",
+  janus_thesis: "Un simulador de ingeniería social que mide cinco ejes de decisión — donde la paranoia es tan error como la ingenuidad.",
+  janus_detail: "DIUCP: cinco dimensiones por persona. Su hallazgo central es CORRECTO_SILENCIOSO: acertar sin avisar también es una brecha. La neurodivergencia es diseño de primera clase, y el perfil individual jamás se comparte con el empleador.",
+  phylo_cat: "Ingeniería evolutiva · Performance",
+  phylo_thesis: "Ingeniería de performance evolutiva: fitness = (corrección × velocidad) / costo. El LLM propone mutaciones; el benchmark decide.",
+  phylo_detail: "Evolution Bundle sellado con SHA-256 y un verificador offline sin dependencias. Marketplace sobre Aurora DSQL.",
+  phylo_novideo: "Video: en preparación",
+
+  doc_eyebrow: "03 · La doctrina",
+  law_prefix: "LEY",
+  doc_h2: "Seis leyes, <em>ningún misterio</em>.",
+  doc_p: "Todo lo de arriba obedece las mismas reglas. No son aspiraciones: están codificadas, testeadas y selladas.",
+  doc_codified: "La doctrina no vive en este sitio: vive en un repositorio. <a href=\"https://github.com/annatchijova/SKILLS\">SKILLS — la doctrina codificada</a>",
+  doc_reveal: "No eran <b id=\"nproj\">%N%</b> %W%. <em>Era un solo programa de investigación.</em>",
+
+  g_label: "Anexo · Obra invitada",
+  g_credit: "Obra íntegra de Olga Vasilieva — mi madre. El repositorio vive en mi cuenta solo por conveniencia; el mérito, no.",
+  g_detail: "Sonar biomimético para personas ciegas: chirps CF-FM, respuesta de sala, una CNN y un agente Qwen.",
+
+  por_eyebrow: "04 · Retrato",
+  por_h2: "La autora, <em>en constantes</em>.",
+  con_h: "Constantes",
+  con_1: "<b>Periodismo de investigación.</b> Años de OSINT y fuentes humanas enseñan lo mismo que Daubert: una afirmación vale lo que vale su cadena de evidencia.",
+  con_2: "<b>Cocina profesional.</b> Chef vegana: mise en place es determinismo con delantal. Misma receta, mismo plato, cualquier noche.",
+  con_3: "<b>Colectivo VIGÍA.</b> Siete modelos de IA en auditoría cruzada permanente — y una humana que firma. El desacuerdo es parte del método.",
+  per_1: "Escribo poesía, canciones, ensayo y sátira. También escribo motores que no aceptan mentiras. Es el mismo oficio: elegir cada palabra como si alguien fuera a auditarla.",
+  per_2: "Trabaja en español, inglés y ruso.",
+  cta_vigia: "Explorar VIGÍA",
+
+  f_seal: "Sello del catálogo · SHA-256",
+  f_computing: "computando…",
+  f_unavailable: "sello no disponible en este contexto (se requiere HTTPS o localhost)",
+  f_note: "Computado en tu navegador sobre el catálogo canónico de esta página. Si el contenido cambia, el sello cambia.",
+  f_hand: "hecho a mano · un solo archivo"
+},
+en: {
+  title: "Anna Tchijova — Computational Evidence",
+  nav_pattern: "The pattern", nav_archive: "The archive", nav_doctrine: "The doctrine", nav_portrait: "Portrait",
+  kicker: "Independent computational researcher",
+  statement: "Systems that can prove <em>why</em> they decided.",
+  herosub: "Digital forensics, C.S. Peirce's semiotics and exact arithmetic. I build deterministic engines where <b>the verdict is sealed before an LLM says a single word</b> — and anyone can verify it offline, bit for bit.",
+  cue: "Scroll to infer",
+
+  pat_eyebrow: "01 · The pattern",
+  pat_h2: "Before the projects, <em>the obsessions</em>.",
+  pat_p: "Ten ideas keep surfacing across domains that never touch. Hover over or tap each concept to see where it reappears. The counts aren't hand-written: they're computed from the catalogue, right here, in your browser.",
+  r_label: "Trace", r_pick: "Pick a concept", r_pieces: "pieces", r_piece: "piece",
+
+  arc_eyebrow: "02 · The archive",
+  arc_h2: "Five rooms, <em>one question each</em>.",
+  arc_p: "This is not a portfolio: it is the curated route of a research programme. Each room opens with a question; each piece is an attempt to answer it with verifiable evidence.",
+  room_word: "Room",
+
+  v_eyebrow: "Centrepiece · Room I",
+  v_lede: "A forensic engine that doesn't ask <span class=\"strike\">what happened</span>, but <b>why — and who benefits</b>.",
+  v_quote: "\u201CMaking deception computationally expensive.\u201D",
+  v_s1: "lines of code", v_s2: "canonical vectors", v_s3: "opaque models in the verdict", v_s4: "seven AIs, one human",
+  v_old_t: "The old question · IoC", v_old_1: "Which hash?", v_old_2: "Which IP?", v_old_3: "Which file was touched?",
+  v_new_t: "The new question · IoI", v_new_1: "Why this sequence?", v_new_2: "Why this order and not another?", v_new_3: "Who benefits if it looks like an accident?",
+  v_found: "Foundations:",
+  v_break: "<b>BREAK-012 — the consensus trap:</b> four models in agreement produce no new proof. Agreement is recorded; it never becomes evidence.",
+  lk_site: "site", lk_diagrams: "diagrams", lk_commands: "commands", lk_sim: "simulator", lk_runs: "real runs", lk_play: "play", lk_app: "app", lk_service: "service", lk_page: "page", lk_demo: "demo",
+
+  st_public: "Public", st_soon: "Soon", st_private: "Private",
+  door_note: "Room in preparation",
+
+  r_eyebrow: "Restricted room",
+  r_h2: "Two pieces are shown <em>behind closed doors</em>.",
+  r_p: "Private work gets catalogued too. These plaques exist so the gap has a shape.",
+  janus_cat: "Adversarial simulation · Human factor",
+  janus_thesis: "A social-engineering simulator measuring five axes of decision — where paranoia is as much an error as naivety.",
+  janus_detail: "DIUCP: five dimensions per person. Its central finding is SILENT_CORRECT: getting it right without reporting is also a breach. Neurodivergence is first-class design, and the individual profile is never shared with the employer.",
+  phylo_cat: "Evolutionary engineering · Performance",
+  phylo_thesis: "Evolutionary performance engineering: fitness = (correctness × speed) / cost. The LLM proposes mutations; the benchmark decides.",
+  phylo_detail: "An Evolution Bundle sealed with SHA-256 and a zero-dependency offline verifier. Marketplace on Aurora DSQL.",
+  phylo_novideo: "Video: in preparation",
+
+  doc_eyebrow: "03 · The doctrine",
+  law_prefix: "LAW",
+  doc_h2: "Six laws, <em>no mystery</em>.",
+  doc_p: "Everything above obeys the same rules. They are not aspirations: they are encoded, tested and sealed.",
+  doc_codified: "The doctrine doesn't live on this site: it lives in a repository. <a href=\"https://github.com/annatchijova/SKILLS\">SKILLS — the doctrine, codified</a>",
+  doc_reveal: "It wasn't <b id=\"nproj\">%N%</b> %W%. <em>It was a single research programme.</em>",
+
+  g_label: "Annex · Guest work",
+  g_credit: "Entirely the work of Olga Vasilieva — my mother. The repository lives in my account for convenience; the credit does not.",
+  g_detail: "Biomimetic sonar for blind people: CF-FM chirps, room impulse response, a CNN and a Qwen agent.",
+
+  por_eyebrow: "04 · Portrait",
+  por_h2: "The author, <em>in constants</em>.",
+  con_h: "Constants",
+  con_1: "<b>Investigative journalism.</b> Years of OSINT and human sources teach the same lesson as Daubert: a claim is worth its chain of evidence.",
+  con_2: "<b>Professional kitchen.</b> Vegan chef: mise en place is determinism in an apron. Same recipe, same dish, any night.",
+  con_3: "<b>The VIGÍA collective.</b> Seven AI models in permanent cross-audit — and one human who signs. Disagreement is part of the method.",
+  per_1: "I write poetry, songs, essays and satire. I also write engines that won't accept lies. It is the same craft: choosing every word as if someone were going to audit it.",
+  per_2: "Works in Spanish, English and Russian.",
+  cta_vigia: "Explore VIGÍA",
+
+  f_seal: "Catalogue seal · SHA-256",
+  f_computing: "computing…",
+  f_unavailable: "seal unavailable in this context (HTTPS or localhost required)",
+  f_note: "Computed in your browser over this page's canonical catalogue. If the content changes, the seal changes.",
+  f_hand: "handmade · a single file"
+},
+ru: {
+  title: "Anna Tchijova — Вычислимые доказательства",
+  nav_pattern: "Паттерн", nav_archive: "Архив", nav_doctrine: "Доктрина", nav_portrait: "Портрет",
+  kicker: "Независимая исследовательница вычислительных систем",
+  statement: "Системы, которые могут доказать, <em>почему</em> они так решили.",
+  herosub: "Цифровая криминалистика, семиотика Ч.С. Пирса и точная арифметика. Я строю детерминированные движки, в которых <b>вердикт запечатан до того, как LLM произнесёт хоть слово</b>, — и любой может проверить его офлайн, бит в бит.",
+  cue: "Листайте, чтобы сделать вывод",
+
+  pat_eyebrow: "01 · Паттерн",
+  pat_h2: "Прежде проектов — <em>навязчивые идеи</em>.",
+  pat_p: "Десять идей всплывают снова и снова — в областях, которые не соприкасаются. Наведите курсор или коснитесь понятия, чтобы увидеть, где оно повторяется. Числа не написаны от руки: они вычисляются из каталога прямо здесь, в вашем браузере.",
+  r_label: "След", r_pick: "Выберите понятие", r_pieces: "экспонатов", r_piece: "экспонат",
+
+  arc_eyebrow: "02 · Архив",
+  arc_h2: "Пять залов — <em>по одному вопросу в каждом</em>.",
+  arc_p: "Это не портфолио, а кураторский маршрут исследовательской программы. Каждый зал открывается вопросом; каждый экспонат — попытка ответить на него проверяемыми доказательствами.",
+  room_word: "Зал",
+
+  v_eyebrow: "Центральный экспонат · Зал I",
+  v_lede: "Криминалистический движок, который спрашивает не <span class=\"strike\">что произошло</span>, а <b>почему — и кому это выгодно</b>.",
+  v_quote: "«Сделать ложь вычислительно дорогой.»",
+  v_s1: "строк кода", v_s2: "канонических векторов", v_s3: "непрозрачных моделей в вердикте", v_s4: "семь ИИ, один человек",
+  v_old_t: "Старый вопрос · IoC", v_old_1: "Какой хеш?", v_old_2: "Какой IP?", v_old_3: "Какой файл тронут?",
+  v_new_t: "Новый вопрос · IoI", v_new_1: "Почему эта последовательность?", v_new_2: "Почему этот порядок, а не другой?", v_new_3: "Кому выгодно, чтобы это выглядело случайностью?",
+  v_found: "Основания:",
+  v_break: "<b>BREAK-012 — ловушка консенсуса:</b> согласие четырёх моделей не порождает нового доказательства. Согласие фиксируется — но уликой не становится.",
+  lk_site: "сайт", lk_diagrams: "диаграммы", lk_commands: "команды", lk_sim: "симулятор", lk_runs: "реальные прогоны", lk_play: "играть", lk_app: "приложение", lk_service: "сервис", lk_page: "страница", lk_demo: "демо",
+
+  st_public: "Публично", st_soon: "Скоро", st_private: "Приватно",
+  door_note: "Зал готовится",
+
+  r_eyebrow: "Закрытый зал",
+  r_h2: "Два экспоната показывают <em>за закрытыми дверями</em>.",
+  r_p: "Приватное тоже каталогизируется. Эти таблички существуют, чтобы у пробела была форма.",
+  janus_cat: "Состязательная симуляция · Человеческий фактор",
+  janus_thesis: "Симулятор социальной инженерии, измеряющий пять осей решения, — где паранойя такая же ошибка, как наивность.",
+  janus_detail: "DIUCP: пять измерений на человека. Центральная находка — SILENT_CORRECT: поступить верно и промолчать — тоже брешь. Нейроотличность заложена в дизайн, а индивидуальный профиль никогда не передаётся работодателю.",
+  phylo_cat: "Эволюционная инженерия · Производительность",
+  phylo_thesis: "Эволюционная инженерия производительности: fitness = (корректность × скорость) / стоимость. LLM предлагает мутации; бенчмарк решает.",
+  phylo_detail: "Evolution Bundle, запечатанный SHA-256, и офлайн-верификатор без зависимостей. Маркетплейс на Aurora DSQL.",
+  phylo_novideo: "Видео: готовится",
+
+  doc_eyebrow: "03 · Доктрина",
+  law_prefix: "ЗАКОН",
+  doc_h2: "Шесть законов — <em>и никакой мистики</em>.",
+  doc_p: "Всё, что выше, подчиняется одним правилам. Это не благие намерения: они закодированы, протестированы и запечатаны.",
+  doc_codified: "Доктрина живёт не на этом сайте, а в репозитории. <a href=\"https://github.com/annatchijova/SKILLS\">SKILLS — доктрина в коде</a>",
+  doc_reveal: "Это были не <b id=\"nproj\">%N%</b> %W%. <em>Это была одна исследовательская программа.</em>",
+
+  g_label: "Приложение · Приглашённая работа",
+  g_credit: "Целиком работа Ольги Васильевой — моей мамы. Репозиторий живёт в моём аккаунте лишь для удобства; заслуга — нет.",
+  g_detail: "Биомиметический сонар для незрячих: чирпы CF-FM, импульсный отклик помещения, CNN и агент Qwen.",
+
+  por_eyebrow: "04 · Портрет",
+  por_h2: "Автор — <em>в константах</em>.",
+  con_h: "Константы",
+  con_1: "<b>Расследовательская журналистика.</b> Годы OSINT и работы с источниками учат тому же, что и Daubert: утверждение стоит ровно столько, сколько его цепочка доказательств.",
+  con_2: "<b>Профессиональная кухня.</b> Веган-шеф: mise en place — это детерминизм в фартуке. Один рецепт — одно блюдо, в любой вечер.",
+  con_3: "<b>Коллектив VIGÍA.</b> Семь моделей ИИ в постоянном перекрёстном аудите — и один человек, который подписывает. Разногласие — часть метода.",
+  per_1: "Я пишу стихи, песни, эссе и сатиру. И ещё пишу движки, которые не принимают ложь. Это одно ремесло: выбирать каждое слово так, будто его будут проверять.",
+  per_2: "Работает на испанском, английском и русском.",
+  cta_vigia: "Смотреть VIGÍA",
+
+  f_seal: "Печать каталога · SHA-256",
+  f_computing: "вычисляется…",
+  f_unavailable: "печать недоступна в этом контексте (нужен HTTPS или localhost)",
+  f_note: "Вычисляется в вашем браузере по каноническому каталогу этой страницы. Изменится содержимое — изменится печать.",
+  f_hand: "сделано вручную · один файл"
+}
+};
+
+/* ============================================================
+   DATA — el catálogo canónico
+   ============================================================ */
+const LAWS = [
+ {t:{es:"Ningún LLM decide.",en:"No LLM decides.",ru:"LLM не решает."},
+  p:{es:"El modelo narra después de que el veredicto quedó sellado. Explica; no participa.",
+     en:"The model narrates after the verdict is sealed. It explains; it doesn't take part.",
+     ru:"Модель рассказывает после того, как вердикт запечатан. Она объясняет — не участвует."}},
+ {t:{es:"Determinismo bit a bit.",en:"Bit-for-bit determinism.",ru:"Детерминизм бит в бит."},
+  p:{es:"Misma entrada, mismo hash, en cualquier máquina, cualquier día. Fraction en vez de float donde el resultado importa.",
+     en:"Same input, same hash, on any machine, any day. Fraction instead of float wherever the result matters.",
+     ru:"Один вход — один хеш, на любой машине, в любой день. Fraction вместо float там, где результат имеет значение."}},
+ {t:{es:"Abstenerse es un veredicto.",en:"Abstaining is a verdict.",ru:"Воздержаться — это вердикт."},
+  p:{es:"ABSTAIN es una salida de primera clase. Un sistema que no sabe decir «no sé» no sabe nada.",
+     en:"ABSTAIN is a first-class output. A system that can't say \u201CI don't know\u201D knows nothing.",
+     ru:"ABSTAIN — полноправный исход. Система, не умеющая сказать «не знаю», не знает ничего."}},
+ {t:{es:"Auditable de punta a punta.",en:"Auditable end to end.",ru:"Аудируемость от начала до конца."},
+  p:{es:"Cadenas de hash, ledgers append-only y verificadores offline en stdlib. La confianza no se pide: se verifica.",
+     en:"Hash chains, append-only ledgers, offline stdlib verifiers. Trust isn't requested: it's verified.",
+     ru:"Хеш-цепочки, append-only леджеры, офлайн-верификаторы на stdlib. Доверие не просят — его проверяют."}},
+ {t:{es:"Abducción antes que deducción.",en:"Abduction before deduction.",ru:"Абдукция прежде дедукции."},
+  p:{es:"Primero la mejor hipótesis, después la prueba. Y la navaja de Eco: no multiplicar intenciones sin necesidad.",
+     en:"First the best hypothesis, then the proof. And Eco's razor: don't multiply intentions beyond necessity.",
+     ru:"Сначала лучшая гипотеза, потом доказательство. И бритва Эко: не умножать умыслы без необходимости."}},
+ {t:{es:"Degradación honesta.",en:"Honest degradation.",ru:"Честная деградация."},
+  p:{es:"Si un dato falta o llegó dañado, el sistema lo dice fuerte. Nada de respuestas plausibles sobre datos rotos.",
+     en:"If data is missing or arrived damaged, the system says so loudly. No plausible answers over broken data.",
+     ru:"Если данных нет или они повреждены, система говорит об этом вслух. Никаких правдоподобных ответов на сломанных данных."}}
+];
+
+const QUESTIONS = {
+ es:["¿Puede la intención dejar huella medible?","¿Cuánta verdad cabe en un hash?","¿Qué le debe una máquina a quien la audita?","¿Se puede desconfiar con elegancia?"],
+ en:["Can intent leave a measurable trace?","How much truth fits in a hash?","What does a machine owe its auditor?","Can one distrust with elegance?"],
+ ru:["Может ли умысел оставить измеримый след?","Сколько правды помещается в хеш?","Что машина должна тому, кто её проверяет?","Можно ли не доверять элегантно?"]
+};
+
+const CONCEPTS = [
+ {id:"det",   n:{es:"determinismo bit a bit",en:"bit-for-bit determinism",ru:"детерминизм бит в бит"}},
+ {id:"frac",  n:{es:"aritmética exacta — Fraction",en:"exact arithmetic — Fraction",ru:"точная арифметика — Fraction"}},
+ {id:"chain", n:{es:"cadenas de hash append-only",en:"append-only hash chains",ru:"append-only хеш-цепочки"}},
+ {id:"narr",  n:{es:"el LLM narra, nunca decide",en:"the LLM narrates, never decides",ru:"LLM рассказывает, но не решает"}},
+ {id:"abst",  n:{es:"ABSTAIN como veredicto",en:"ABSTAIN as a verdict",ru:"ABSTAIN как вердикт"}},
+ {id:"off",   n:{es:"verificable offline",en:"verifiable offline",ru:"проверяемо офлайн"}},
+ {id:"peirce",n:{es:"semiótica de Peirce",en:"Peircean semiotics",ru:"семиотика Пирса"}},
+ {id:"corr",  n:{es:"puerta de corroboración",en:"corroboration gate",ru:"шлюз подтверждения"}},
+ {id:"base",  n:{es:"baseline propio, no promedio ajeno",en:"your own baseline, not someone else's average",ru:"своя базовая линия, а не чужое среднее"}},
+ {id:"keep",  n:{es:"nada se borra",en:"nothing gets deleted",ru:"ничто не удаляется"}}
+];
+
+const ROOMS = [
+ {no:"I",  q:{es:"¿Puede la intención dejar huella?",en:"Can intent leave a trace?",ru:"Может ли умысел оставить след?"},
+  b:{es:"Del indicador de compromiso al indicador de intención.",en:"From indicators of compromise to indicators of intent.",ru:"От индикаторов компрометации — к индикаторам умысла."}},
+ {no:"II", q:{es:"¿Quién habla, realmente?",en:"Who is really speaking?",ru:"Кто говорит на самом деле?"},
+  b:{es:"Identidad, estilo y manipulación como objetos medibles.",en:"Identity, style and manipulation as measurable objects.",ru:"Идентичность, стиль и манипуляция как измеримые объекты."}},
+ {no:"III",q:{es:"¿Puede una máquina rendir cuentas?",en:"Can a machine be held to account?",ru:"Может ли машина держать ответ?"},
+  b:{es:"Cajas negras, puertas de corroboración y decisiones auditables.",en:"Black boxes, corroboration gates and auditable decisions.",ru:"Чёрные ящики, шлюзы подтверждения и решения, которые можно проверить."}},
+ {no:"IV", q:{es:"¿Qué es recordar con custodia?",en:"What is memory under custody?",ru:"Что значит помнить — с цепочкой хранения?"},
+  b:{es:"Memoria de máquinas con cadena de custodia: nada se borra, todo deja rastro.",en:"Machine memory with a chain of custody: nothing is deleted, everything leaves a trace.",ru:"Память машин с цепочкой хранения: ничто не стирается, всё оставляет след."}},
+ {no:"V",  q:{es:"¿Puede lo serio jugarse?",en:"Can the serious be played?",ru:"Может ли серьёзное стать игрой?"},
+  b:{es:"La misma doctrina, en modo juego: forense, mitos y libros contables.",en:"The same doctrine, in play mode: forensics, myths and ledgers.",ru:"Та же доктрина — в игровой форме: криминалистика, мифы и гроссбухи."}}
+];
+
+const L = {
+ repo:{es:"repo",en:"repo",ru:"код"}, video:{es:"video",en:"video",ru:"видео"},
+ demo:{es:"demo",en:"demo",ru:"демо"}, play:{es:"jugar",en:"play",ru:"играть"},
+ app:{es:"app",en:"app",ru:"приложение"}, service:{es:"servicio",en:"service",ru:"сервис"},
+ page:{es:"página",en:"page",ru:"страница"}, scoring:{es:"scoring",en:"scoring",ru:"скоринг"},
+ norms:{es:"normativa",en:"regulations",ru:"нормативка"}
+};
+
+const PROJECTS = [
+ {id:"vigia", room:1, kind:"vitrine", status:"public", name:"VIGÍA", yr:"2026",
+  cat:{es:"Motor forense · Intención",en:"Forensic engine · Intent",ru:"Криминалистический движок · Умысел"},
+  event:"SANS FIND EVIL 2026",
+  thesis:{es:"Un motor forense que no pregunta qué pasó, sino por qué — y a quién le conviene.",
+          en:"A forensic engine that doesn't ask what happened but why — and who benefits.",
+          ru:"Криминалистический движок, который спрашивает не что произошло, а почему — и кому это выгодно."},
+  detail:{es:"IoC→IoI. Fraction exacta, cuatro hashes más HMAC, ABSTAIN de primera clase. El LLM narra después del veredicto sellado.",
+          en:"IoC→IoI. Exact Fraction, four hashes plus HMAC, first-class ABSTAIN. The LLM narrates after the sealed verdict.",
+          ru:"IoC→IoI. Точный Fraction, четыре хеша плюс HMAC, полноправный ABSTAIN. LLM рассказывает после запечатанного вердикта."},
+  tags:{es:["DFIR","semiótica","Daubert"],en:["DFIR","semiotics","Daubert"],ru:["DFIR","семиотика","Daubert"]},
+  links:[], c:["det","frac","chain","narr","abst","off","peirce","corr"]},
+
+ {id:"vigia-cases", room:1, kind:"plaque", status:"public", name:"vigia-cases", yr:"2026",
+  cat:{es:"Dataset · Benchmark",en:"Dataset · Benchmark",ru:"Датасет · Бенчмарк"},
+  event:{es:"Solicitado por Rob T. Lee · SANS",en:"Requested by Rob T. Lee · SANS",ru:"По запросу Роба Т. Ли · SANS"},
+  thesis:{es:"El benchmark DFIR público de VIGÍA: diez casos reales donde la pregunta no es qué pasó, sino si el motor sabe cuándo abstenerse.",
+          en:"VIGÍA's public DFIR benchmark: ten real cases where the question isn't what happened but whether the engine knows when to abstain.",
+          ru:"Публичный DFIR-бенчмарк VIGÍA: десять реальных дел, где вопрос не в том, что произошло, а в том, умеет ли движок воздержаться."},
+  detail:{es:"NIST CFReDS, DFRWS, Digital Corpora, Ali Hadi, Volatility. El caso 005 existe para provocar falsos positivos: la respuesta correcta es SUSPICION, no MALICE.",
+          en:"NIST CFReDS, DFRWS, Digital Corpora, Ali Hadi, Volatility. Case 005 exists to provoke false positives: the correct answer is SUSPICION, not MALICE.",
+          ru:"NIST CFReDS, DFRWS, Digital Corpora, Ali Hadi, Volatility. Дело 005 создано, чтобы провоцировать ложные срабатывания: правильный ответ — SUSPICION, а не MALICE."},
+  tags:{es:["benchmark","DFIR","ABSTAIN"],en:["benchmark","DFIR","ABSTAIN"],ru:["бенчмарк","DFIR","ABSTAIN"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/vigia-cases"}], c:["abst","det"]},
+
+ {id:"skills", room:1, kind:"plaque", status:"public", name:"SKILLS", yr:"2026",
+  cat:{es:"Doctrina · Herramientas",en:"Doctrine · Tooling",ru:"Доктрина · Инструменты"},
+  thesis:{es:"Diecisiete disciplinas de ingeniería codificadas como skills de Claude Code: la doctrina, ejecutable.",
+          en:"Seventeen engineering disciplines encoded as Claude Code skills: the doctrine, made executable.",
+          ru:"Семнадцать инженерных дисциплин, закодированных как skills для Claude Code: доктрина, ставшая исполняемой."},
+  detail:{es:"Determinismo, cadenas de custodia, degradación honesta, escritura defendible: cada regla que gobierna estos proyectos, escrita para que una IA la obedezca.",
+          en:"Determinism, custody chains, honest degradation, defensible writing — every rule governing these projects, written so an AI will obey it.",
+          ru:"Детерминизм, цепочки хранения, честная деградация, защитимое письмо — каждое правило этих проектов, записанное так, чтобы ИИ ему подчинялся."},
+  tags:{es:["Claude Code","doctrina"],en:["Claude Code","doctrine"],ru:["Claude Code","доктрина"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/SKILLS"}], c:["det","chain","peirce"]},
+
+ {id:"hivemind", room:1, kind:"plaque", status:"private", name:"HiveMind Tidal", yr:"2026",
+  cat:{es:"Infraestructura · IoT",en:"Infrastructure · IoT",ru:"Инфраструктура · IoT"},
+  thesis:{es:"Monitoreo hidrológico de ríos argentinos con la capa forense de VIGÍA debajo.",
+          en:"Hydrological monitoring of Argentine rivers with VIGÍA's forensic layer underneath.",
+          ru:"Гидрологический мониторинг аргентинских рек с криминалистическим слоем VIGÍA в основании."},
+  detail:{es:"Sensores, datos de PNA e INA, y la misma pregunta de siempre: si una lectura miente, ¿quién lo demuestra?",
+          en:"Sensors, PNA and INA data, and the same question as always: if a reading lies, who proves it?",
+          ru:"Датчики, данные PNA и INA — и всё тот же вопрос: если показание лжёт, кто это докажет?"},
+  tags:{es:["IoT","hidrología"],en:["IoT","hydrology"],ru:["IoT","гидрология"]},
+  links:[], c:["det","chain"]},
+
+ {id:"argos", room:2, kind:"plaque", status:"public", name:"ARGOS", yr:"2026",
+  cat:{es:"Análisis de discurso",en:"Discourse analysis",ru:"Анализ дискурса"},
+  thesis:{es:"Once marcos filosóficos — de Aristóteles a Orwell — convertidos en detectores deterministas.",
+          en:"Eleven philosophical frameworks — Aristotle to Orwell — turned into deterministic detectors.",
+          ru:"Одиннадцать философских рамок — от Аристотеля до Оруэлла — превращены в детерминированные детекторы."},
+  detail:{es:"Cada marco es aritmética exacta con Fraction; un LLM comenta después, nunca decide. Bilingüe ES/EN.",
+          en:"Each framework is exact arithmetic with Fraction; an LLM comments afterwards, never decides. Bilingual ES/EN.",
+          ru:"Каждая рамка — точная арифметика на Fraction; LLM комментирует после, но никогда не решает. Двуязычный ES/EN."},
+  tags:{es:["retórica","Fraction","detectores"],en:["rhetoric","Fraction","detectors"],ru:["риторика","Fraction","детекторы"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/argos"},{l:L.video,h:"https://youtu.be/xjaoEqFg9nk"},{l:L.demo,h:"https://argos-gray.vercel.app/"}],
+  c:["det","frac","narr","peirce"]},
+
+ {id:"corvus", room:2, kind:"plaque", status:"soon", name:"CORVUS", yr:"2026",
+  cat:{es:"Intención en equipos",en:"Intent in teams",ru:"Умысел в командах"},
+  event:"Slack Agent Builder Challenge 2026",
+  thesis:{es:"Análisis de intención en Slack: seis marcos, baseline por persona y una regla — una sola capa nunca acusa.",
+          en:"Intent analysis in Slack: six frameworks, a per-person baseline, and one rule — a single layer never accuses.",
+          ru:"Анализ умысла в Slack: шесть рамок, базовая линия для каждого человека и одно правило — один слой никогда не обвиняет."},
+  detail:{es:"Grice, Cialdini, Aristóteles, Berne, forense lingüística y Peirce. La puerta de corroboración exige que al menos dos capas coincidan antes de levantar la mano.",
+          en:"Grice, Cialdini, Aristotle, Berne, forensic linguistics and Peirce. The corroboration gate demands at least two layers agree before raising a hand.",
+          ru:"Грайс, Чалдини, Аристотель, Берн, лингвистическая криминалистика и Пирс. Шлюз подтверждения требует согласия минимум двух слоёв, прежде чем поднять руку."},
+  tags:{es:["Slack","corroboración","baseline"],en:["Slack","corroboration","baseline"],ru:["Slack","подтверждение","базовая линия"]},
+  links:[], c:["frac","narr","abst","corr","base","peirce"]},
+
+ {id:"stylometry", room:2, kind:"plaque", status:"public", name:"STYLOMETRY-CI", yr:"2026",
+  cat:{es:"Identidad forense · CI/CD",en:"Forensic identity · CI/CD",ru:"Криминалистика идентичности · CI/CD"},
+  thesis:{es:"Una puerta de identidad en GitLab CI: cada commit se compara contra la huella estilométrica de su autor.",
+          en:"An identity gate in GitLab CI: every commit is checked against its author's stylometric fingerprint.",
+          ru:"Шлюз идентичности в GitLab CI: каждый коммит сверяется со стилометрическим отпечатком автора."},
+  detail:{es:"Si el código no suena a vos, el pipeline lo dice. Autoría como superficie de ataque — y como evidencia.",
+          en:"If the code doesn't sound like you, the pipeline says so. Authorship as attack surface — and as evidence.",
+          ru:"Если код звучит не как вы, пайплайн это скажет. Авторство как поверхность атаки — и как доказательство."},
+  tags:{es:["estilometría","GitLab","autoría"],en:["stylometry","GitLab","authorship"],ru:["стилометрия","GitLab","авторство"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/stylometry"},{l:L.video,h:"https://www.youtube.com/watch?v=yrocVxE7qXE&t=42s"},{l:L.demo,h:"https://stylometry-ci-api-48658495111.us-central1.run.app/"}],
+  c:["det","base"]},
+
+ {id:"zolvi", room:3, kind:"plaque", status:"public", name:"ZOLVI", yr:"2026",
+  cat:{es:"Compliance · AML",en:"Compliance · AML",ru:"Комплаенс · AML"},
+  thesis:{es:"850 alertas AML por semana convertidas en scoring explicable — sin ML, sin LLM en el score.",
+          en:"850 AML alerts a week turned into explainable scoring — no ML, no LLM in the score.",
+          ru:"850 AML-оповещений в неделю превращены в объяснимый скоринг — без ML и без LLM в оценке."},
+  detail:{es:"Aritmética exacta, bundle sellado y un ledger auditable hecho con stdlib. Con n=1 no se entrena un modelo: se escribe una regla que un juez pueda leer.",
+          en:"Exact arithmetic, a sealed bundle and an audit ledger built on stdlib. With n=1 you don't train a model: you write a rule a judge can read.",
+          ru:"Точная арифметика, запечатанный bundle и аудируемый леджер на stdlib. При n=1 модель не обучают — пишут правило, которое сможет прочитать судья."},
+  tags:{es:["AML","Daubert","stdlib"],en:["AML","Daubert","stdlib"],ru:["AML","Daubert","stdlib"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/fintech"},{l:{es:"caso HAL-001",en:"case HAL-001",ru:"дело HAL-001"},h:"https://annatchijova.github.io/vigia/hal001.html"},{l:L.scoring,h:"https://annatchijova.github.io/vigia/hall9001_scoring.html"},{l:L.norms,h:"https://annatchijova.github.io/vigia/normativa.html"}],
+  c:["det","frac","chain","narr","abst","off"]},
+
+ {id:"orbit", room:3, kind:"plaque", status:"public", name:"ORBIT GUARDIAN", yr:"2026",
+  cat:{es:"Auditoría de código",en:"Code auditing",ru:"Аудит кода"},
+  event:"GitLab Transcend 2026",
+  thesis:{es:"Auditoría forense de merge requests: payloads escondidos, ingeniería social y escalamiento de privilegios.",
+          en:"Forensic auditing of merge requests: hidden payloads, social engineering, privilege escalation.",
+          ru:"Криминалистический аудит merge request'ов: скрытые payload'ы, социальная инженерия, эскалация привилегий."},
+  detail:{es:"Tres núcleos deterministas y una puerta de corroboración: un núcleo solo nunca bloquea a nadie.",
+          en:"Three deterministic cores and a corroboration gate: a single core never blocks anyone.",
+          ru:"Три детерминированных ядра и шлюз подтверждения: одно ядро в одиночку никого не блокирует."},
+  tags:{es:["GitLab","MR","corroboración"],en:["GitLab","MR","corroboration"],ru:["GitLab","MR","подтверждение"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/orbit-guardian"},{l:L.video,h:"https://youtu.be/ygQ4QEA7Sjg"},{l:L.demo,h:"https://orbit-guardian-orcin.vercel.app/"}],
+  c:["det","abst","corr","narr"]},
+
+ {id:"mutante", room:3, kind:"plaque", status:"public", name:"MUTANTE", yr:"2026",
+  cat:{es:"Evaluación adversarial",en:"Adversarial evaluation",ru:"Состязательная оценка"},
+  event:"SANS AI Cybersecurity 2026",
+  thesis:{es:"Un evaluador semiótico adversarial que muta sus propios ataques y deja un rastro de auditoría estilo Daubert.",
+          en:"An adversarial semiotic evaluator that mutates its own attacks and leaves a Daubert-grade audit trail.",
+          ru:"Состязательный семиотический оценщик, который мутирует собственные атаки и оставляет аудиторский след уровня Daubert."},
+  detail:{es:"Mutaciones dirigidas por bandits, campañas continuas y un registro donde cada hallazgo conserva su procedencia.",
+          en:"Bandit-driven mutations, continuous campaigns, and a record where every finding keeps its provenance.",
+          ru:"Мутации под управлением bandit-алгоритмов, непрерывные кампании и журнал, где каждая находка сохраняет происхождение."},
+  tags:{es:["LLM","adversarial","bandits"],en:["LLM","adversarial","bandits"],ru:["LLM","состязательность","bandits"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/mutante"},{l:L.video,h:"https://youtu.be/20HKBpQbK-E"},{l:L.service,h:"https://mutante-core-engine-430944783183.us-central1.run.app/"},{l:L.page,h:"https://annatchijova.github.io/vigia/mutante.html"}],
+  c:["det","chain","narr","peirce"]},
+
+ {id:"cronos", room:3, kind:"plaque", status:"soon", name:"CRONOS", yr:"2026",
+  cat:{es:"Observabilidad de agentes",en:"Agent observability",ru:"Наблюдаемость агентов"},
+  event:"Slack Agent Builder Challenge 2026",
+  thesis:{es:"Una caja negra para agentes de IA: registra la decisión mientras ocurre, no cuando conviene contarla.",
+          en:"A black box for AI agents: it records the decision as it happens, not when it's convenient to retell.",
+          ru:"Чёрный ящик для ИИ-агентов: решение записывается в момент, когда оно происходит, а не когда его удобно пересказать."},
+  detail:{es:"Recalls, herramientas, hipótesis descartadas y confianza en Fraction (37/50 = 74%), todo encadenado con SHA-256.",
+          en:"Recalls, tools, discarded hypotheses and confidence as a Fraction (37/50 = 74%), all chained with SHA-256.",
+          ru:"Обращения к памяти, инструменты, отброшенные гипотезы и уверенность в виде Fraction (37/50 = 74%) — всё сцеплено SHA-256."},
+  tags:{es:["agentes","caja negra","SHA-256"],en:["agents","black box","SHA-256"],ru:["агенты","чёрный ящик","SHA-256"]},
+  links:[], c:["det","frac","chain","keep"]},
+
+ {id:"bridge", room:3, kind:"plaque", status:"soon", name:"CORVUS–CRONOS BRIDGE", yr:"2026",
+  cat:{es:"Integración",en:"Integration",ru:"Интеграция"},
+  thesis:{es:"El puente entre CORVUS y CRONOS: lo que uno detecta, el otro lo deja registrado.",
+          en:"The bridge between CORVUS and CRONOS: what one detects, the other puts on record.",
+          ru:"Мост между CORVUS и CRONOS: что один обнаруживает, другой заносит в протокол."},
+  detail:{es:"Copy mínimo a propósito: es plomería con cadena de custodia.",
+          en:"Minimal copy on purpose: it's plumbing with a chain of custody.",
+          ru:"Минимум текста намеренно: это сантехника с цепочкой хранения."},
+  tags:{es:["integración"],en:["integration"],ru:["интеграция"]},
+  links:[], c:["chain"]},
+
+ {id:"raven", room:4, kind:"plaque", status:"public", name:"RAVEN-MEMORY", yr:"2026",
+  cat:{es:"Memoria de máquinas",en:"Machine memory",ru:"Память машин"},
+  event:"Qwen Cloud Hackathon",
+  thesis:{es:"La memoria como campo, no como base de datos: Voronoi, estados ternarios y consolidación durante el sueño.",
+          en:"Memory as a field, not a database: Voronoi cells, ternary states and consolidation during sleep.",
+          ru:"Память как поле, а не база данных: ячейки Вороного, тернарные состояния и консолидация во сне."},
+  detail:{es:"SVD espectral, estilometría del recuerdo y una cadena SHA-256 que impide reescribir el pasado.",
+          en:"Spectral SVD, stylometry of recall, and a SHA-256 chain that forbids rewriting the past.",
+          ru:"Спектральный SVD, стилометрия воспоминаний и цепь SHA-256, запрещающая переписывать прошлое."},
+  tags:{es:["memoria","Voronoi","SHA-256"],en:["memory","Voronoi","SHA-256"],ru:["память","Вороной","SHA-256"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/raven-memory"},{l:L.video,h:"https://youtu.be/pJaJqLzpxr0"},{l:L.page,h:"https://annatchijova.github.io/vigia/raven-memory-2.html"}],
+  c:["chain","base","keep"]},
+
+ {id:"mneme", room:4, kind:"plaque", status:"soon", name:"MNEME", yr:"2026",
+  cat:{es:"Custodia de memoria",en:"Memory custody",ru:"Хранение памяти"},
+  thesis:{es:"Cadena de custodia por recuerdo: cuando un RAG se envenena, el taint se propaga y se ve.",
+          en:"Chain of custody per memory: when a RAG gets poisoned, the taint propagates and shows.",
+          ru:"Цепочка хранения для каждого воспоминания: когда RAG отравлен, порча распространяется — и её видно."},
+  detail:{es:"Ranking exacto con Fraction y un verificador offline en stdlib. Fusión de STIGMERGY y raven-memory.",
+          en:"Exact Fraction ranking and an offline stdlib verifier. A fusion of STIGMERGY and raven-memory.",
+          ru:"Точное ранжирование на Fraction и офлайн-верификатор на stdlib. Слияние STIGMERGY и raven-memory."},
+  tags:{es:["RAG","taint","custodia"],en:["RAG","taint","custody"],ru:["RAG","taint","хранение"]},
+  links:[], c:["frac","chain","off","keep"]},
+
+ {id:"mnemcp", room:4, kind:"plaque", status:"soon", name:"MNEME MCP", yr:"2026",
+  cat:{es:"Protocolo · MCP",en:"Protocol · MCP",ru:"Протокол · MCP"},
+  thesis:{es:"MNEME servido como servidor MCP: la custodia de memoria, disponible para cualquier agente.",
+          en:"MNEME served as an MCP server: memory custody, available to any agent.",
+          ru:"MNEME как MCP-сервер: цепочка хранения памяти, доступная любому агенту."},
+  detail:{es:"Mismo motor, otra puerta.",en:"Same engine, another door.",ru:"Тот же движок, другая дверь."},
+  tags:{es:["MCP"],en:["MCP"],ru:["MCP"]},
+  links:[], c:["chain","keep"]},
+
+ {id:"stigmergy", room:4, kind:"plaque", status:"soon", name:"STIGMERGY", yr:"2026",
+  cat:{es:"Sistemas distribuidos",en:"Distributed systems",ru:"Распределённые системы"},
+  event:"CockroachDB × AWS Hackathon",
+  thesis:{es:"Convergencia sin coordinador: agentes que se leen las huellas, como hormigas sobre CockroachDB.",
+          en:"Convergence without a coordinator: agents reading each other's traces, like ants over CockroachDB.",
+          ru:"Сходимость без координатора: агенты читают следы друг друга, как муравьи, поверх CockroachDB."},
+  detail:{es:"Cadenas de hash por nodo y un ledger Merkle global. Nada se borra: FORGOTTEN y ORPHANED son estados, no ausencias.",
+          en:"Per-node hash chains and a global Merkle ledger. Nothing gets deleted: FORGOTTEN and ORPHANED are states, not absences.",
+          ru:"Хеш-цепочки на узел и глобальный Merkle-леджер. Ничто не удаляется: FORGOTTEN и ORPHANED — состояния, а не пустоты."},
+  tags:{es:["stigmergia","Merkle","distribuido"],en:["stigmergy","Merkle","distributed"],ru:["стигмергия","Merkle","распределённость"]},
+  links:[], c:["chain","keep","det"]},
+
+ {id:"legacy", room:4, kind:"plaque", status:"private", name:"DIGITAL LEGACY", yr:"2026",
+  cat:{es:"Herencia digital",en:"Digital inheritance",ru:"Цифровое наследство"},
+  thesis:{es:"Una bóveda de herencia digital: tres de cinco custodios, condición de inactividad y un timelock que no se apura.",
+          en:"A digital-inheritance vault: three of five custodians, an inactivity condition and a timelock that won't be rushed.",
+          ru:"Хранилище цифрового наследства: трое из пяти хранителей, условие неактивности и timelock, который не торопится."},
+  detail:{es:"Pensada para terminar en manos de un escribano, no de una startup.",
+          en:"Designed to end up in a notary's hands, not a startup's.",
+          ru:"Задумано так, чтобы оказаться в руках нотариуса, а не стартапа."},
+  tags:{es:["Shamir","timelock"],en:["Shamir","timelock"],ru:["Шамир","timelock"]},
+  links:[], c:["off","keep"]},
+
+ {id:"poes", room:4, kind:"door", status:"soon", name:"POE'S CABINET", yr:"2026",
+  cat:{es:"",en:"",ru:""}, thesis:{es:"",en:"",ru:""}, detail:{es:"",en:"",ru:""},
+  tags:{es:[],en:[],ru:[]}, links:[], c:[]},
+
+ {id:"sudosu", room:5, kind:"plaque", status:"public", name:"SUDO SU", yr:"2026",
+  cat:{es:"Juego · Forense",en:"Game · Forensics",ru:"Игра · Криминалистика"},
+  thesis:{es:"Una terminal Linux gamificada: diez niveles para atrapar a un intruso con ls, grep y paciencia.",
+          en:"A gamified Linux terminal: ten levels to catch an intruder with ls, grep and patience.",
+          ru:"Геймифицированный терминал Linux: десять уровней, чтобы поймать взломщика с помощью ls, grep и терпения."},
+  detail:{es:"«Hace cinco semanas no sabías qué era ls. Ahora tenés que atrapar a un hacker.» Corre entera en el navegador. Bilingüe.",
+          en:"\u201CFive weeks ago you didn't know what ls was. Now you have to catch a hacker.\u201D Runs entirely in the browser. Bilingual.",
+          ru:"«Пять недель назад вы не знали, что такое ls. Теперь вам ловить хакера.» Работает целиком в браузере. Двуязычная."},
+  tags:{es:["juego","terminal","DFIR"],en:["game","terminal","DFIR"],ru:["игра","терминал","DFIR"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/sudo-su"},{l:L.video,h:"https://www.youtube.com/watch?v=x42KCpo_nps"},{l:L.play,h:"https://sudo-su-anna-tchijova.vercel.app/game"}],
+  c:[]},
+
+ {id:"f1", room:5, kind:"plaque", status:"public", name:"F1-MYTHOS", yr:"2026",
+  cat:{es:"Juego · Museo",en:"Game · Museum",ru:"Игра · Музей"},
+  thesis:{es:"Un museo interactivo de Fórmula 1 y un juego de swipe: ¿dato o mito?",
+          en:"An interactive Formula 1 museum and a swipe game: fact or myth?",
+          ru:"Интерактивный музей Формулы-1 и свайп-игра: факт или миф?"},
+  detail:{es:"Dos HTML autocontenidos, bilingües. Hecho por fanática, sin afiliación con la FOM.",
+          en:"Two self-contained HTML files, bilingual. Fan-made, unaffiliated with FOM.",
+          ru:"Два самодостаточных HTML-файла, двуязычных. Сделано фанаткой, без аффилиации с FOM."},
+  tags:{es:["F1","juego"],en:["F1","game"],ru:["Ф-1","игра"]},
+  links:[{l:L.repo,h:"https://github.com/annatchijova/f1-mythos"},{l:L.video,h:"https://youtu.be/0lzwGvd82nw"},{l:L.play,h:"https://f1-mythos.vercel.app/"}],
+  c:[]},
+
+ {id:"ledger", room:5, kind:"plaque", status:"public", name:"BLACK LEDGER", yr:"2026",
+  cat:{es:"Producto · Finanzas",en:"Product · Finance",ru:"Продукт · Финансы"},
+  thesis:{es:"Un divisor de gastos de fantasía oscura, diseñado para TDAH y disfunción ejecutiva.",
+          en:"A dark-fantasy expense splitter designed for ADHD and executive dysfunction.",
+          ru:"Тёмно-фэнтезийный делитель расходов, спроектированный для СДВГ и исполнительной дисфункции."},
+  detail:{es:"El Cubo recibe lo que sea; el Elixir lo transforma; el Veredicto decide sin drama. Construido en MeDo.",
+          en:"The Cube takes anything; the Elixir transmutes it; the Verdict decides without drama. Built on MeDo.",
+          ru:"Куб принимает что угодно; Эликсир преображает; Вердикт решает без драмы. Собрано на MeDo."},
+  tags:{es:["producto","accesibilidad"],en:["product","accessibility"],ru:["продукт","доступность"]},
+  links:[{l:L.app,h:"https://app-bd6pq4k49729.appmedo.com/"},{l:L.video,h:"https://youtu.be/qNOZ-J0JKKA"}],
+  c:[]},
+
+ {id:"janus", room:"R", kind:"restricted", status:"private", name:"JANUS", yr:"2026",
+  cat:{es:"Simulación adversarial · Factor humano",en:"Adversarial simulation · Human factor",ru:"Состязательная симуляция · Человеческий фактор"},
+  thesis:{es:"Un simulador de ingeniería social que mide cinco ejes de decisión — donde la paranoia es tan error como la ingenuidad.",
+          en:"A social-engineering simulator measuring five axes of decision — where paranoia is as much an error as naivety.",
+          ru:"Симулятор социальной инженерии, измеряющий пять осей решения, — где паранойя такая же ошибка, как наивность."},
+  detail:{es:"DIUCP, CORRECTO_SILENCIOSO, neurodivergencia como diseño de primera clase.",
+          en:"DIUCP, SILENT_CORRECT, neurodivergence as first-class design.",
+          ru:"DIUCP, SILENT_CORRECT, нейроотличность как первоклассный дизайн."},
+  tags:{es:[],en:[],ru:[]}, links:[], c:["base","det","abst"]},
+
+ {id:"phylo", room:"R", kind:"restricted", status:"private", name:"PHYLO", yr:"2026",
+  cat:{es:"Ingeniería evolutiva · Performance",en:"Evolutionary engineering · Performance",ru:"Эволюционная инженерия · Производительность"},
+  thesis:{es:"Fitness = (corrección × velocidad) / costo. El LLM propone mutaciones; el benchmark decide.",
+          en:"Fitness = (correctness × speed) / cost. The LLM proposes mutations; the benchmark decides.",
+          ru:"Fitness = (корректность × скорость) / стоимость. LLM предлагает мутации; бенчмарк решает."},
+  detail:{es:"Evolution Bundle sellado con SHA-256; verificador offline sin dependencias.",
+          en:"Evolution Bundle sealed with SHA-256; zero-dependency offline verifier.",
+          ru:"Evolution Bundle, запечатанный SHA-256; офлайн-верификатор без зависимостей."},
+  tags:{es:[],en:[],ru:[]}, links:[], c:["det","chain","off","narr"]}
+];
+
+/* ============================================================
+   LÓGICA — render, i18n, motion, sello
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let CUR = 'es';
+let ACTIVE_CONCEPT = null;
+let FIRST_RENDER = true;
+const COUNT_DONE = {};
+let SEAL_HASH = null, SEAL_FAILED = false;
+
+const txt = (v, lang) => (typeof v === 'string' ? v : (v && v[lang]) || '');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf = lang => new Intl.NumberFormat(lang === 'es' ? 'es-AR' : lang);
+
+function plWord(lang, n){
+  if (lang === 'es') return n === 1 ? 'proyecto' : 'proyectos';
+  if (lang === 'en') return n === 1 ? 'project' : 'projects';
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'проект';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'проекта';
+  return 'проектов';
+}
+
+/* ---------- render: conceptos + readout ---------- */
+function conceptHits(cid){ return PROJECTS.filter(p => p.c.includes(cid)); }
+
+function renderConcepts(lang){
+  const ul = $('#concepts');
+  ul.innerHTML = CONCEPTS.map((c, i) => {
+    const n = conceptHits(c.id).length;
+    return `<li data-c="${c.id}"${c.id === ACTIVE_CONCEPT ? ' class="on"' : ''}>
+      <button type="button">
+        <span>${esc(c.n[lang])}</span>
+        <span class="n">${String(i+1).padStart(2,'0')} · ${n}</span>
+      </button></li>`;
+  }).join('');
+  ul.querySelectorAll('li').forEach(li => {
+    const act = () => { ACTIVE_CONCEPT = li.dataset.c; renderConcepts(lang); renderReadout(lang); };
+    li.querySelector('button').addEventListener('click', act);
+    li.addEventListener('mouseenter', act);
+  });
+}
+
+function renderReadout(lang){
+  const r = $('#readout'), D = I18N[lang];
+  if (!ACTIVE_CONCEPT){
+    r.innerHTML = `<div class="rlabel">${esc(D.r_label)}</div><h3>${esc(D.r_pick)}</h3>`;
+    return;
+  }
+  const c = CONCEPTS.find(x => x.id === ACTIVE_CONCEPT);
+  const hits = conceptHits(c.id);
+  r.innerHTML = `<div class="rlabel">${esc(D.r_label)}</div>
+    <h3>${esc(c.n[lang])}</h3>
+    <div class="rcount">${hits.length} ${esc(hits.length === 1 ? D.r_piece : D.r_pieces)}</div>
+    <div class="rnames">${hits.map(p => `<span>${esc(p.name)}</span>`).join('')}</div>`;
+}
+
+/* ---------- render: salas ---------- */
+function stampHTML(status, lang){
+  const D = I18N[lang];
+  const cls = status === 'public' ? 'public' : status === 'soon' ? 'soon' : 'private';
+  const label = status === 'public' ? D.st_public : status === 'soon' ? D.st_soon : D.st_private;
+  return `<span class="stamp ${cls}">${esc(label)}</span>`;
+}
+
+function plaqueHTML(p, lang){
+  const ev = p.event ? `<div class="event">${esc(txt(p.event, lang))}</div>` : '';
+  const tags = p.tags[lang].length ? `<div class="tags">${p.tags[lang].map(t => `<span>${esc(t)}</span>`).join('')}</div>` : '';
+  const links = p.links.length ? `<div class="links">${p.links.map(k => `<a href="${esc(k.h)}">${esc(k.l[lang])}</a>`).join('')}</div>` : '';
+  return `<article class="plaque rv">
+    <div class="cat">${esc(p.cat[lang])}<span class="yr">${esc(p.yr)}</span></div>
+    <div class="pmain">
+      <h4>${esc(p.name)}</h4>${ev}
+      <p class="thesis">${esc(p.thesis[lang])}</p>
+      <p class="detail">${esc(p.detail[lang])}</p>
+      ${tags}${links}
+    </div>
+    <div class="pside">${stampHTML(p.status, lang)}</div>
+  </article>`;
+}
+
+function renderRooms(lang, instant){
+  const host = $('#rooms'), D = I18N[lang];
+  host.innerHTML = '';
+  ROOMS.forEach((room, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'room';
+    let inner = `<div class="wrap">
+      <div class="roomhead rv">
+        <div class="room-no">${room.no}</div>
+        <div><span class="rq">${esc(D.room_word)} ${room.no}</span>
+          <h3>${esc(room.q[lang])}</h3>
+          <p class="room-blurb">${esc(room.b[lang])}</p>
+        </div>
+      </div>`;
+    inner += `<div class="plaques">`;
+    PROJECTS.filter(p => p.room === idx + 1 && p.kind === 'plaque').forEach(p => { inner += plaqueHTML(p, lang); });
+    inner += `</div>`;
+    const door = PROJECTS.find(p => p.room === idx + 1 && p.kind === 'door');
+    if (door) inner += `<div class="door rv"><span class="dname">${esc(door.name)}</span><span class="dnote">${esc(D.door_note)}</span></div>`;
+    inner += `</div>`;
+    wrap.innerHTML = inner;
+    host.appendChild(wrap);
+    if (idx === 0){
+      const tpl = document.getElementById('tpl-vigia');
+      const head = wrap.querySelector('.roomhead');
+      head.after(tpl.content.cloneNode(true));
+    }
+  });
+  if (instant) host.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+  wireMotion(host);
+}
+
+function renderLaws(lang){
+  $('#laws').innerHTML = LAWS.map((l, i) => `<div class="law rv">
+    <div class="lno">${esc(I18N[lang].law_prefix)}-${String(i+1).padStart(2,'0')}</div>
+    <div><h4>${esc(l.t[lang])}</h4><p>${esc(l.p[lang])}</p></div>
+  </div>`).join('');
+}
+
+function renderQuestions(lang){
+  $('#questions').innerHTML = QUESTIONS[lang].map(q => `<li class="rv">${esc(q)}</li>`).join('');
+}
+
+/* ---------- i18n ---------- */
+function applyLang(lang){
+  CUR = lang;
+  const D = I18N[lang];
+  document.documentElement.lang = lang;
+  document.title = D.title;
+  $$('.langs button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+  const instant = !FIRST_RENDER;
+  renderConcepts(lang); renderReadout(lang); renderRooms(lang, instant);
+  renderLaws(lang); renderQuestions(lang);
+  if (instant){ $$('#laws .rv, #questions .rv').forEach(el => el.classList.add('in')); }
+  $$('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (D[k] != null) el.textContent = D[k]; });
+  $$('[data-i18n-html]').forEach(el => {
+    const k = el.dataset.i18nHtml; if (D[k] == null) return;
+    let h = D[k];
+    if (k === 'doc_reveal') h = h.replace('%N%', PROJECTS.length).replace('%W%', plWord(lang, PROJECTS.length));
+    el.innerHTML = h;
+  });
+  const seal = $('#sealhash');
+  seal.textContent = SEAL_HASH ? SEAL_HASH : (SEAL_FAILED ? D.f_unavailable : D.f_computing);
+  wireMotion(document);
+  try { history.replaceState(null, '', '?lang=' + lang); } catch(e) {}
+  FIRST_RENDER = false;
+}
+
+/* ---------- motion: reveals, thunk, count-ups ---------- */
+const seen = new WeakSet();
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const el = en.target;
+    io.unobserve(el);
+    el.classList.add('in');
+    if (el.matches('.stamp.private') && !REDUCED) el.classList.add('thunk');
+    if (el.hasAttribute('data-count')) runCount(el, parseInt(el.dataset.count, 10), 'lines');
+    if (el.id === 'nproj') runCount(el, PROJECTS.length, 'nproj');
+  });
+}, { threshold: 0.12 });
+
+function runCount(el, target, key){
+  const fmt = nf(CUR);
+  if (REDUCED || COUNT_DONE[key]){ el.textContent = fmt.format(target); COUNT_DONE[key] = true; return; }
+  const t0 = performance.now(), dur = 1100;
+  const step = t => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt.format(Math.round(target * e));
+    if (k < 1) requestAnimationFrame(step); else COUNT_DONE[key] = true;
+  };
+  requestAnimationFrame(step);
+}
+
+function wireMotion(root){
+  (root === document ? $$('.rv, .stamp.private, [data-count], #nproj')
+                     : Array.from(root.querySelectorAll('.rv, .stamp.private, [data-count], #nproj')))
+  .forEach(el => {
+    if (seen.has(el)) return;
+    seen.add(el);
+    if (el.classList.contains('in')){
+      if (el.hasAttribute('data-count')) runCount(el, parseInt(el.dataset.count, 10), 'lines');
+      if (el.id === 'nproj') runCount(el, PROJECTS.length, 'nproj');
+      return;
+    }
+    io.observe(el);
+  });
+}
+
+/* ---------- canvas: tríadas semióticas ---------- */
+function triadCanvas(){
+  const cv = $('#triad'); if (!cv || typeof cv.getContext !== 'function') return;
+  let ctx = null;
+  try { ctx = cv.getContext('2d'); } catch(e) {}
+  if (!ctx) return;
+  let W, H, pts = [];
+  const N = 44, LINK = 130, TRI = 96;
+  function size(){
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function reset(){
+    pts = Array.from({length: N}, (_, i) => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22
+    }));
+  }
+  function frame(move){
+    ctx.clearRect(0, 0, W, H);
+    if (move) pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -8) p.x = W + 8; if (p.x > W + 8) p.x = -8;
+      if (p.y < -8) p.y = H + 8; if (p.y > H + 8) p.y = -8;
+    });
+    const near = [];
+    for (let i = 0; i < N; i++){ near[i] = [];
+      for (let j = i + 1; j < N; j++){
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.hypot(dx, dy);
+        if (d < LINK){
+          ctx.strokeStyle = `rgba(22,23,28,${(1 - d / LINK) * .13})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
+          if (d < TRI) near[i].push(j);
+        }
+      }
+    }
+    for (let i = 0; i < N; i++)
+      for (const j of near[i])
+        for (const k of near[j] || [])
+          if (near[i].includes(k)){
+            ctx.fillStyle = 'rgba(150,102,10,.055)';
+            ctx.strokeStyle = 'rgba(150,102,10,.16)';
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.lineTo(pts[k].x, pts[k].y);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+          }
+    pts.forEach(p => {
+      ctx.fillStyle = 'rgba(22,23,28,.5)';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2); ctx.fill();
+    });
+  }
+  size(); reset(); frame(false);
+  if (!REDUCED){
+    const loop = () => { frame(true); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  }
+  let rt; window.addEventListener('resize', () => {
+    clearTimeout(rt); rt = setTimeout(() => { size(); reset(); frame(false); }, 160);
+  });
+}
+
+/* ---------- sello SHA-256 del catálogo ---------- */
+function canon(v){
+  if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+  if (v && typeof v === 'object')
+    return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + canon(v[k])).join(',') + '}';
+  return JSON.stringify(v);
+}
+async function computeSeal(){
+  try {
+    if (!window.crypto || !crypto.subtle) throw new Error('no subtle');
+    const payload = canon({ projects: PROJECTS, laws: LAWS, concepts: CONCEPTS });
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload));
+    SEAL_HASH = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch(e){ SEAL_FAILED = true; }
+  const seal = $('#sealhash');
+  if (seal) seal.textContent = SEAL_HASH || I18N[CUR].f_unavailable;
+}
+
+/* ---------- init ---------- */
+(function init(){
+  let lang = null;
+  try { lang = new URLSearchParams(location.search).get('lang'); } catch(e) {}
+  if (!['es','en','ru'].includes(lang)){
+    const nav = (navigator.language || 'es').slice(0, 2).toLowerCase();
+    lang = ['es','en','ru'].includes(nav) ? nav : 'es';
+  }
+  applyLang(lang);
+  $$('.langs button').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang)));
+  const nav = $('#topnav');
+  const onScroll = () => nav.classList.toggle('solid', window.scrollY > 12);
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+  triadCanvas();
+  computeSeal();
+})();
+</script>
+</body>
+</html>
