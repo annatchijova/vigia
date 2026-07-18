@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CORVUS × CRONOS — Architecture</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#171a23; --line:#2a2f3d;
+    --ink:#eef0f6; --muted:#8b90a3;
+    --corvus:#7c6cf0; --corvus-d:#26213f;
+    --gate:#e0a63a; --gate-d:#3a3122;
+    --cronos:#3bc2a5; --cronos-d:#173330;
+    --verdict:#e05a5a; --verdict-d:#3a1f22;
+    --qwen:#5aa8e0; --qwen-d:#1c2b3a;
+    --seal:#f4f4f8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:40px 20px 70px;
+  }
+  main{max-width:980px; margin:0 auto;}
+  header{text-align:center; margin-bottom:34px;}
+  header h1{margin:0 0 6px; font-size:26px; font-weight:800; letter-spacing:-.01em;}
+  header p{margin:0; color:var(--muted); font-size:14px;}
+  .flow{display:flex; flex-direction:column; align-items:center; gap:0;}
+  .arrow{color:var(--muted); font-size:20px; line-height:1; margin:6px 0; opacity:.85;}
+  .arrow .lbl{display:block; font-size:11px; letter-spacing:.04em; margin-top:2px; color:var(--muted);}
+  .box{
+    border-radius:12px; border:1px solid var(--line); padding:14px 18px;
+    background:var(--panel); text-align:center;
+  }
+  .box h3{margin:0 0 3px; font-size:14px; font-weight:700;}
+  .box p{margin:0; font-size:12px; color:var(--muted); line-height:1.45;}
+  .tag{
+    display:inline-block; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:700; padding:3px 9px; border-radius:999px; margin-bottom:8px;
+  }
+
+  .input-box{width:280px;}
+
+  .corvus-wrap{
+    width:100%; border:1px dashed var(--corvus); border-radius:16px;
+    padding:20px 20px 24px; background:linear-gradient(180deg,var(--corvus-d),transparent);
+  }
+  .corvus-wrap .tag{background:var(--corvus); color:#fff;}
+  .l1l5{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:14px;}
+  .l1l5 .box{background:#1c1836; border-color:#3c3470;}
+  .l1l5 .box h3{font-size:12.5px;}
+  .l1l5 .box p{font-size:10.5px;}
+  .l6-row{display:flex; justify-content:center;}
+  .l6-row .box{background:#241f45; border-color:var(--corvus); width:340px;}
+
+  .gate-box{width:520px; border-color:var(--gate); background:var(--gate-d);}
+  .gate-box .tag{background:var(--gate); color:#241a02;}
+
+  .branch{display:flex; align-items:flex-start; gap:26px; margin:2px 0 0;}
+  .branch .path{display:flex; flex-direction:column; align-items:center;}
+  .branch .arrow{margin:4px 0;}
+  .silent-box{width:170px; background:#20232d; border-style:dashed;}
+  .silent-box h3{color:var(--muted);}
+
+  .parallel{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:660px;}
+  .parallel .box{text-align:left;}
+  .verdict-col{background:var(--verdict-d); border-color:var(--verdict);}
+  .verdict-col .tag{background:var(--verdict); color:#2a0d0d;}
+  .cronos-col{background:var(--cronos-d); border-color:var(--cronos);}
+  .cronos-col .tag{background:var(--cronos); color:#062420;}
+
+  .seal-box{
+    width:560px; background:var(--seal); color:#111; border:none;
+    box-shadow:0 8px 30px rgba(244,244,248,.15);
+  }
+  .seal-box h3{font-size:15px;}
+  .seal-box p{color:#444;}
+
+  .qwen-box{width:420px; border-color:var(--qwen); background:var(--qwen-d);}
+  .qwen-box .tag{background:var(--qwen); color:#031a2b;}
+
+  .out-box{width:520px; border-style:dashed;}
+
+  footer{
+    max-width:660px; margin:34px auto 0; text-align:center;
+    color:var(--muted); font-size:12.5px; line-height:1.6;
+    border-top:1px solid var(--line); padding-top:18px;
+  }
+  footer b{color:var(--ink);}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>CORVUS × CRONOS</h1>
+    <p>One pipeline, one codebase — detection → gate → seal → narration</p>
+  </header>
+
+  <div class="flow">
+
+    <div class="box input-box">
+      <h3>TEXT ARTIFACT</h3>
+      <p>message · transcript · DM · alert · any text to evaluate</p>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="corvus-wrap">
+      <span class="tag">CORVUS — analysis layer (parallel)</span>
+      <div class="l1l5">
+        <div class="box"><h3>L1 · Grice</h3><p>Cooperative-principle violations</p></div>
+        <div class="box"><h3>L2 · Carnegie/Cialdini</h3><p>Influence &amp; persuasion levers</p></div>
+        <div class="box"><h3>L3 · Aristotle</h3><p>Ethos/Pathos/Logos imbalance</p></div>
+        <div class="box"><h3>L4 · Berne</h3><p>Transactional ego states</p></div>
+        <div class="box"><h3>L5 · Linguistics</h3><p>Register, complexity, Zipf anomaly</p></div>
+      </div>
+      <div class="arrow" style="text-align:center;">↓</div>
+      <div class="l6-row">
+        <div class="box"><h3>L6 · Peirce — abductive synthesis</h3><p>Reads L1-L5 signals, proposes the simplest explanation that fits all of them</p></div>
+      </div>
+    </div>
+
+    <div class="arrow">↓<span class="lbl">signals[] — active / silent / crashed per agent</span></div>
+
+    <div class="box gate-box">
+      <span class="tag">Corroboration gate</span>
+      <h3>≥ 2 of 5 (L1-L5) must be active</h3>
+      <p>No single agent can trigger a verdict above SILENT alone — this is the negotiation itself, not a filter on top of it.</p>
+    </div>
+
+    <div class="branch">
+      <div class="path">
+        <div class="arrow">↓<span class="lbl">&lt; 2 active</span></div>
+        <div class="box silent-box"><h3>SILENT</h3><p>Baseline updated, no verdict escalation</p></div>
+      </div>
+      <div class="path">
+        <div class="arrow">↓<span class="lbl">&ge; 2 active</span></div>
+        <div class="box" style="width:340px;"><h3>Compute together</h3><p>Verdict Engine scoring + CRONOS trace writes, from the same gate outcome</p></div>
+      </div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="parallel">
+      <div class="box verdict-col">
+        <span class="tag">Verdict engine</span>
+        <h3>Weighted Fraction score</h3>
+        <p>raw_score = Σ(severity × weight) → baseline-delta multiplier → capped at 1 → mapped to SILENT/WATCH/ALERT/CRITICAL. Zero floats anywhere.</p>
+      </div>
+      <div class="box cronos-col">
+        <span class="tag">CRONOS trace chain</span>
+        <h3>One trace per agent + gate</h3>
+        <p>Hypotheses, evidence, and each agent's own vote — every entry hashes the previous one (SHA-256). Retroactive edits break the chain.</p>
+      </div>
+    </div>
+
+    <div class="arrow">↓<span class="lbl">both sealed together</span></div>
+
+    <div class="box seal-box">
+      <h3>SEALED VERDICT</h3>
+      <p>level · score · audit_hash · trace_ids · chain_valid — immutable from this point on</p>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="box qwen-box">
+      <span class="tag">Qwen narrator — read-only</span>
+      <h3>Narrates, never judges</h3>
+      <p>Reads the sealed verdict, writes the human-readable case + an auto-generated devil's-advocate counter-hypothesis. Cannot change a single bit of the verdict above.</p>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="box out-box">
+      <h3>Output</h3>
+      <p>Narrated explanation, delivered alongside the sealed verdict and its tamper-evident trail — the explanation can be regenerated with a different model at any time without touching either.</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <b>One codebase, one pipeline.</b> CORVUS (detection), the corroboration gate,
+    CRONOS (audit chain), and the Qwen narration step are modules that run in a
+    single process against a single text artifact — not separate services or
+    repositories. The only external call in the whole flow is the Qwen narration
+    step at the very end, and it happens after the verdict is already sealed.
+  </footer>
+</main>
+</body>
+</html>
