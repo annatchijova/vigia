@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HiveMind Tidal: monitoreo hidrológico autónomo, trazable y preparado para operar aun sin conectividad.">
+  <title>HiveMind Tidal — El agua deja señales</title>
+  <style>
+    :root {
+      --tidal: #C46249;
+      --ink: #151316;
+      --paper: #fff8f1;
+      --sand: #f3dfcd;
+      --river: #a8dce1;
+      --river-dark: #1e6571;
+      --line: rgba(255, 248, 241, .26);
+      --radius: 26px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--paper); background: var(--tidal); font: 16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: inherit; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 24px 0; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: .08em; font-size: .82rem; }
+    .wave { display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid var(--paper); border-radius: 50%; font-size: 1.2rem; }
+    .nav p { margin: 0; font-size: .78rem; letter-spacing: .1em; opacity: .75; }
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 38px; min-height: 690px; padding: 102px 0 76px; align-items: center; }
+    .eyebrow { margin: 0 0 18px; color: var(--sand); font-size: .75rem; font-weight: 900; letter-spacing: .17em; text-transform: uppercase; }
+    h1 { max-width: 720px; margin: 0; font-size: clamp(3.6rem, 8vw, 7.7rem); line-height: .88; letter-spacing: -.075em; }
+    h1 span { display: block; color: var(--sand); }
+    .lede { max-width: 620px; margin: 30px 0 0; color: #ffede0; font-size: clamp(1.08rem, 2.1vw, 1.35rem); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+    .button { display: inline-flex; min-height: 49px; align-items: center; justify-content: center; padding: 0 19px; border: 1px solid var(--paper); border-radius: 10px; color: var(--ink); background: var(--paper); text-decoration: none; font-weight: 850; }
+    .button.ghost { color: var(--paper); background: transparent; }
+    .orbital { position: relative; min-height: 405px; overflow: hidden; border: 1px solid var(--line); border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(255,248,241,.2) 0 3%, transparent 3.5% 100%), linear-gradient(150deg, rgba(255, 248, 241, .17), rgba(21, 19, 22, .15)); }
+    .ring { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,248,241,.35); border-radius: 50%; transform: translate(-50%, -50%); }
+    .ring.one { width: 180px; height: 180px; } .ring.two { width: 300px; height: 300px; } .ring.three { width: 440px; height: 440px; }
+    .station { position: absolute; display: flex; align-items: center; gap: 7px; color: var(--paper); font-size: .72rem; font-weight: 800; letter-spacing: .07em; }
+    .station i { display: block; width: 12px; height: 12px; border: 3px solid var(--river); border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 5px rgba(168,220,225,.16); }
+    .station.san-fernando { top: 19%; left: 45%; } .station.rosario { top: 47%; right: 12%; } .station.parana { bottom: 22%; left: 21%; } .station.tigre { top: 31%; left: 10%; }
+    .status { position: absolute; right: 11%; bottom: 12%; max-width: 205px; padding: 15px; border: 1px solid rgba(255,248,241,.32); border-radius: 15px; background: rgba(21,19,22,.72); backdrop-filter: blur(8px); }
+    .status strong { display: block; color: var(--river); font-size: .72rem; letter-spacing: .12em; } .status span { display: block; margin-top: 5px; font-size: .84rem; line-height: 1.3; }
+    section { padding: 86px 0; }
+    .dark { color: var(--paper); background: var(--ink); }
+    .light { color: var(--ink); background: var(--paper); }
+    .heading { display: grid; grid-template-columns: .8fr 1.2fr; gap: 38px; margin-bottom: 39px; }
+    h2 { margin: 0; font-size: clamp(2.2rem, 4.6vw, 4.1rem); line-height: .95; letter-spacing: -.065em; }
+    .heading p { max-width: 610px; margin: 0; color: inherit; opacity: .76; font-size: 1.08rem; }
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .flow-card { position: relative; min-height: 254px; padding: 23px; overflow: hidden; border: 1px solid rgba(255,248,241,.18); border-radius: var(--radius); background: #211e22; }
+    .flow-card::after { content: ""; position: absolute; width: 160px; height: 160px; right: -70px; bottom: -90px; border: 1px solid rgba(168,220,225,.28); border-radius: 50%; }
+    .flow-card b { color: var(--river); font-size: .73rem; letter-spacing: .13em; } .flow-card h3 { margin: 42px 0 12px; font-size: 1.3rem; line-height: 1.04; } .flow-card p { position: relative; z-index: 1; margin: 0; color: #c6c1c4; font-size: .9rem; }
+    .flow-card.alert b { color: #ffb08f; } .flow-card.alert::after { border-color: rgba(196,98,73,.65); }
+    .source-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 18px; }
+    .source-list { border-top: 1px solid rgba(21,19,22,.18); }
+    .source { display: grid; grid-template-columns: 64px 1fr auto; gap: 17px; align-items: center; padding: 21px 0; border-bottom: 1px solid rgba(21,19,22,.18); }
+    .source .num { color: var(--tidal); font-size: .75rem; font-weight: 900; letter-spacing: .1em; } .source h3 { margin: 0; font-size: 1.14rem; } .source p { margin: 4px 0 0; color: #655d61; font-size: .9rem; } .badge { padding: 5px 8px; border-radius: 100px; color: var(--river-dark); background: var(--river); font-size: .66rem; font-weight: 900; letter-spacing: .06em; }
+    .truth { display: flex; flex-direction: column; justify-content: space-between; min-height: 415px; padding: 29px; border-radius: var(--radius); color: var(--paper); background: var(--tidal); }
+    .truth .big { font-size: clamp(2.8rem, 5vw, 4.6rem); font-weight: 900; line-height: .9; letter-spacing: -.07em; } .truth p { margin: 0; color: #ffe7db; font-size: 1rem; }
+    .audit { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; }
+    .audit-card { padding: 30px; border-radius: var(--radius); background: #2b282d; }
+    .audit-card h3 { margin: 0 0 16px; font-size: 1.55rem; line-height: 1; } .audit-card p { color: #c9c4c8; }
+    .hash { margin-top: 25px; padding: 14px; overflow: hidden; border: 1px solid rgba(168,220,225,.25); border-radius: 10px; color: var(--river); font: .76rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: nowrap; text-overflow: ellipsis; }
+    .audit-points { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .point { padding: 18px; border: 1px solid rgba(255,248,241,.14); border-radius: 15px; background: rgba(255,255,255,.035); } .point strong { display: block; color: var(--river); font-size: .75rem; letter-spacing: .08em; } .point span { display: block; margin-top: 8px; color: #d4cfd3; font-size: .88rem; }
+    .tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 24px; } .tabs button { padding: 9px 12px; border: 1px solid rgba(21,19,22,.22); border-radius: 100px; color: var(--ink); background: transparent; cursor: pointer; font-weight: 800; font-size: .79rem; } .tabs button[aria-selected="true"] { color: var(--paper); border-color: var(--tidal); background: var(--tidal); }
+    .operation { min-height: 200px; padding: 30px; border-radius: var(--radius); background: var(--sand); } .operation h3 { margin: 0 0 12px; font-size: 1.5rem; } .operation p { max-width: 750px; margin: 0; color: #4d4042; font-size: 1.02rem; }
+    .notice { display: flex; gap: 15px; margin-top: 22px; padding: 19px; border-left: 3px solid var(--tidal); background: rgba(196,98,73,.1); color: #4d4042; font-size: .91rem; } .notice b { white-space: nowrap; }
+    footer { padding: 31px 0 45px; color: rgba(255,248,241,.78); font-size: .83rem; } .footer-line { display: flex; justify-content: space-between; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
+    @media (max-width: 820px) { .hero, .heading, .source-grid, .audit { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 75px; } .orbital { min-height: 330px; max-width: 500px; width: 100%; justify-self: center; } .flow { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .shell { width: min(100% - 28px, 1180px); } .nav p { display: none; } .flow, .audit-points { grid-template-columns: 1fr; } .source { grid-template-columns: 45px 1fr; } .source .badge { grid-column: 2; justify-self: start; } .footer-line { display: block; } .footer-line span + span { display: block; margin-top: 8px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header class="nav"><div class="brand"><span class="wave">≈</span> HIVEMIND TIDAL</div><p>MONITOREO HIDROLÓGICO AUTÓNOMO</p></header>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">DELTA · CUENCA DEL PLATA · SEÑALES QUE IMPORTAN</p>
+          <h1>El agua deja <span>señales.</span></h1>
+          <p class="lede">HiveMind Tidal transforma lecturas hidrológicas dispersas en una vigilancia trazable: contrasta fuentes, detecta contradicciones, preserva evidencia y prioriza alertas aun cuando la conectividad falla.</p>
+          <div class="hero-actions"><a class="button" href="#flujo">Cómo funciona</a><a class="button ghost" href="#garantias">Ver garantías</a></div>
+        </div>
+        <div class="orbital" aria-label="Representación conceptual de estaciones hidrológicas conectadas">
+          <i class="ring one"></i><i class="ring two"></i><i class="ring three"></i>
+          <span class="station tigre"><i></i>TIGRE</span><span class="station rosario"><i></i>ROSARIO</span><span class="station parana"><i></i>PARANÁ</span><span class="station san-fernando"><i></i>SAN FERNANDO</span>
+          <div class="status"><strong>SISTEMA DISEÑADO PARA</strong><span>seguir registrando y priorizando aun con red intermitente.</span></div>
+        </div>
+      </section>
+    </div>
+
+    <section id="flujo" class="dark"><div class="shell">
+      <div class="heading"><h2>Un agente que no confunde datos con confianza.</h2><p>El flujo no depende de una única fuente ni de una pantalla perfecta. Cada ciclo obtiene lecturas, compara inconsistencias, aplica una corrección determinista, evalúa umbrales y deja registro del resultado.</p></div>
+      <div class="flow">
+        <article class="flow-card"><b>01 / OBTENER</b><h3>Lecturas de campo</h3><p>Consulta niveles disponibles de Prefectura Naval Argentina y del INA; también admite un sensor local cuando el dispositivo lo tiene.</p></article>
+        <article class="flow-card"><b>02 / CONTRASTAR</b><h3>La discrepancia es una señal</h3><p>Busca diferencias relevantes entre fuentes y tendencias opuestas, en vez de ocultarlas como si fueran una única verdad.</p></article>
+        <article class="flow-card"><b>03 / CORREGIR</b><h3>Reglas explícitas</h3><p>Ante una contradicción, ajusta la prioridad de fuente o marca el nodo para revisión humana. La decisión queda documentada.</p></article>
+        <article class="flow-card alert"><b>04 / ALERTAR</b><h3>Conserva lo urgente</h3><p>Evalúa umbrales de alerta y evacuación. Si no hay red, preserva las lecturas y encola la alerta para su tratamiento posterior.</p></article>
+      </div>
+    </div></section>
+
+    <section class="light"><div class="shell">
+      <div class="heading"><h2>Más de una fuente. Menos puntos ciegos.</h2><p>HiveMind Tidal opera con datos disponibles y hace visible su procedencia. No afirma que una lectura aislada sea infalible: guarda de dónde vino, cuándo se obtuvo y con qué confianza se la trató.</p></div>
+      <div class="source-grid">
+        <div class="source-list">
+          <article class="source"><span class="num">01</span><div><h3>Prefectura Naval Argentina</h3><p>Niveles, variación, estado y umbrales hidrométricos de los puertos configurados.</p></div><span class="badge">PNA</span></article>
+          <article class="source"><span class="num">02</span><div><h3>Instituto Nacional del Agua</h3><p>Una segunda lectura para comparar con las estaciones hidrológicas configuradas.</p></div><span class="badge">INA</span></article>
+          <article class="source"><span class="num">03</span><div><h3>Sensor local opcional</h3><p>El dispositivo puede seguir tomando lecturas propias aun si el enlace de red se corta.</p></div><span class="badge">EDGE</span></article>
+          <article class="source"><span class="num">04</span><div><h3>Buffer persistente</h3><p>SQLite conserva lecturas y alertas pendientes para no convertir una caída de conectividad en una pérdida de evidencia.</p></div><span class="badge">OFFLINE</span></article>
+        </div>
+        <aside class="truth"><div class="big">No borra la incertidumbre.<br>La hace visible.</div><p>Una contradicción entre PNA, INA, simulación o una tendencia observada no se disfraza de certeza: se registra, se trata con una regla y puede requerir revisión humana.</p></aside>
+      </div>
+    </div></section>
+
+    <section id="garantias" class="dark"><div class="shell">
+      <div class="heading"><h2>La alerta es sólo el comienzo de la evidencia.</h2><p>Cada lectura y cada acción del agente se incorporan a un audit trail. El objetivo no es sólo enviar un mensaje: es poder reconstruir qué observó el sistema, qué fuente usó y qué regla aplicó.</p></div>
+      <div class="audit">
+        <article class="audit-card"><h3>Audit trail hidrológico</h3><p>Las entradas incluyen secuencia, fecha, caso, herramienta, resumen de entrada y salida, iteración y una huella SHA-256 de la entrada. Los payloads crudos de las fuentes también se hashean.</p><div class="hash">entry_sha256: 8fa2… / raw_payload_hash: c47e…</div></article>
+        <div class="audit-points">
+          <article class="point"><strong>FRACTIONS</strong><span>El scoring de los veredictos se representa con aritmética racional.</span></article>
+          <article class="point"><strong>CONTRADICCIONES</strong><span>Una falla de acuerdo entre fuentes queda registrada, no silenciosamente promediada.</span></article>
+          <article class="point"><strong>RATE LIMIT</strong><span>Las notificaciones se limitan para reducir repeticiones y fatiga de alerta.</span></article>
+          <article class="point"><strong>REPLAY</strong><span>Las alertas pendientes se conservan para el momento en que el canal vuelva a estar disponible.</span></article>
+        </div>
+      </div>
+    </div></section>
+
+    <section class="light"><div class="shell">
+      <div class="heading"><h2>Preparado para condiciones imperfectas.</h2><p>La interfaz no es un tablero de emergencia ni reemplaza a autoridades, sensores certificados o protocolos de protección civil. Es una capa de monitoreo, trazabilidad y notificación para acompañar decisiones humanas responsables.</p></div>
+      <div class="tabs" role="tablist" aria-label="Escenarios de operación">
+        <button type="button" role="tab" aria-selected="true" data-mode="red">Con red</button>
+        <button type="button" role="tab" aria-selected="false" data-mode="offline">Sin conexión</button>
+        <button type="button" role="tab" aria-selected="false" data-mode="contradiccion">Fuentes en conflicto</button>
+      </div>
+      <article class="operation" id="operation" aria-live="polite"><h3>Cuando los canales responden</h3><p>El agente obtiene lecturas, actualiza nodos, detecta discrepancias, evalúa los umbrales configurados y puede enviar una notificación por Telegram o WhatsApp si esos canales fueron configurados.</p></article>
+      <div class="notice"><b>IMPORTANTE</b><span>HiveMind Tidal es una herramienta de apoyo al monitoreo. Ante una situación de riesgo, seguí siempre las indicaciones de autoridades y sistemas oficiales de emergencia.</span></div>
+    </div></section>
+  </main>
+  <footer><div class="shell footer-line"><span>HIVEMIND TIDAL · MONITOREO HIDROLÓGICO TRAZABLE</span><span>Diseñado para hacer visibles datos, contradicciones y evidencia.</span></div></footer>
+  <script>
+    (() => {
+      const content = {
+        red: ["Cuando los canales responden", "El agente obtiene lecturas, actualiza nodos, detecta discrepancias, evalúa los umbrales configurados y puede enviar una notificación por Telegram o WhatsApp si esos canales fueron configurados."],
+        offline: ["Cuando la conectividad se corta", "El buffer SQLite conserva lecturas y alertas pendientes. Si hay sensor local disponible, el dispositivo puede seguir evaluando umbrales localmente; los eventos pendientes se tratan cuando la conectividad regresa."],
+        contradiccion: ["Cuando las fuentes no coinciden", "El detector registra discrepancias y tendencias opuestas. El motor de corrección aplica reglas explícitas —por ejemplo, priorizar una fuente o requerir revisión humana— y conserva el contexto en el audit trail."]
+      };
+      const operation = document.querySelector('#operation');
+      document.querySelectorAll('[data-mode]').forEach((button) => button.addEventListener('click', () => {
+        const [title, text] = content[button.dataset.mode];
+        operation.innerHTML = `<h3>${title}</h3><p>${text}</p>`;
+        document.querySelectorAll('[data-mode]').forEach((item) => item.setAttribute('aria-selected', String(item === button)));
+      }));
+    })();
+  </script>
+</body>
+</html>
