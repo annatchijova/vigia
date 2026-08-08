@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELO — Sin ZK no hay VELO / No ZK, no VELO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pergamino:#EDE7DA;
+    --pergamino-2:#E4DDCC;
+    --tinta:#1C1A17;
+    --velo:#3A3F4B;
+    --velo-2:#2E323C;
+    --sello:#8B3A2F;
+    --plata:#C9C4B8;
+    --plata-dim:#9C978A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:var(--pergamino);
+    color:var(--tinta);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{padding:0 0 80px 0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  body.lang-es .en{display:none;}
+  body.lang-en .es{display:none;}
+
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    max-width:1180px; margin:0 auto; padding:28px 32px 0 32px;
+  }
+  .topbar .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--plata-dim);
+  }
+  .lang-toggle{display:flex; border:1px solid var(--velo); border-radius:3px; overflow:hidden;}
+  .lang-toggle button{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.08em;
+    background:transparent; border:none; color:var(--velo);
+    padding:7px 14px; cursor:pointer;
+  }
+  .lang-toggle button.active{background:var(--velo); color:var(--pergamino);}
+
+  header.masthead{
+    max-width:1180px; margin:0 auto; padding:18px 32px 40px 32px;
+    border-bottom:1px solid var(--plata);
+  }
+  header.masthead h1{
+    font-family:'Source Serif 4',serif; font-weight:600; font-size:42px; letter-spacing:-0.01em;
+  }
+  header.masthead h1 .accent{color:var(--sello);}
+  header.masthead p.sub{
+    margin-top:12px; font-family:'Source Serif 4',serif; font-style:italic;
+    font-size:18px; color:var(--velo); max-width:760px; line-height:1.5;
+  }
+
+  section{max-width:1180px; margin:0 auto; padding:44px 32px 0 32px;}
+  .section-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--sello); margin-bottom:6px;
+  }
+  .section-title{
+    font-family:'Source Serif 4',serif; font-weight:600; font-size:24px; margin-bottom:16px;
+  }
+  .lede{font-size:15px; line-height:1.7; max-width:840px; margin-bottom:10px;}
+
+  /* the test */
+  .thetest{
+    margin-top:8px; border:1px solid var(--velo); background:var(--pergamino-2);
+    padding:26px 28px;
+  }
+  .thetest .q{
+    font-family:'Source Serif 4',serif; font-size:21px; font-style:italic;
+    color:var(--velo); line-height:1.45;
+  }
+  .thetest .a{
+    margin-top:14px; padding-top:14px; border-top:1px solid var(--plata);
+    font-size:15px; line-height:1.65;
+  }
+  .thetest .a strong{color:var(--sello);}
+
+  /* two-column comparison */
+  .compare{
+    margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--velo); border:1px solid var(--velo);
+  }
+  .compare .col{background:var(--pergamino); padding:26px 24px;}
+  .compare .col.ours{background:var(--pergamino-2);}
+  .compare .col .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--plata-dim); margin-bottom:10px;
+  }
+  .compare .col.ours .tag{color:var(--sello);}
+  .compare .col h3{
+    font-family:'Source Serif 4',serif; font-weight:600; font-size:19px; margin-bottom:12px;
+  }
+  .compare .col p{font-size:14px; line-height:1.65; color:var(--tinta);}
+  .compare .col .verdict{
+    margin-top:16px; padding-top:14px; border-top:1px solid var(--plata);
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.6;
+  }
+  .compare .col.ours .verdict{color:var(--sello); font-weight:600;}
+
+  /* pipeline */
+  .pipeline{
+    margin-top:16px; display:flex; align-items:stretch;
+    overflow-x:auto; padding-bottom:8px;
+  }
+  .pnode{
+    font-family:'IBM Plex Mono',monospace; font-size:12px;
+    border:1px solid var(--velo); background:var(--pergamino);
+    padding:14px 16px; max-width:190px; line-height:1.45;
+    display:flex; align-items:center; text-align:center; justify-content:center;
+  }
+  .pnode.private{background:var(--pergamino-2);}
+  .pnode.zk{background:var(--sello); color:var(--pergamino); border-color:var(--sello); font-weight:600;}
+  .pnode.public{background:var(--velo); color:var(--pergamino); border-color:var(--velo);}
+  .plink{
+    color:var(--plata-dim); font-family:'IBM Plex Mono',monospace;
+    font-size:15px; padding:0 8px; display:flex; align-items:center;
+  }
+  .pipe-caption{margin-top:12px; font-size:13px; color:var(--velo); line-height:1.6; max-width:860px;}
+
+  /* depth list */
+  .depth{
+    margin-top:16px; border:1px solid var(--velo);
+  }
+  .depth .drow{
+    display:grid; grid-template-columns:220px 1fr;
+    border-top:1px solid var(--plata); font-size:14px; line-height:1.6;
+  }
+  .depth .drow:first-child{border-top:none;}
+  .depth .dkey{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+    padding:14px 18px; background:var(--pergamino-2); color:var(--sello);
+    display:flex; align-items:center;
+  }
+  .depth .dval{padding:14px 18px; border-left:1px solid var(--plata);}
+
+  /* closing statement */
+  .closing{
+    margin-top:44px; border:2px solid var(--sello); background:var(--pergamino-2);
+    padding:34px 32px; text-align:center;
+  }
+  .closing .line{
+    font-family:'Source Serif 4',serif; font-weight:600; font-size:30px;
+    color:var(--sello); line-height:1.35;
+  }
+  .closing .note{
+    margin-top:14px; font-size:14.5px; color:var(--velo); line-height:1.65;
+    max-width:640px; margin-left:auto; margin-right:auto;
+  }
+
+  @media (max-width:860px){
+    .compare{grid-template-columns:1fr;}
+    .depth .drow{grid-template-columns:1fr;}
+    .depth .dval{border-left:none; border-top:1px solid var(--plata);}
+    header.masthead h1{font-size:32px;}
+    .closing .line{font-size:23px;}
+  }
+</style>
+</head>
+<body class="lang-es">
+
+<div class="topbar">
+  <div class="kicker">VELO · Midnight Hack Buenos Aires</div>
+  <div class="lang-toggle">
+    <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <h1 class="es">Sin ZK <span class="accent">no hay VELO</span></h1>
+  <h1 class="en">No ZK, <span class="accent">no VELO</span></h1>
+  <p class="sub es">No es una feature. Es una dependencia conceptual.</p>
+  <p class="sub en">Not a feature. A conceptual dependency.</p>
+</header>
+
+<!-- THE TEST -->
+<section>
+  <div class="section-label es">la prueba de fuego</div>
+  <div class="section-label en">the litmus test</div>
+  <div class="section-title es">Sacale ZK al proyecto. ¿Qué queda?</div>
+  <div class="section-title en">Remove ZK from the project. What's left?</div>
+
+  <div class="thetest">
+    <div class="q es">¿Cómo demuestro que existe una atestación válida sobre un veredicto forense, sin revelar el contenido sensible que produjo ese veredicto?</div>
+    <div class="q en">How do I prove a valid attestation exists over a forensic verdict, without revealing the sensitive content that produced it?</div>
+    <div class="a es">Si sacás ZK de VELO, no queda un VELO más simple. Queda <strong>el problema original sin resolver</strong>: mostrar todo, o pedir que te crean.</div>
+    <div class="a en">Remove ZK from VELO and you don't get a simpler VELO. You get <strong>the original problem, unsolved</strong>: disclose everything, or ask to be trusted.</div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section>
+  <div class="section-label es">dos maneras de usar ZK</div>
+  <div class="section-label en">two ways to use ZK</div>
+  <div class="section-title es">Técnica agregada vs. núcleo del diseño</div>
+  <div class="section-title en">Added technique vs. core of the design</div>
+
+  <div class="compare">
+    <div class="col">
+      <div class="tag es">ZK como técnica agregada</div>
+      <div class="tag en">ZK as an added technique</div>
+      <h3 class="es">Resuelve una propiedad de privacidad</h3>
+      <h3 class="en">Solves a privacy property</h3>
+      <p class="es">Perfectamente válido. Pero si el problema original se resuelve razonablemente con firmas, cifrado, ACLs, hashes o un ledger común, hay que justificar por qué hace falta ZK.</p>
+      <p class="en">Perfectly valid. But if the original problem is reasonably solved with signatures, encryption, ACLs, hashes or a plain ledger, you have to justify why ZK is needed at all.</p>
+      <div class="verdict es">Sacás ZK → el sistema sigue existiendo, con menos privacidad.</div>
+      <div class="verdict en">Remove ZK → the system still exists, with less privacy.</div>
+    </div>
+    <div class="col ours">
+      <div class="tag es">ZK en VELO</div>
+      <div class="tag en">ZK in VELO</div>
+      <h3 class="es">Es parte del problema que resuelve</h3>
+      <h3 class="en">Is part of the problem it solves</h3>
+      <p class="es">Necesitamos separar <em>lo que puede verificarse</em> de <em>lo que puede revelarse</em>. ZK es el mecanismo que permite hacer esa separación de forma verificable.</p>
+      <p class="en">We need to separate <em>what can be verified</em> from <em>what can be disclosed</em>. ZK is the mechanism that makes that separation verifiable.</p>
+      <div class="verdict es">Sacás ZK → no queda nada funcional. Es otro sistema.</div>
+      <div class="verdict en">Remove ZK → nothing functional remains. It's a different system.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section>
+  <div class="section-label es">la relación aparece sola</div>
+  <div class="section-label en">the relationship follows naturally</div>
+  <div class="section-title es">De la evidencia privada a la atestación pública</div>
+  <div class="section-title en">From private evidence to public attestation</div>
+
+  <div class="pipeline">
+    <div class="pnode private es">evidencia privada</div>
+    <div class="pnode private en">private evidence</div>
+    <div class="plink">→</div>
+    <div class="pnode private es">análisis determinista</div>
+    <div class="pnode private en">deterministic analysis</div>
+    <div class="plink">→</div>
+    <div class="pnode private es">veredicto</div>
+    <div class="pnode private en">verdict</div>
+    <div class="plink">→</div>
+    <div class="pnode zk es">prueba de que se cumplieron las restricciones</div>
+    <div class="pnode zk en">proof the constraints were satisfied</div>
+    <div class="plink">→</div>
+    <div class="pnode public es">atestación publicada — sin la evidencia</div>
+    <div class="pnode public en">published attestation — without the evidence</div>
+  </div>
+  <p class="pipe-caption es">El nodo rojo es el único que no se puede reemplazar por otra cosa sin cambiar de sistema. Todo lo que está a su izquierda nunca sale de la máquina del perito.</p>
+  <p class="pipe-caption en">The red node is the only one you can't swap out without changing systems. Everything to its left never leaves the examiner's machine.</p>
+</section>
+
+<!-- WHY THE DEPTH -->
+<section>
+  <div class="section-label es">por qué el diseño tiene esta profundidad</div>
+  <div class="section-label en">why the design goes this deep</div>
+  <div class="section-title es">No es «usamos ZK porque Midnight tiene ZK»</div>
+  <div class="section-title en">It isn't "we used ZK because Midnight has ZK"</div>
+  <p class="lede es">Si ZK fuera decoración, nada de esto haría falta. Cada línea existe porque la separación entre verificable y revelable tiene que sostenerse bajo ataque:</p>
+  <p class="lede en">If ZK were decoration, none of this would be necessary. Each line exists because the split between verifiable and disclosable has to hold under attack:</p>
+
+  <div class="depth">
+    <div class="drow">
+      <div class="dkey">commitment</div>
+      <div class="dval es">qué queda atado públicamente y para siempre</div>
+      <div class="dval en">what is publicly bound, permanently</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">witness</div>
+      <div class="dval es">qué permanece privado y nunca sale de la máquina</div>
+      <div class="dval en">what stays private and never leaves the machine</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">disclose()</div>
+      <div class="dval es">qué cruza la frontera — y el compilador lo exige explícito</div>
+      <div class="dval en">what crosses the boundary — and the compiler demands it be explicit</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">corroboration gate</div>
+      <div class="dval es">MALICE exige 2 fuentes: restricción del circuito, no política</div>
+      <div class="dval en">MALICE requires 2 sources: a circuit constraint, not a policy</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">replay protection</div>
+      <div class="dval es">re-atestar lo mismo no infla el contador público</div>
+      <div class="dval en">re-attesting the same analysis can't inflate the public counter</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">verdict binding</div>
+      <div class="dval es">el veredicto publicado no puede flotar libre del análisis sellado</div>
+      <div class="dval en">the published verdict can't float free of the sealed analysis</div>
+    </div>
+    <div class="drow">
+      <div class="dkey">límites de la prueba</div>
+      <div class="dval es">qué puede probar realmente, y qué no — documentado, no escondido</div>
+      <div class="dval en">what the proof really establishes, and what it doesn't — documented, not hidden</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY MIDNIGHT -->
+<section>
+  <div class="section-label es">la pregunta del jurado</div>
+  <div class="section-label en">the judges' question</div>
+  <div class="section-title es">«¿Por qué Midnight?»</div>
+  <div class="section-title en">"Why Midnight?"</div>
+
+  <div class="thetest">
+    <div class="q es">Respuesta débil: «porque queríamos usar una blockchain con ZK».</div>
+    <div class="q en">Weak answer: "because we wanted to use a blockchain with ZK."</div>
+    <div class="a es">Respuesta de VELO: <strong>porque necesitamos atestar una propiedad sobre evidencia que deliberadamente no queremos publicar.</strong> El ledger público contiene la atestación y el commitment; los datos sensibles permanecen privados. Sin esa separación criptográfica, desaparece el núcleo del diseño.</div>
+    <div class="a en">VELO's answer: <strong>because we need to attest a property about evidence we deliberately do not want to publish.</strong> The public ledger holds the attestation and the commitment; the sensitive data stays private. Without that cryptographic separation, the core of the design disappears.</div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section>
+  <div class="closing">
+    <div class="line es">Si sacás ZK de VELO,<br>no queda nada funcional.</div>
+    <div class="line en">Remove ZK from VELO,<br>and nothing functional remains.</div>
+    <div class="note es">No es una feature que se puede desactivar. Es la razón por la que el veredicto puede existir sin la evidencia.</div>
+    <div class="note en">It isn't a feature you can switch off. It's the reason the verdict can exist without the evidence.</div>
+  </div>
+</section>
+
+<script>
+  function setLang(l){
+    document.body.className = 'lang-' + l;
+    document.getElementById('btn-es').classList.toggle('active', l === 'es');
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  }
+</script>
+
+</body>
+</html>
