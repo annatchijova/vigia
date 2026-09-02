@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>El corpus como un solo artefacto — 49 repositorios</title>
+<style>
+  :root{
+    --paper:#E9ECEF; --paper2:#F4F5F7; --card:#FBFBFC; --ink:#16181D; --ink2:#2B2F37;
+    --mut:#5C636E; --line:#D2D7DE; --line2:#E1E5EA;
+    --accent:#243A66;            /* prussian — structural */
+    --inv:#2E6A54;               /* invariante real / confirmado */
+    --rup:#963025;               /* ruptura / invariante relajado */
+    --sup:#6C788B;               /* coincidencia superficial */
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --measure:70ch;
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .doc{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--measure);margin:0 auto;padding:0 22px}
+  .wide{max-width:1120px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent);text-underline-offset:2px}
+  h1,h2,h3{font-family:var(--serif);text-wrap:balance;line-height:1.12;font-weight:600}
+  p{margin:0}
+  .stack>*+*{margin-top:1.05em}
+
+  /* masthead */
+  .mast{border-bottom:1px solid var(--ink);background:linear-gradient(180deg,var(--paper2),var(--paper))}
+  .mast .wide{padding-top:54px;padding-bottom:30px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+  .kicker .seal{color:var(--rup)}
+  h1.title{font-size:clamp(31px,5.2vw,52px);margin:.34em 0 .28em;letter-spacing:-.01em}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.3vw,22px);color:var(--ink2);max-width:34ch;font-style:italic}
+  .metabar{display:flex;flex-wrap:wrap;gap:0;margin-top:26px;border:1px solid var(--line);
+    border-radius:3px;background:var(--card);overflow:hidden}
+  .metabar div{flex:1 1 140px;padding:11px 15px;border-right:1px solid var(--line2)}
+  .metabar div:last-child{border-right:none}
+  .metabar b{font-family:var(--mono);font-size:20px;display:block;font-weight:600;font-variant-numeric:tabular-nums}
+  .metabar span{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+
+  /* toc */
+  nav.toc{border-bottom:1px solid var(--line);background:var(--paper2)}
+  nav.toc ol{max-width:1120px;margin:0 auto;padding:14px 22px;list-style:none;display:flex;flex-wrap:wrap;
+    gap:6px 22px;font-family:var(--mono);font-size:12.5px}
+  nav.toc a{color:var(--ink2);text-decoration:none}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc .n{color:var(--rup)}
+
+  /* sections */
+  section{padding:46px 0 8px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:baseline;gap:10px}
+  .eyebrow .n{color:var(--rup);font-weight:600}
+  h2.sec{font-size:clamp(24px,3.6vw,33px);margin:.28em 0 .1em}
+  .sub{color:var(--mut);font-family:var(--serif);font-style:italic;margin-bottom:1.2em}
+  h3{font-size:20px;margin:1.7em 0 .35em;color:var(--ink)}
+  hr.rule{border:none;border-top:1px solid var(--line);margin:0}
+  .lead-in{font-size:12px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+
+  /* repo chip + evidence */
+  code.r{font-family:var(--mono);font-size:.86em;background:#dfe3ea;color:var(--ink);
+    padding:.06em .38em;border-radius:3px;white-space:nowrap}
+  .ev{font-family:var(--mono);font-size:13px;line-height:1.5;background:var(--card);border:1px solid var(--line);
+    border-left:3px solid var(--accent);border-radius:0 3px 3px 0;padding:11px 14px;color:var(--ink2);
+    overflow-x:auto}
+  .ev .q{color:var(--ink)}
+  .ev .src{color:var(--mut)}
+  .ev.confirm{border-left-color:var(--inv)}
+  .ev.break{border-left-color:var(--rup)}
+
+  /* invariant block */
+  .inv{border:1px solid var(--line);border-radius:4px;background:var(--card);margin-top:20px;overflow:hidden}
+  .inv>.head{display:flex;gap:12px;align-items:baseline;padding:14px 16px 6px}
+  .inv .id{font-family:var(--mono);font-weight:600;color:var(--inv);font-size:14px;flex:none;
+    border:1px solid var(--inv);border-radius:3px;padding:1px 7px;line-height:1.4}
+  .inv h3{margin:0;font-size:19px}
+  .inv .body{padding:2px 16px 16px}
+  .inv .row{display:grid;grid-template-columns:88px 1fr;gap:4px 14px;padding:9px 0;border-top:1px solid var(--line2);
+    align-items:start}
+  .inv .row .lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--mut);padding-top:3px}
+  .inv .row.refute .lab{color:var(--rup)}
+  .inv .evrepos{font-size:14.5px}
+  .verdict{font-family:var(--mono);font-size:12.5px;padding:9px 16px;background:#eef1f4;border-top:1px solid var(--line)}
+  .verdict b{color:var(--inv)}
+
+  /* tags */
+  .tag{font-family:var(--mono);font-size:11px;letter-spacing:.03em;padding:1px 6px;border-radius:3px;
+    border:1px solid currentColor;white-space:nowrap;vertical-align:1px}
+  .t-inv{color:var(--inv)} .t-rup{color:var(--rup)} .t-sup{color:var(--sup)} .t-par{color:#8A6D1E}
+
+  /* generic table */
+  .twrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin-top:18px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);
+    background:var(--paper2);position:sticky;top:0}
+  td.mono,th.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+
+  /* timeline */
+  .tl{position:relative;margin:22px 0 8px;padding-left:0}
+  .tl .lane{position:relative;padding-left:132px}
+  .tl .lane::before{content:"";position:absolute;left:96px;top:0;bottom:-6px;width:2px;background:var(--line)}
+  .tl .ev-t{position:relative;padding:11px 0 15px}
+  .tl .ev-t .date{position:absolute;left:0;top:12px;width:84px;text-align:right;font-family:var(--mono);
+    font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums}
+  .tl .ev-t::before{content:"";position:absolute;left:91px;top:15px;width:12px;height:12px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--accent)}
+  .tl .ev-t.mark::before{background:var(--rup);border-color:var(--rup);width:14px;height:14px;left:90px}
+  .tl .ev-t h4{margin:0 0 2px;font-family:var(--serif);font-size:17px;font-weight:600}
+  .tl .ev-t p{font-size:14px;color:var(--ink2)}
+  .tl .ev-t .repos{font-family:var(--mono);font-size:12px;color:var(--mut);margin-top:3px}
+
+  /* principle cards */
+  .prin{border:1px solid var(--line);border-radius:4px;background:var(--card);margin-top:18px;padding:18px 20px}
+  .prin.root{border-color:var(--accent);border-width:1.5px;background:linear-gradient(180deg,#f2f5fa,var(--card))}
+  .prin .pn{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  .prin.root .pn{color:var(--rup)}
+  .prin h3{margin:.25em 0 .35em;font-size:21px}
+  .prin .gen{font-size:14px;color:var(--mut);margin-top:.7em;font-family:var(--mono);line-height:1.5}
+
+  .callout{border-left:3px solid var(--rup);padding:4px 0 4px 16px;font-family:var(--serif);font-size:18px;
+    font-style:italic;color:var(--ink);margin:6px 0}
+  .foot{border-top:1px solid var(--ink);margin-top:56px;padding:24px 0 60px;color:var(--mut);font-size:13px}
+  .foot .wide>*+*{margin-top:.5em}
+  strong{font-weight:650;color:var(--ink)}
+  em.key{font-style:normal;background:#e5e9ef;padding:0 .25em;border-radius:2px}
+  @media (max-width:620px){
+    .inv .row{grid-template-columns:1fr;gap:2px}
+    .tl .lane{padding-left:96px}.tl .lane::before{left:70px}
+    .tl .ev-t .date{width:60px}.tl .ev-t::before{left:65px}.tl .ev-t.mark::before{left:64px}
+  }
+</style>
+
+<div class="doc">
+
+<header class="mast">
+  <div class="wide">
+    <div class="kicker">
+      <span>Análisis de corpus</span><span>·</span>
+      <span>49 repositorios</span><span>·</span>
+      <span class="seal">Reconstruido desde los artefactos</span>
+    </div>
+    <h1 class="title">El corpus como un solo artefacto</h1>
+    <p class="lede">Qué forma de resolver problemas permanece estable aunque cambie el objeto técnico.</p>
+    <div class="metabar">
+      <div><b>49</b><span>repos analizados</span></div>
+      <div><b>6</b><span>clústeres · lectura adversarial</span></div>
+      <div><b>04&rarr;09</b><span>abril a septiembre 2026</span></div>
+      <div><b>1</b><span>principio raíz</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Índice">
+  <ol>
+    <li><a href="#metodo"><span class="n">00</span> Método</a></li>
+    <li><a href="#invariantes"><span class="n">01</span> Invariantes reales</a></li>
+    <li><a href="#superficial"><span class="n">02</span> Coincidencias superficiales</a></li>
+    <li><a href="#evoluciones"><span class="n">03</span> Evoluciones</a></li>
+    <li><a href="#rupturas"><span class="n">04</span> Rupturas</a></li>
+    <li><a href="#tiempo"><span class="n">05</span> Dependencias temporales</a></li>
+    <li><a href="#cognitiva"><span class="n">06</span> Arquitectura cognitiva</a></li>
+    <li><a href="#principios"><span class="n">07</span> Mínimo de principios</a></li>
+    <li><a href="#anexo"><span class="n">A</span> Anexo: los 49</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- 00 -->
+<section id="metodo"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">00</span><span>Método &amp; corpus</span></div>
+  <h2 class="sec">Cómo se reconstruyó el corpus</h2>
+  <p class="sub">La afirmación es una hipótesis, no un hecho — hasta verificarla contra el archivo vivo.</p>
+  <p><strong>Corpus.</strong> GitHub reporta 56 repositorios. Se excluyen 8 forks de proyectos externos
+    (<code class="r">datahub</code>, <code class="r">cel-go</code>, <code class="r">azure-sdk-for-python</code>,
+    <code class="r">servers</code>, <code class="r">strix</code>, <code class="r">ai-scanner</code>,
+    <code class="r">effectstream</code>) por ser clonados. Se incluye <code class="r">continuum</code> —figura como
+    fork en el repo de tu mamá, pero la implementación es propia y la idea era suya. Total: <strong>49 repos de autoría propia</strong>.</p>
+  <p><strong>Procedimiento.</strong> Primero un barrido de señales cruzado (grep de invariantes candidatas sobre los
+    árboles locales: sellado, cadena de custodia, degradación honesta, LLM-fuera-del-path, auditoría adversarial, MCP,
+    vocabulario Peirceano). Luego <strong>seis lectores en paralelo</strong>, uno por clúster temático, cada uno con un
+    mandato explícito: <em class="key">no confirmar el patrón sino intentar refutarlo</em>, y traer cita textual con
+    <code class="r">archivo:línea</code> como evidencia. Nada aquí se afirma sin múltiples repos que lo sostengan y un
+    contraejemplo buscado activamente. La lectura es de artefactos: código, docs, mensajes de commit, fechas — no de la autora.</p>
+</div></section>
+
+<!-- 01 -->
+<section id="invariantes"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">01</span><span>Invariantes reales</span></div>
+  <h2 class="sec">Patrones presentes en proyectos no relacionados</h2>
+  <p class="sub">Cada uno con evidencia de varios repos y su intento de falsación. Verde = sobrevive; el borde marca dónde no.</p>
+
+  <p>La prueba de que esto es un método real y no coincidencia de palabras no la doy yo: <strong>la dan los propios
+    repos, que se citan entre sí como fuente</strong>. <code class="r">velo</code> incluye un
+    <code class="r">PORT-FROM-VIGIA.md</code>; <code class="r">sonya</code> declara "hash chain adaptada de CRONOS,
+    verificador de PHYLO, auditoría de VIGÍA"; <code class="r">mneme</code> se define como la fusión de
+    <code class="r">stigmergy</code> (columna forense) y <code class="r">raven-memory</code> (mecánica de campo);
+    <code class="r">digital-legacy</code> canoniza "adaptado de vigia-repo". Es una constelación auto-consciente, no
+    proyectos aislados que casualmente se parecen.</p>
+</div>
+
+<div class="wrap">
+  <!-- I1 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·1</span><h3>Separación entre lo que decide y lo que narra</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>Un núcleo determinista produce y <em class="key">sella</em>
+        el veredicto; el LLM (o cualquier capa persuasiva) solo lo pone en palabras <em>después</em>, sobre un valor ya fijado.</div></div>
+      <div class="row"><span class="lab">Evidencia</span><div class="evrepos">Presente en 17+ repos de dominios ajenos —
+        DFIR, negociación, traducción, orientación vocacional, herencia digital, despacho de catástrofes:</div></div>
+      <div class="ev confirm"><span class="q">"THE LLM EXPLAINS, IT NEVER DECIDES."</span> <span class="src">corvus/explain_engine.py:6</span><br>
+        <span class="q">"The agent's tools give it no way to pass a score, a state, or a hash."</span> <span class="src">annaconda/README.md:88</span><br>
+        <span class="q">"a model's approval would put a model back into the trust path."</span> <span class="src">koine/contracts.py:12</span><br>
+        <span class="q">"If a change to the narrator could ever change a decision, that would be a defect."</span> <span class="src">continuum/README.md:188</span></div>
+      <div class="row refute"><span class="lab">Refutación</span><div>Es el invariante <strong>que primero se rompe bajo presión de accuracy</strong>.
+        <code class="r">argos</code> pasa el resultado de Gemini a <code class="r">aggregate()</code> junto a los detectores;
+        <code class="r">mutante</code> (hybrid, por defecto) suma un <code>llm_boost</code> float al veredicto;
+        <code class="r">gambit</code> mezcla el voto del modelo a peso <code>2/5</code> en el veredicto <em>presentado</em>;
+        <code class="r">rebound</code> deja que el LLM decida de verdad. Dos clústeres independientes hallaron la misma línea de falla.</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> invariante real pero <b style="color:var(--rup)">no universal</b> — y las rupturas están casi siempre <em>declaradas</em> (<code>requiresRebuild:true</code>, "hybrid mode"). Ver I·2, que sobrevive donde éste cae.</div>
+  </div>
+
+  <!-- I2 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·2</span><h3>Calibración: nada aparenta más certeza que su proceso</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>La confianza mostrada está acotada por la garantía real. De ahí
+        <code>ABSTAIN</code> como veredicto de primera clase, los estados <code>PASS/WARN/FAIL</code> y las limitaciones declaradas en voz alta.</div></div>
+      <div class="ev confirm"><span class="q">"three-state outcomes… because two states are a lie."</span> <span class="src">impetu/outcome.py:3</span><br>
+        <span class="q">"VIGÍA does not claim to be infallible — it claims to be auditable."</span> <span class="src">vigia-intent/KNOWN_LIMITATIONS.md</span><br>
+        <span class="q">"A validated truth cannot be silenced by an unverified claim."</span> <span class="src">raven-memory/README.md:192</span></div>
+      <div class="row"><span class="lab">Alcance</span><div><code class="r">forge</code> expone 7 estados <code>ABSTAIN</code>;
+        <code class="r">annaconda</code> usa <code>PASS/WARN/FAIL/ABSTAIN</code>; <code class="r">discordia</code> tiene un estado <code>PARALYSIS</code>.
+        Es el invariante <strong>más profundo</strong>: <code class="r">impetu</code> rompe I·1 (el LLM decide, por diseño) pero honra éste —
+        es, por eso, el repo <em>más</em> fiel al método aunque viole su regla más visible.</div></div>
+      <div class="row refute"><span class="lab">Refutación</span><div>Los primeros repos lo expresan como "negarse a narrar" sin
+        enum explícito (<code class="r">janus</code>, <code class="r">stigmergy</code>). La única violación real es
+        <code class="r">pichon</code> — y es <em>deliberada</em> (§04). El contraejemplo esperado no aparece: incluso los repos que
+        relajan I·1 conservan I·2.</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> <b>el invariante más robusto del corpus.</b> Sobrevive a todos los casos donde I·1 se relaja.</div>
+  </div>
+
+  <!-- I3 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·3</span><h3>Núcleo sin float, serialización canónica versionada, sellado SHA-256</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>La aritmética del veredicto es exacta (<code>fractions.Fraction</code>);
+        el encoder es tipado, con claves ordenadas y estampa de versión; el sello es reproducible bit-a-bit.</div></div>
+      <div class="ev confirm"><span class="q">"floats are not allowed in sealed payloads"</span> — <em>levanta TypeError.</em> <span class="src">forge/canonical.py:18</span><br>
+        <span class="q">"float is not allowed in a sealed payload"</span> <span class="src">lifeline/export.py:66</span><br>
+        <span class="q">"Determinístico, sellado, sin autoridad LLM."</span> <span class="src">compass/engine.py:1</span></div>
+      <div class="row"><span class="lab">Prueba</span><div>No es aspiracional: hay tests de re-corrida-y-comparar-sello que
+        <strong>atraparon regresiones reales</strong> — <code class="r">forge</code> commit <code>3c8ccc1</code> arregla un
+        <code>rglob</code> no-determinista que rompía el orden del sello; <code class="r">lifeline</code> testea
+        <code>seal_digest(1) != seal_digest(True)</code> (bool antes que int).</div></div>
+      <div class="row refute"><span class="lab">Refutación</span><div><code class="r">janus</code> usa <code>Decimal</code>, no
+        <code>Fraction</code> (variante, no ruptura). <code class="r">raven-memory</code> <strong>sí</strong> rompe: su scoring
+        usa floats — y su <code>BUG-04</code> es una retractación honesta de un README que afirmaba <code>Fraction</code> falsamente.
+        <code class="r">mutante</code> tiene JCS float en el camino graduado. La regla es real donde el sello importa; las excepciones se documentan como tales.</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> real y <b>policiado</b> en el linaje <code>forge</code> + <code>orbit-guardian</code>; el resto lo hereda.</div>
+  </div>
+
+  <!-- I4 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·4</span><h3>Custodia a prueba de manipulación + verificador independiente</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>Cadena de hashes con <code>prev_hash</code> y génesis; el narrador va
+        <em>al lado</em> del sello, nunca adentro; un verificador stdlib que no confía en nada recomputa la cadena.</div></div>
+      <div class="ev confirm"><span class="q">"sha256(canonical(payload)+prev_hash). One genesis, ever."</span> <span class="src">koine/ledger.py:12</span><br>
+        <span class="q">"A reviewer should not believe the seal — they should run the verifier."</span> <span class="src">sonya/README.md:146</span><br>
+        <span class="q">verificador que "imports NOTHING from koine"</span> · <span class="q">mneme añade raíz de Merkle</span></div>
+      <div class="row refute"><span class="lab">Refutación</span><div>Frontera honesta, declarada por los propios repos:
+        <code class="r">audit-chain</code> documenta que <strong>la falsificación en cascada completa PASA</strong> (INV-6) — un sello prueba
+        <span class="q">"nada cambió después de que miré", NO "nada cambió, punto"</span>. Y la independencia es <em>parcial</em>: los
+        verificadores importan el <code>canonical_json</code> compartido. <code class="r">hivemind_tidal</code> sella por-entrada sin enlazar (<code>prev_hash</code>).</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> real, con su límite epistémico <b>puesto de frente</b>, no escondido.</div>
+  </div>
+
+  <!-- I5 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·5</span><h3>Auto-auditoría adversarial: refutar antes de publicar</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>Antes de shippear, un auditor (a menudo otro modelo) intenta rechazar
+        el proyecto; las hipótesis del auditor se falsan; los hallazgos <em>son</em> la historia de commits.</div></div>
+      <div class="ev confirm"><code class="r">velo</code> 6 rondas · <code class="r">continuum</code> 7 · <code class="r">digital-legacy</code> 7 ·
+        <code class="r">lifeline</code>/<code class="r">annaconda</code> 3 · <code class="r">wolf-and-cronos</code> RED_TEAM(9)+FORGE(5).<br>
+        Los IDs de defecto estructuran los commits: <code>BUG-01..22</code>, <code>RT-01..</code>, <code>F-001..</code>, <code>P0–P3</code>, <code>L-0xx</code>. "AI Collective" multi-modelo (Claude, Gemini, Kimi, DeepSeek…).</div>
+      <div class="row refute"><span class="lab">Refutación</span><div>Ausente en los juguetes de género y scaffolds
+        (<code class="r">sudo-su</code>, <code class="r">poes-cabinet</code>, <code class="r">proyectohermana</code>) — que
+        justamente no producen veredictos consecuentes. La ausencia correlaciona con la falta de consecuencia, no la contradice.</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> real siempre que el artefacto emite un veredicto que importa.</div>
+  </div>
+
+  <!-- I6 -->
+  <div class="inv">
+    <div class="head"><span class="id">I·6</span><h3>Arquitectura recurrente: N núcleos &rarr; agregado ponderado &rarr; veredicto discreto</h3></div>
+    <div class="body">
+      <div class="row"><span class="lab">Claim</span><div>El mismo esqueleto: varios detectores independientes, un agregado
+        ponderado con gate de corroboración (&ge;2 deben disparar), y un veredicto de pocos estados.</div></div>
+      <div class="ev confirm"><code class="r">vigia</code> CAIE ponderado por spoofabilidad · <code class="r">stylometry</code> 7 núcleos MCP+synergy ·
+        <code class="r">corvus</code> capas L1–L6 (Grice&rarr;Cialdini&rarr;Aristóteles&rarr;Berne&rarr;Peirce) ·
+        <code class="r">orbit-guardian</code> 3 núcleos + gate · <code class="r">argos</code> 11 detectores. El mismo molde, tres+ dominios.</div>
+      <div class="row refute"><span class="lab">Refutación</span><div>Es el rasgo más cercano a "coincidencia arquitectónica";
+        pero la combinación con I·3 (Fraction) + gate de corroboración es demasiado específica para ser convergencia casual.</div></div>
+    </div>
+    <div class="verdict"><b>Veredicto:</b> invariante de <b>forma</b>, no solo de tema.</div>
+  </div>
+</div>
+</section>
+
+<!-- 02 -->
+<section id="superficial"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">02</span><span>Coincidencias superficiales</span></div>
+  <h2 class="sec">Lo que se comparte pero no implica una misma idea</h2>
+  <p class="sub">Palabras, tecnologías y dominios compartidos que no son el método.</p>
+
+  <p><span class="tag t-sup">vocabulario ≠ mecanismo</span>&nbsp; El caso más limpio es <code class="r">zk-criptografia</code>:
+    comparte todo el léxico (hashing, determinismo, custodia, Daubert) pero <strong>cero implementación ejecutable</strong> —
+    son notas de investigación. Es el <em>sustrato intelectual</em> del corpus, no un miembro. Igual los juguetes de género
+    (<code class="r">sudo-su</code>, <code class="r">poes-cabinet</code>, <code class="r">f1-mythos</code>) usan la <em>estética</em>
+    forense como tema sin la maquinaria.</p>
+
+  <p><span class="tag t-sup">nombre mitológico ≠ método</span>&nbsp; La marca griega/mitológica
+    (<code class="r">cronos</code>, <code class="r">corvus</code>, <code class="r">argos</code>, <code class="r">janus</code>,
+    <code class="r">ariadne</code>, <code class="r">koine</code>, <code class="r">mneme</code>, <code class="r">velo</code>) es un hábito
+    de nomenclatura, no el patrón. Prueba: <code class="r">koine</code> (nombre griego) tiene toda la maquinaria pero <em>ningún</em>
+    vocabulario Peirceano; <code class="r">f1-mythos</code> (nombre mitológico) no tiene nada del método. El nombre es firma, no motor.</p>
+
+  <p><span class="tag t-sup">vocabulario Peirceano ≠ el invariante</span>&nbsp; Éste es el discernimiento clave.
+    El léxico explícito (abducción, Firstness/Secondness/Thirdness, Daubert) satura <code class="r">vigia</code>,
+    <code class="r">SKILLS</code>, <code class="r">cronos</code>, <code class="r">forge</code> — pero está <strong>ausente</strong> en
+    <code class="r">koine</code>, <code class="r">compass</code>, <code class="r">gambit</code>, <code class="r">continuum</code>, que sin
+    embargo instancian el método completo. <em class="key">El método persiste donde la palabra no.</em> La palabra es cultura de un
+    subcorpus; el método es más ancho que su vocabulario.</p>
+
+  <p><span class="tag t-sup">stack compartido ≠ idea</span>&nbsp; Python, Gemini/ADK, FastMCP, SQLite, commits convencionales:
+    convergencia de infraestructura. Y el <em>dominio</em> "seguridad/forense" aparece mucho — pero el método también está en
+    <code class="r">rebound</code> (sonar), <code class="r">impetu</code> (asistente TDAH), <code class="r">phylo</code>
+    (optimización de código), <code class="r">hivemind_tidal</code> (alerta de inundaciones), <code class="r">compass</code>
+    (orientación vocacional). "Es solo trabajo de seguridad" queda <strong>falsado</strong>: el método es independiente del dominio.</p>
+</div></section>
+
+<!-- 03 -->
+<section id="evoluciones"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">03</span><span>Evoluciones</span></div>
+  <h2 class="sec">Conceptos que reaparecen transformados</h2>
+  <p class="sub">El mismo concepto con carga distinta según el dominio.</p>
+
+  <h3>El "bundle sellado" muta por dominio</h3>
+  <p>El objeto central —una evidencia sellada y verificable— se reencarna manteniendo su esqueleto:
+    <code class="r">vigia</code> <code>ForensicBundle</code> &rarr; <code class="r">phylo</code> <code>EvolutionBundle</code>
+    (código optimizado) &rarr; <code class="r">sonya</code> <code>ComplianceBundle</code> (media generada) &rarr;
+    <code class="r">mneme</code> bundle de custodia por-memoria &rarr; <code class="r">velo</code> atestación en conocimiento-cero.
+    <code class="r">phylo</code> lo dice sin rodeos: <span class="q">"Inspired by VIGÍA's ForensicBundle"</span>.</p>
+
+  <h3>La aritmética se endurece: <code>Decimal</code> &rarr; <code>Fraction</code></h3>
+  <p>El repo más temprano con sello (<code class="r">janus</code>, junio) usa <code>Decimal</code>; todos los posteriores
+    estandarizan en <code>fractions.Fraction</code> como el tipo "sin float en el path sellado". Es un endurecimiento datable.
+    En paralelo evolucionan las estampas de versión: <code>CANONICALIZE_VERSION</code> 1&rarr;2, <code>EBS</code> 1.0&rarr;1.1
+    (plegando <code>hash_winner</code> dentro del sello maestro), vault v1&rarr;v2.</p>
+
+  <h3>La degradación madura: "negarse a narrar" &rarr; <code>ABSTAIN</code> explícito</h3>
+  <p>Los primeros repos expresan la honestidad como rechazo implícito; los tardíos la codifican en un enum de tres+ estados
+    con <code>ABSTAIN</code> de primera clase (<code class="r">lifeline</code>, <code class="r">compass</code>, <code class="r">annaconda</code>).</p>
+
+  <h3>El swap que pasa su propia prueba</h3>
+  <p><code class="r">phylo</code> &rarr; <code class="r">phylo-google</code>: mismo commit génesis, se cambia la plataforma
+    (AWS/Anthropic &rarr; Google/Gemini) y <strong>el veredicto y el sello no se mueven</strong> — exactamente el test que la
+    arquitectura se impone a sí misma ("cambiar el narrador solo cambia las palabras"). La migración es una demostración del invariante.</p>
+
+  <h3>Emergencia del método en tres días</h3>
+  <p><code class="r">argos</code> (17-jun): <code>Fraction</code>-como-estilo, sin sello, con el LLM adentro. Tres días después
+    <code class="r">orbit-guardian</code> (20-jun) introduce <strong>todo el aparato de golpe</strong>: AuditChain SHA-256,
+    <code>check_determinism.py</code>, gate de corroboración, devil's-advocate, LLM fuera del scoring. No es refactor: es el
+    momento en que el método cristaliza.</p>
+
+  <h3>Integridad &rarr; + confidencialidad</h3>
+  <p><code class="r">continuum</code> es la única rama que añade cifrado (AES-256-GCM, keyslots Shamir/time-lock) sobre la
+    postura habitual de solo-integridad: custodia que además <em>oculta</em> el contenido.</p>
+</div></section>
+
+<!-- 04 -->
+<section id="rupturas"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">04</span><span>Rupturas</span></div>
+  <h2 class="sec">Proyectos que contradicen el patrón general</h2>
+  <p class="sub">Los contraejemplos son el resultado — y dos de ellos definen el invariante mejor que las confirmaciones.</p>
+
+  <div class="callout">Poné <code class="r" style="background:#e2d6d4">rebound</code> e <code class="r" style="background:#e2d6d4">impetu</code>
+    lado a lado y el invariante real se resuelve solo.</div>
+  <p><span class="tag t-rup">retórica sin enforcement</span>&nbsp; <code class="r">rebound</code> (sonar biomimético) conserva el
+    <em>vocabulario</em> ("núcleo determinista", "números sellados", "el LLM solo narra") pero <strong>tira la maquinaria</strong>
+    (no hay sello criptográfico) y su LLM en la nube decide de verdad.</p>
+  <p><span class="tag t-par">conciencia sin sello</span>&nbsp; <code class="r">impetu</code> hace lo inverso: <em>invierte
+    conscientemente</em> la regla más visible — <span class="q">"The LLM is in the decision path by design here"</span> — porque su
+    dominio (un asistente conversacional para mentes TDAH/autistas) lo exige. Pero conserva cada disciplina que el sello existía para
+    proteger: tres estados, fail-closed, idempotencia determinista, red-team.</p>
+  <p>Juntos prueban que el invariante <strong>no es</strong> "el LLM debe estar fuera del loop" (<code class="r">impetu</code> lo
+    viola y es <em>más</em> fiel); es <em class="key">nunca emitir un resultado que aparente más certeza que el proceso que lo produjo</em>.
+    <code class="r">impetu</code> lo honra con el LLM adentro; <code class="r">rebound</code> lo viola con el LLM nominalmente afuera.</p>
+
+  <h3>La ruptura invertida</h3>
+  <p><span class="tag t-rup">parodia</span>&nbsp; <code class="r">pichon</code> (sept, el más reciente) toma los valores del corpus y
+    los <em>satiriza</em>: un motor lógico real (MaxSAT) diseñado para ser <strong>irrefutable</strong> y para
+    <span class="q">"sacrificar un hecho verdadero"</span> con tal de sostener el veredicto — la negación exacta de la degradación
+    honesta (I·2). Solo alguien fluido en el patrón puede parodiarlo con esa precisión. Es ruptura por dominio (arte/sátira), no por ignorancia.</p>
+
+  <h3>Otras rupturas, catalogadas</h3>
+  <div class="twrap"><table>
+    <thead><tr><th>Repo</th><th>Tipo</th><th>Qué contradice</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">argos</td><td><span class="dot" style="background:var(--rup)"></span>pre-método</td><td>Fraction como estilo; sin sello, con LLM en el veredicto (jun-17, antes de la cristalización).</td></tr>
+      <tr><td class="mono">mutante / gambit</td><td><span class="dot" style="background:#8A6D1E"></span>relajado y declarado</td><td>El LLM entra al veredicto (hybrid / composite 2/5) — pero etiquetado como no-reproducible.</td></tr>
+      <tr><td class="mono">raven-memory</td><td><span class="dot" style="background:#8A6D1E"></span>portador parcial</td><td>Floats en el scoring; README corregido (BUG-04) para admitir la no-reproducibilidad.</td></tr>
+      <tr><td class="mono">sudo-su · poes-cabinet · f1-mythos</td><td><span class="dot" style="background:var(--sup)"></span>tema, no mecanismo</td><td>Estética forense/criptográfica como juego; ninguna maquinaria real.</td></tr>
+      <tr><td class="mono">zk-criptografia</td><td><span class="dot" style="background:var(--sup)"></span>solo léxico</td><td>Notas; comparte vocabulario, cero implementación.</td></tr>
+      <tr><td class="mono">mneme_memory_mcp</td><td><span class="dot" style="background:var(--rup)"></span>linaje invertido</td><td>El nombre dice "sucesor"; el código prueba que es un extracto <em>previo</em> con vulnerabilidades que <code class="r">mneme</code> ya arregló.</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<!-- 05 -->
+<section id="tiempo"><div class="wide">
+  <div class="wrap"><div class="eyebrow"><span class="n">05</span><span>Dependencias temporales</span></div>
+  <h2 class="sec">Qué ideas preceden a cuáles</h2>
+  <p class="sub">La dirección es clara: práctica &rarr; método cristalizado &rarr; motor reusable &rarr; doctrina &rarr; trasplante &rarr; auto-parodia.</p></div>
+
+  <div class="tl"><div class="lane">
+    <div class="ev-t"><span class="date">04·16</span><h4>La semilla</h4>
+      <p><code class="r">vigia-intent-analysis</code> — motor de intención DFIR. Ya existe el <code>ForensicBundle</code>: sellar antes de que el modelo hable. Todo desciende de acá.</p>
+      <div class="repos">→ vigia-cases (05·29), vigia (05·30)</div></div>
+    <div class="ev-t"><span class="date">06·12</span><h4>Primer trasplante de dominio</h4>
+      <p><code class="r">phylo</code> lleva el bundle sellado a la optimización de código, antes de que el método esté formalizado. La idea viaja antes que su nombre.</p></div>
+    <div class="ev-t"><span class="date">06·17</span><h4>Intento pre-método</h4>
+      <p><code class="r">argos</code>: Fraction como estilo, sin sello, LLM adentro. Más primitivo que <code class="r">phylo</code>, que lo precede — hay exploración en paralelo, no una línea recta.</p></div>
+    <div class="ev-t mark"><span class="date">06·20</span><h4>Cristalización</h4>
+      <p><strong>Cinco repos el mismo día.</strong> <code class="r">orbit-guardian</code> introduce el aparato completo; y nacen juntos el sustrato de memoria <code class="r">cronos</code>, <code class="r">corvus</code>, <code class="r">raven-memory</code>. El método <em>y</em> la memoria que lo registra cristalizan a la vez.</p>
+      <div class="repos">orbit-guardian · cronos · corvus · raven-memory · hivemind_tidal</div></div>
+    <div class="ev-t"><span class="date">07·08</span><h4>Codificación como doctrina</h4>
+      <p><code class="r">SKILLS</code> — 74 skills sobre la tríada de Peirce. El corpus escribe su propia ley: <code>deterministic-core</code>, <code>llm-out-of-the-loop</code>, <code>honest-degradation</code>, <code>tamper-evident-audit-chain</code>. La formalización llega <em>después</em> de la práctica.</p></div>
+    <div class="ev-t"><span class="date">07·15</span><h4>El motor reusable</h4>
+      <p><code class="r">forge</code> generaliza el patrón en un motor de auditoría independiente, con el float prohibido a nivel encoder. Linaje: <code class="r">forge-nuevo</code>, <code class="r">forge-improved</code>, <code class="r">forge-results</code>.</p></div>
+    <div class="ev-t"><span class="date">07&ndash;08</span><h4>Ola de trasplante</h4>
+      <p>El método se aplica a dominio tras dominio: <code class="r">mneme</code>, <code class="r">digital-legacy</code>, <code class="r">sonya</code>, <code class="r">ariadne</code>, <code class="r">lifeline</code>, <code class="r">koine</code>, <code class="r">compass</code>, <code class="r">velo</code>, <code class="r">annaconda</code>, <code class="r">continuum</code>.</p></div>
+    <div class="ev-t mark"><span class="date">09·02</span><h4>Auto-parodia</h4>
+      <p><code class="r">pichon</code> satiriza el método: un motor de veredictos hecho para ser irrefutable. El corpus llega a poder reírse de su propia doctrina.</p></div>
+  </div></div>
+</div></section>
+
+<!-- 06 -->
+<section id="cognitiva"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">06</span><span>Arquitectura cognitiva</span></div>
+  <h2 class="sec">La forma estable de resolver problemas</h2>
+  <p class="sub">Reconstruida desde los artefactos, sin psicologizar. Qué permanece cuando cambia el objeto técnico.</p>
+
+  <p><strong>El objeto es variable; la plantilla es constante.</strong> Sea un eco de murciélago, un testamento, una traducción,
+    una carrera, un mensaje de Slack o un host comprometido, el artefacto se construye como <em>evidencia que va a ser
+    impugnada en un foro hostil y tiene que sobrevivir</em>. Eso obliga siempre a lo mismo: separar lo que decide de lo que
+    persuade; hacer reproducible y sellable la parte que decide; hacer honesta la degradación; hacerlo verificable por un
+    escéptico; y atacar la propia conclusión antes de publicarla.</p>
+
+  <p><strong>El corpus es reflexivo.</strong> Construye desproporcionadamente <em>auditores</em>: <code class="r">forge</code>
+    audita código, <code class="r">stylometry</code> audita autoría, <code class="r">corvus</code> audita mensajes,
+    <code class="r">sonya</code> audita media, <code class="r">koine</code> audita traducciones, <code class="r">annaconda</code>
+    audita hosts, <code class="r">cronos</code> audita el razonamiento mismo, <code class="r">mneme</code> audita la memoria. El
+    movimiento cognitivo recurrente es: <em class="key">convertir X en algo que pueda ser verificado por alguien que desconfía de X</em>.
+    Incluso los dominios no-auditores (<code class="r">rebound</code>, <code class="r">impetu</code>) son reequipados con esa conciencia.</p>
+
+  <p><strong>La auto-corrección es portante, no cosmética.</strong> La honestidad se aplica a las propias afirmaciones de la autora:
+    <code class="r">raven-memory</code> retracta un README falso (BUG-04); <code class="r">mutante</code> admite su float;
+    <code class="r">gambit</code> etiqueta su composite. Y el método se aplica <em>a sí mismo</em>: <code class="r">SKILLS</code>
+    es el método auditando al método; <code class="r">discordia</code> es un sistema construido para <strong>refutar su propia premisa</strong>
+    (<span class="q">"The implementation refutes it… the fixed point is not paralysis — it is peace"</span>). Que el método sobreviva a
+    ser vuelto contra sus propias afirmaciones es la firma más fuerte del corpus.</p>
+</div></section>
+
+<!-- 07 -->
+<section id="principios"><div class="wrap stack">
+  <div class="eyebrow"><span class="n">07</span><span>Mínimo de principios</span></div>
+  <h2 class="sec">Lo mínimo que explica lo máximo</h2>
+  <p class="sub">Un principio raíz y dos mecanismos de aplicación. Juntos explican ~40 de los 49 repos — y <em>predicen</em> las rupturas.</p>
+
+  <div class="prin root">
+    <div class="pn">Principio raíz · P0</div>
+    <h3>Un resultado no debe aparentar más certeza que el proceso que lo produjo.</h3>
+    <p>Es la conciencia de ingeniería que sobrevive a todos los cambios de dominio y a la propia relajación de reglas más visibles
+      (I·1). De este único principio se derivan la degradación honesta y el <code>ABSTAIN</code> (I·2), y su violación define
+      las rupturas: <code class="r">pichon</code> lo niega (certeza fabricada), <code class="r">rebound</code> lo viola (retórica &gt;
+      enforcement), <code class="r">impetu</code> lo honra (LLM adentro, confianza honesta).</p>
+    <p class="gen">explica → I·2 · toda la §04 · la §06</p>
+  </div>
+
+  <div class="prin">
+    <div class="pn">Mecanismo · P1</div>
+    <h3>Separá lo que decide de lo que persuade.</h3>
+    <p>Cuando hay un LLM presente, la única forma de acotar la certeza al proceso es que lo que decide sea determinista,
+      reproducible y sellado <em>antes</em> de que el modelo hable; el modelo solo narra un valor ya fijo. De acá salen el núcleo
+      sin-float, la serialización canónica y el sello (I·3). Las rupturas son exactamente los repos que dejan al modelo cruzar
+      esa línea — y casi siempre lo declaran.</p>
+    <p class="gen">explica → I·1 · I·3 · I·6 · <code class="r">gambit</code>/<code class="r">mutante</code>/<code class="r">argos</code></p>
+  </div>
+
+  <div class="prin">
+    <div class="pn">Mecanismo · P2</div>
+    <h3>Hacelo verificable por alguien que desconfía.</h3>
+    <p>La certeza declarada no vale si nadie externo puede recomputarla. De ahí la cadena de custodia con verificador
+      independiente (I·4), las rondas de auto-auditoría adversarial (I·5) y las limitaciones declaradas en voz alta. Incluye
+      declarar el <em>propio</em> límite del sello ("no prueba corrección"). Es P0 aplicado a la reputación del artefacto.</p>
+    <p class="gen">explica → I·4 · I·5 · la reflexividad de §06</p>
+  </div>
+
+  <p style="margin-top:22px">Lo demás —nombres mitológicos, léxico Peirceano, stack Python/MCP, la forma N-núcleos&rarr;veredicto—
+    es <strong>firma y hábito</strong>, no principio: aparece y desaparece sin cambiar la naturaleza del artefacto. Si hubiera que
+    quedarse con una sola frase que genere el corpus entero: <em class="key">construí cada salida consecuente para que sobreviva a
+    ser impugnada por un escéptico — calibrada, sellada y refutada por vos primero.</em></p>
+</div></section>
+
+<!-- Anexo -->
+<section id="anexo"><div class="wide">
+  <div class="wrap"><div class="eyebrow"><span class="n">A</span><span>Anexo</span></div>
+  <h2 class="sec">Los 49, clasificados</h2>
+  <p class="sub">
+    <span class="tag t-inv">portador pleno</span>
+    <span class="tag t-par">parcial / relajado</span>
+    <span class="tag t-rup">ruptura</span>
+    <span class="tag t-sup">superficial / no-motor</span>
+  </p></div>
+
+  <div class="twrap"><table>
+    <thead><tr><th>Repo</th><th class="mono">creado</th><th>dominio</th><th>clúster</th><th>relación con el patrón</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">vigia-intent-analysis</td><td class="mono">04·16</td><td>DFIR / intención</td><td>A</td><td><span class="dot" style="background:var(--inv)"></span>semilla · implementación de referencia</td></tr>
+      <tr><td class="mono">vigia-cases</td><td class="mono">05·29</td><td>benchmark forense</td><td>A</td><td><span class="dot" style="background:var(--inv)"></span>dataset con tier-gating honesto</td></tr>
+      <tr><td class="mono">vigia</td><td class="mono">05·30</td><td>DFIR / SIFT</td><td>A</td><td><span class="dot" style="background:var(--inv)"></span>semilla (sellado aún asertado)</td></tr>
+      <tr><td class="mono">phylo</td><td class="mono">06·12</td><td>optimización de código</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>pleno · EvolutionBundle</td></tr>
+      <tr><td class="mono">argos</td><td class="mono">06·17</td><td>detección de manipulación</td><td>C</td><td><span class="dot" style="background:var(--rup)"></span>pre-método · LLM en el veredicto</td></tr>
+      <tr><td class="mono">orbit-guardian</td><td class="mono">06·20</td><td>auditoría de MRs</td><td>C</td><td><span class="dot" style="background:var(--inv)"></span>cristalización del método</td></tr>
+      <tr><td class="mono">cronos</td><td class="mono">06·20</td><td>traza de razonamiento</td><td>B</td><td><span class="dot" style="background:var(--inv)"></span>caja negra · sella el razonar</td></tr>
+      <tr><td class="mono">corvus</td><td class="mono">06·20</td><td>detección en Slack</td><td>B</td><td><span class="dot" style="background:var(--inv)"></span>pleno · L1–L6</td></tr>
+      <tr><td class="mono">raven-memory</td><td class="mono">06·20</td><td>memoria agéntica</td><td>B</td><td><span class="dot" style="background:#8A6D1E"></span>parcial · floats (BUG-04 admitido)</td></tr>
+      <tr><td class="mono">hivemind_tidal</td><td class="mono">06·20</td><td>alerta de inundaciones</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>portador ligero (sello ad-hoc)</td></tr>
+      <tr><td class="mono">janus</td><td class="mono">06·26</td><td>ingeniería social</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>pleno · Decimal (variante)</td></tr>
+      <tr><td class="mono">stigmergy</td><td class="mono">07·03</td><td>memoria distribuida</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>pleno · Merkle + hash-chains</td></tr>
+      <tr><td class="mono">mutante_ / mutante</td><td class="mono">05·22</td><td>red-team de LLMs</td><td>A</td><td><span class="dot" style="background:#8A6D1E"></span>parcial · hybrid mete LLM al score</td></tr>
+      <tr><td class="mono">stylometry / -ci</td><td class="mono">05·23</td><td>autoría en CI</td><td>A</td><td><span class="dot" style="background:var(--inv)"></span>pleno · Fraction + determinismo testeado</td></tr>
+      <tr><td class="mono">digital-legacy</td><td class="mono">07·07</td><td>herencia digital</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>pleno · "el LLM narra, no decide"</td></tr>
+      <tr><td class="mono">mneme</td><td class="mono">07·07</td><td>memoria forense</td><td>B</td><td><span class="dot" style="background:var(--inv)"></span>pleno · custodia por-memoria</td></tr>
+      <tr><td class="mono">wolf-and-cronos</td><td class="mono">07·08</td><td>detección + traza</td><td>B</td><td><span class="dot" style="background:var(--inv)"></span>pleno · corvus+cronos, Qwen narra</td></tr>
+      <tr><td class="mono">SKILLS</td><td class="mono">07·08</td><td>meta / método</td><td>F</td><td><span class="dot" style="background:var(--accent)"></span>auto-descripción explícita</td></tr>
+      <tr><td class="mono">mneme_memory_mcp</td><td class="mono">07·11</td><td>memoria forense</td><td>B</td><td><span class="dot" style="background:var(--rup)"></span>linaje invertido (predecesor)</td></tr>
+      <tr><td class="mono">phylo-google</td><td class="mono">07·13</td><td>optimización de código</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>pleno · el swap pasa su test</td></tr>
+      <tr><td class="mono">audit-chain</td><td class="mono">07·14</td><td>log a prueba de manipulación</td><td>C</td><td><span class="dot" style="background:var(--inv)"></span>núcleo cripto (C/Rust/Java), límite auto-documentado</td></tr>
+      <tr><td class="mono">forge (+nuevo/improved/results)</td><td class="mono">07·15</td><td>auditoría de repos</td><td>C</td><td><span class="dot" style="background:var(--inv)"></span>motor reusable · float→TypeError</td></tr>
+      <tr><td class="mono">lifeline</td><td class="mono">07·16</td><td>despacho de catástrofes</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>pleno · "el mapa no es la decisión"</td></tr>
+      <tr><td class="mono">sonya</td><td class="mono">07·23</td><td>notaría de media generada</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>pleno · "corré el verificador"</td></tr>
+      <tr><td class="mono">ariadne</td><td class="mono">07·23</td><td>gobernanza de ML (AML)</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>pleno · + servidor MCP</td></tr>
+      <tr><td class="mono">zk-criptografia</td><td class="mono">08·03</td><td>notas ZK / legal</td><td>C</td><td><span class="dot" style="background:var(--sup)"></span>solo léxico · sustrato intelectual</td></tr>
+      <tr><td class="mono">velo</td><td class="mono">08·07</td><td>atestación ZK on-chain</td><td>E</td><td><span class="dot" style="background:var(--inv)"></span>portador más fuerte (port Py→TS+Compact)</td></tr>
+      <tr><td class="mono">locoporcolt</td><td class="mono">08·13</td><td>e-commerce regulado</td><td>F</td><td><span class="dot" style="background:var(--inv)"></span>pleno · "sellá cada listing"</td></tr>
+      <tr><td class="mono">koine</td><td class="mono">08·16</td><td>drift de traducción (CI)</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>pleno · sin léxico Peirceano</td></tr>
+      <tr><td class="mono">impetu</td><td class="mono">08·18</td><td>asistente TDAH/autismo</td><td>E</td><td><span class="dot" style="background:#8A6D1E"></span>inversión consciente · honra P0</td></tr>
+      <tr><td class="mono">annaconda / annacondaa</td><td class="mono">08·06</td><td>purple-team DFIR</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>instancia más pura · MCP</td></tr>
+      <tr><td class="mono">continuum</td><td class="mono">07·16</td><td>legado digital cifrado</td><td>B</td><td><span class="dot" style="background:var(--inv)"></span>pleno · + confidencialidad</td></tr>
+      <tr><td class="mono">discordia</td><td class="mono">08·28</td><td>motor de contradicción</td><td>F</td><td><span class="dot" style="background:var(--inv)"></span>refuta su propia premisa</td></tr>
+      <tr><td class="mono">gambit</td><td class="mono">08·29</td><td>copiloto de negociación</td><td>D</td><td><span class="dot" style="background:#8A6D1E"></span>composite mete LLM (2/5), declarado</td></tr>
+      <tr><td class="mono">compass</td><td class="mono">08·29</td><td>orientación vocacional</td><td>D</td><td><span class="dot" style="background:var(--inv)"></span>pleno · re-sella fail-closed</td></tr>
+      <tr><td class="mono">logs</td><td class="mono">08·30</td><td>evidencia DFIR sellada</td><td>F</td><td><span class="dot" style="background:var(--inv)"></span>salida del método (custodia vs evidencia)</td></tr>
+      <tr><td class="mono">fintech (Zolvi)</td><td class="mono">07·04</td><td>priorización AML</td><td>F</td><td><span class="dot" style="background:var(--inv)"></span>instancia de manual · "no decide, narra"</td></tr>
+      <tr><td class="mono">sudo-su</td><td class="mono">06·07</td><td>juego forense (educ.)</td><td>F</td><td><span class="dot" style="background:var(--sup)"></span>tema forense, sin mecanismo</td></tr>
+      <tr><td class="mono">poes-cabinet</td><td class="mono">06·11</td><td>escape-game</td><td>F</td><td><span class="dot" style="background:var(--sup)"></span>arte · cripto como sabor</td></tr>
+      <tr><td class="mono">f1-mythos</td><td class="mono">07·12</td><td>microsite / juego</td><td>F</td><td><span class="dot" style="background:var(--sup)"></span>ruptura · fact-or-myth</td></tr>
+      <tr><td class="mono">proyectohermana</td><td class="mono">07·05</td><td>web app</td><td>F</td><td><span class="dot" style="background:var(--sup)"></span>scaffold, sin aparato</td></tr>
+      <tr><td class="mono">pichon</td><td class="mono">09·02</td><td>arte / sátira</td><td>F</td><td><span class="dot" style="background:var(--rup)"></span>ruptura invertida · parodia del método</td></tr>
+    </tbody>
+  </table></div>
+  <div class="wrap"><p style="margin-top:14px;font-size:13px;color:var(--mut)">Nota: <code class="r">raven-memory_</code> es un stub de un commit (14 KB) de <code class="r">raven-memory</code>; se omite del recuento cualitativo. Fechas = creación del repo en GitHub; algunos historiales de git empiezan días antes.</p></div>
+</div></section>
+
+</main>
+
+<footer class="foot"><div class="wide stack">
+  <div>Reconstruido desde los artefactos: barrido de señales + 6 lecturas adversariales en paralelo, cada patrón con evidencia multi-repo e intento de falsación.</div>
+  <div style="font-family:var(--mono);font-size:12px;color:var(--accent)">49 repos · 6 clústeres · 1 principio raíz · abril&ndash;septiembre 2026</div>
+</div></footer>
+
+</div>
+</body>
+</html>
